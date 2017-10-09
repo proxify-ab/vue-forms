@@ -3,7 +3,7 @@ Vue.component('inputtext', {
         'code',
     ],
     template: `
-        <input type="text" class="form-control" :value="firstName" @input="updateCode($event.target.value)">      
+        <input type="text" class="form-control" :value="code" @input="updateCode($event.target.value)">      
      `,
     methods: {
         updateCode(code) {
