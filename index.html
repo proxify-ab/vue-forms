@@ -1,0 +1,42 @@
+<!DOCTYPE html>
+<html>
+<head>
+    <title>Vue Project</title>
+    <link rel="stylesheet" href="/css/bootstrap.min.css">
+</head>
+<body>
+
+<div class="container">
+    <br>
+    <br>
+<div id="root">
+
+    <h3>Enter your contact details</h3>
+    <br>
+    <br>
+
+    <inputtext v-model="firstName" label="This" validation="1jakl" helper="aslkdjaslkd"></inputtext>
+    <inputtext v-model="lastName" label="This" validation="1jakl" helper="aslkdjaslkd"></inputtext>
+
+    <inputtext v-model="firstName"></inputtext>
+
+    <div>This is a {{firstName}} {{lastName}}</div>
+</div>
+
+    <script src="/js/sanitizers.js"></script>
+    <script src="/js/vue.js"></script>
+<script src="/js/components.js"></script>
+
+<script>
+
+    new Vue({
+        el: '#root',
+        data: {
+            firstName: 'Viktor',
+            lastName: 'Jarnheimer'
+        }
+    });
+
+</script>
+</body>
+</html>
