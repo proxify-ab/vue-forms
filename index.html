@@ -33,6 +33,16 @@
         <div>Last name: {{lastName}}</div>
     </div>
 
+    <hr>
+
+    <div id="app">
+        <devinput :type="type" :value="value" :dev="123" ></devinput>
+
+        <p>Type: {{ type }}</p>
+        <p>Value: {{ value }}</p>
+    </div>
+
+
     <script src="js/sanitizers.js"></script>
     <script src="js/vue.js"></script>
     <script src="js/components.js"></script>
@@ -44,6 +54,14 @@
             data: {
                 firstName: 'Viktor',
                 lastName: 'Jarnheimer'
+            }
+        });
+
+        new Vue({
+            el: '#app',
+            data: {
+                type: 'checkbox',
+                value: true
             }
         });
 

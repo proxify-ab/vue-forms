@@ -14,3 +14,7 @@ Vue.component('inputtext', {
     }
 });
 
+Vue.component('devinput', {
+    props: ['type','value', 'dev'],
+    template: '<input :type="type" :value="value" :dev="dev">',
+});
