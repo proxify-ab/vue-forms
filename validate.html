@@ -1,0 +1,93 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <title>Validate</title>
+    <link rel="stylesheet" href="css/bootstrap.min.css">
+    <link rel="stylesheet" href="css/font-awesome.min.css">
+</head>
+<style>
+    input.has-error, input.has-error:focus, input.has-error:active{
+        border-color: red;
+    }
+    input[aria-invalid="false"]:focus, input[aria-invalid="false"]:active{
+        border-color: green;
+    }
+</style>
+<body>
+
+
+
+<div class="app">
+
+    <div class="container">
+        <div class="row">
+            <div class="col-md-12">
+
+                <form>
+                    <div class="form-group">
+                        <label>Email</label>
+                        <input name="email" v-model="email" v-validate="'required|email'"
+                               :class="{'input': true, 'has-error': errors.has('email')}" class="form-control"
+                               type="text" placeholder="Email">
+                        <i v-show="errors.has('email')" class="fa fa-warning text-danger"></i>
+                        <span v-show="errors.has('email')" class="help has-error">{{ errors.first('email') }}</span>
+                    </div>
+                    <div class="form-group">
+                        <label>First Name</label>
+                        <input name="first_name" v-model="first_name" v-validate="'required|alpha'"
+                               :class="{'input': true, 'has-error': errors.has('first_name')}" class="form-control"
+                               type="text"
+                               placeholder="First Name">
+                        <i v-show="errors.has('first_name')" class="fa fa-warning text-danger"></i>
+                        <span v-show="errors.has('first_name')"
+                              class="help has-error">{{ errors.first('first_name') }}</span>
+                    </div>
+                    <div class="form-group">
+                        <label>Last Name</label>
+                        <input name="last_name" v-model="last_name" v-validate="'required|alpha'"
+                               :class="{'input': true, 'has-error': errors.has('last_name') }" class="form-control"
+                               type="text"
+                               placeholder="Last Name">
+                        <i v-show="errors.has('last_name')" class="fa fa-warning text-danger"></i>
+                        <span v-show="errors.has('last_name')"
+                              class="help has-error">{{ errors.first('last_name') }}</span>
+                    </div>
+                    <div class="form-group">
+                        <label>Full Name</label>
+                        <input :value="name" name="name" v-validate:name="'required|alpha_spaces'"
+                               :class="{'input': true, 'has-error': errors.has('name')}" class="form-control"
+                               type="text" placeholder="Full Name">
+                        <i v-show="errors.has('name')" class="fa fa-warning text-danger"></i>
+                        <span v-show="errors.has('name')" class="help has-error">{{ errors.first('name') }}</span>
+                    </div>
+                </form>
+
+            </div>
+        </div>
+    </div>
+</div>
+
+<script src="js/vue.js"></script>
+<script src="js/vee-validate.js"></script>
+<script>
+
+    Vue.use(VeeValidate);
+
+    let app = new Vue({
+        el: '.app',
+        data: () => ({
+            email: '',
+            first_name: '',
+            last_name: ''
+        }),
+        computed: {
+            name() {
+                return `${this.first_name} ${this.last_name}`;
+            }
+        }
+    });
+
+</script>
+</body>
+</html>
