@@ -1,0 +1,17 @@
+main#root
+    .container
+        .row
+            .col-md-6
+                ul
+                    li(v-for="user in users", @click="getUser(user)", style="cursor: pointer; background: #eee; margin-bottom:5px;")
+                        p {{user.name}}
+            .col-md-6
+
+                form(@submit.prevent="submit")
+                    flex-input(type="hidden", v-model="user.id", placeholder="Id", name="id", rules="require")
+                    flex-input(label="Name", type="text", v-model="user.name", placeholder="Title", name="name")
+                    flex-input(label="Email", type="text", v-model="user.email", placeholder="Body", name="email", rules="email")
+                    flex-input(label="Web site", placeholder="web site", type="text", v-model="user.website", name="website", rules="url")
+                    flex-input(label="Is admin", type="checkbox", v-model="user.isAdmin", name="isAdmin")
+                    flex-input(type="submit", name="submit")
+
