@@ -49,7 +49,7 @@ Vue.filter('address', function (value) {
     value = value.replace(' Allé', ' allé');
     value = value.replace(' Gata', ' gata');
     value = value.replace(' Backe', ' backe');
-    value = value.replace('C/o ', ' c/o ');
+    value = value.replace(' C/o ', ' c/o ');
 
     return value;
 });
