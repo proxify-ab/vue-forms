@@ -13,9 +13,10 @@ main#root
 
         .row
             form.col-md-6
+                //todo: http://vee-validate.logaretm.com/rules.html#available-validations rules for validation
                 input-box(type="hidden" name="hidden" label="Hidden text" stacked=true v-model="obj.hidden" )
 
-                input-box(type="text" name="text" label="Input text" stacked=true v-model="obj.text" rules="required")
+                input-box(type="text" name="text" label="Input text" stacked=true v-model="obj.text" rules="required" helper="helper text")
 
                 input-box(type="number" name="number" label="Input number" stacked=true v-model="obj.number" rules="required|decimal")
 
