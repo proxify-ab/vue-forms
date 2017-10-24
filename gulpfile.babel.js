@@ -5,7 +5,6 @@ import jade from 'gulp-jade';
 import stylus from 'gulp-stylus';
 import concat from 'gulp-concat';
 import connect from 'gulp-connect';
-// import imagemin from 'gulp-imagemin';
 import sourcemaps from 'gulp-sourcemaps';
 import babel from 'gulp-babel';
 import uglify from 'gulp-uglify';
@@ -33,8 +32,8 @@ let jadeFiles = [
 gulp.task('jade', function () {
     return gulp.src(jadeFiles)
         .pipe(jade({
-            pretty: false
-        })) // pip to jade plugin
+             pretty: true //todo: property witch minify html if set false
+        }))
         .pipe(gulp.dest(application.dest))
         .pipe(connect.reload());
 });
@@ -92,17 +91,6 @@ gulp.task('jsSrc', function () {
         .pipe(gulp.dest(application.destJS))
         .pipe(connect.reload());
 });
-
-//img minify
-// gulp.task('imageMinify', function () {
-//     gulp.src(application.sourceImg + '/**')
-//         .pipe(imagemin({
-//             progressive: true,
-//             optimizationLevel: 7
-//         }))
-//         .pipe(gulp.dest(application.destImg))
-//         .pipe(connect.reload());
-// });
 
 let fonts = [
     application.sourceFonts,
