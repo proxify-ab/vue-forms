@@ -1,0 +1,47 @@
+main#root
+    .container
+        .row
+            .col-md-6
+                ul
+                    li(v-for="user in users", @click="getUser(user)", style="cursor: pointer; background: #eee; margin-bottom:5px;")
+                        p
+                            span {{user.name | upperCase | lowerCase | title | replace('a', '_') | address}}
+                            span.small.pull-right(v-text="user.isAdmin")
+                        p
+                            span {{user.phone | phoneNumber}}
+
+
+        .row
+            form.col-md-6
+                //todo: http://vee-validate.logaretm.com/rules.html#available-validations rules for validation
+                input-box(type="hidden" name="hidden" label="Hidden text" stacked=true v-model="obj.hidden" )
+
+                input-box(type="text" name="text" label="Input text" stacked=true v-model="obj.text" rules="required" helper="helper text")
+
+                input-box(type="number" name="number" label="Input number" stacked=true v-model="obj.number" rules="required|decimal")
+
+                input-box(type="text" name="date" label="Input date" stacked=true v-model="obj.date" rules="required|date_format:DD/MM/YYYY")
+
+                input-box(type="email" name="email" label="Input email" stacked=true rules="required|email" v-model="obj.email")
+
+                input-box(type="password" name="i1" label="Input password" stacked=true rules="required" v-model="obj.password")
+
+                list-box(name="list", :options="users" key-name="name" v-model="user" rules="required" placeholder="Select")
+
+                textarea-box(name="textArea" v-model="obj.textarea" rules="required")
+
+                hr
+
+                switch-checkbox(name="sw1" label="Switch input" id="sw1" stacked=true v-model="obj.checkbox" value="one" rules="required")
+                switch-checkbox(name="sw2" label="Switch input" id="sw2" stacked=true v-model="obj.checkbox" value="two")
+                switch-checkbox(name="sw3" label="Switch input" id="sw3" stacked=true v-model="obj.checkbox" value="three")
+                p {{obj.checkbox}}
+
+                hr
+
+                switch-radio(type="radio" name="swr1" label="Switch input" id="swr1" stacked=true v-model="obj.radio" value="one")
+                switch-radio(type="radio" name="swr1" label="Switch input" id="swr2" stacked=true v-model="obj.radio" value="two")
+                switch-radio(type="radio" name="swr1" label="Switch input" id="swr3" stacked=true v-model="obj.radio" value="three")
+                p {{obj.radio}}
+
+                hr
