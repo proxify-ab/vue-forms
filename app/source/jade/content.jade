@@ -4,7 +4,11 @@ main#root
             .col-md-6
                 ul
                     li(v-for="user in users", @click="getUser(user)", style="cursor: pointer; background: #eee; margin-bottom:5px;")
-                        p {{user.name}}
+                        p
+                            span {{user.name | upperCase | lowerCase | title | replace('a', '_')}}
+                            span.small.pull-right(v-text="user.isAdmin")
+                        p
+                            span {{user.phone | phoneNumber}}
             .col-md-6
 
                 form(@submit.prevent="submit")
@@ -14,4 +18,3 @@ main#root
                     flex-input(label="Web site", placeholder="web site", type="text", v-model="user.website", name="website", rules="url")
                     flex-input(label="Is admin", type="checkbox", v-model="user.isAdmin", name="isAdmin")
                     flex-input(type="submit", name="submit")
-
