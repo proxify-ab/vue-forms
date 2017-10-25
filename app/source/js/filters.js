@@ -1,3 +1,10 @@
+VeeValidate.Validator.extend('indexOf', {
+    getMessage: field => 'The ' + field + ' contains numeric.',
+    validate(value, args) {
+        return !parseInt(value.replace(/\D/g, ''));
+    }
+});
+
 //upper
 Vue.filter('upperCase', function (value) {
     return value.toUpperCase();
@@ -69,3 +76,4 @@ Vue.filter('phoneNumber', function (value) {
         return ( a ? "+ " + a + " " : "" ) + ( b ? b + " " : "" ) + ( c ? c + "-" : "" ) + ( d ? d + "-" : "" ) + e;
     });
 });
+
