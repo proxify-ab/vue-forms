@@ -1,5 +1,5 @@
 Vue.component('list-box', {
-    template: '<div class="form-group" :class="{\'has-error\': this.errors.has(name), \'has-helper\': helper, \'stacked\': stacked }">\n' +
+    template: '<div class="form-group" :class="{\'has-error\': this.fields[name].touched && this.fields[name].invalid, \'has-success\': this.fields[name].touched && this.fields[name].valid,  \'has-helper\': helper, \'stacked\': stacked }">\n' +
     '        <div :class="{\'col-sm-4\': !stacked}" v-if="label">\n' +
     '            <label class="control-label">{{ label }}: <span v-if="required">*</span></label>\n' +
     '            <p class="help-block" v-text="helper" v-if="helper"></p>\n' +

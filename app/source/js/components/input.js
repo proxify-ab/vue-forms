@@ -1,5 +1,5 @@
 Vue.component('input-box', {
-    template: '<div class="form-group" :class="{\'has-error\': this.errors.has(name), \'has-helper\': helper, \'stacked\': stacked }">\n' +
+    template: '<div class="form-group" :class="{\'has-error\': this.fields[name].touched && this.fields[name].invalid, \'has-success\': this.fields[name].touched && this.fields[name].valid,  \'has-helper\': helper, \'stacked\': stacked }">\n' +
     '        <div :class="{\'col-sm-4\': !stacked}" v-if="label">\n' +
     '            <label class="control-label">{{ label }}: <span v-if="required">*</span></label>\n' +
     '            <p class="help-block" v-text="helper" v-if="helper"></p>\n' +
@@ -14,7 +14,7 @@ Vue.component('input-box', {
     '                </div>\n' +
     '\n' +
     '                <input :type="type" v-on:input="updateValue($event.target.value)" v-on:blur="blur($event.target.value)" class="form-control" v-on:keyup.enter="enterKeyPressed"\n' +
-    '                       :name="name" :id="id" :readonly="readonly" :value="value" :placeholder="placeholder" v-validate :data-vv-rules="rules">\n' +
+    '                       :name="name" :id="id" :readonly="readonly" :value="value" :placeholder="placeholder" v-validate.touched :data-vv-rules="rules">\n' +
     '\n' +
     '                <div class="input-group-addon" v-if="slotExists(\'rightAddon\')">\n' +
     '                    <slot name="rightAddon"></slot>\n' +
@@ -62,6 +62,11 @@ Vue.component('input-box', {
         id: String,
         errorMessage: String,
         rules: String
+    },
+    watch:{
+        value(value){
+            this.$validator.validateAll();
+        }
     },
     computed: {
         usingAddons() {

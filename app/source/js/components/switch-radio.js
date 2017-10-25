@@ -1,5 +1,5 @@
 Vue.component('switch-radio', {
-    template: '<div class="form-group switch-group">\n' +
+    template: '<div class="form-group switch-group" :class="{\'has-error\': this.fields[name].touched && this.fields[name].invalid, \'has-success\': this.fields[name].touched && this.fields[name].valid,  \'has-helper\': helper, \'stacked\': stacked }">\n' +
     '        <div :class="{\'col-sm-4\': ! stacked}" v-if="label">\n' +
     '            <label class="control-label" :for="id">{{ label }}</label>\n' +
     '            <p class="help-block" v-if="helper">{{ helper }}</p>\n' +
