@@ -12,10 +12,10 @@ Vue.component('input-box', {
     '                <div class="input-group-btn" v-if="slotExists(\'leftBtn\')">\n' +
     '                    <slot name="leftBtn"></slot>\n' +
     '                </div>\n' +
-    '\n' +
-    '                <input :type="type" v-on:input="updateValue($event.target.value)" v-on:blur="blur($event.target.value)" class="form-control" v-on:keyup.enter="enterKeyPressed"\n' +
+    '               <div class="wrap-controller">' +
+    '                   <input :type="type" v-on:input="updateValue($event.target.value)" v-on:blur="blur($event.target.value)" class="form-control" v-on:keyup.enter="enterKeyPressed"\n' +
     '                       :name="name" :id="id" :readonly="readonly" :value="value" :placeholder="placeholder" v-validate.touched :data-vv-rules="rules">\n' +
-    '\n' +
+    '                </div>' +
     '                <div class="input-group-addon" v-if="slotExists(\'rightAddon\')">\n' +
     '                    <slot name="rightAddon"></slot>\n' +
     '                </div>\n' +
