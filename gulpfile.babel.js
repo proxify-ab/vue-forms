@@ -129,7 +129,7 @@ gulp.task('connectDev', function () {
 gulp.task('watch', function () {
     gulp.watch(jadeFiles, ['jade']);
     gulp.watch(application.app + '/stylus/**/*.styl', ['stylus']);
-    gulp.watch(application.sourceImg + '/**', ['imageMinify']);
+    // gulp.watch(application.sourceImg + '/**', ['imageMinify']);
     gulp.watch(application.sourceJS + '/**/*.js', ['jsSrc']);
 });
 

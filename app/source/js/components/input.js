@@ -14,7 +14,7 @@ Vue.component('input-box', {
     '                </div>\n' +
     '\n' +
     '                <input :type="type" v-on:input="updateValue($event.target.value)" v-on:blur="blur($event.target.value)" class="form-control" v-on:keyup.enter="enterKeyPressed"\n' +
-    '                       :name="name" :id="id" :readonly="readonly" :value="value" :placeholder="placeholder" v-validate.initial :data-vv-rules="rules">\n' +
+    '                       :name="name" :id="id" :readonly="readonly" :value="value" :placeholder="placeholder" v-validate :data-vv-rules="rules">\n' +
     '\n' +
     '                <div class="input-group-addon" v-if="slotExists(\'rightAddon\')">\n' +
     '                    <slot name="rightAddon"></slot>\n' +

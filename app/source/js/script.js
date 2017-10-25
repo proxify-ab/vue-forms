@@ -5,56 +5,38 @@ $(function () {
     let index = new Vue({
         el: '#root',
         data: {
-            users: [],
-            user: [],
-            obj: {
-                hidden: "hide",
-                number: 123,
-                text: 'text',
-                date: '05/12/205',
-                file: '',
-                email: 'test@test.',
-                password: 'pass',
-                checkbox: false,
-                radio: 'one',
-                textarea: ''
-
-            }
+            contacts: [],
+            contact: new Contact(),
+            age: [20,21,22],
         },
-        mounted: function () {
-            axios.get('https://jsonplaceholder.typicode.com/users?_limit=10')
-                .then(response => {
-                    this.users = response.data;
-                    this.user = this.users[0];
-                })
-                .catch(response => {
-                    console.log(response.data);
-                });
-
+        mounted() {
+            this.contacts = [
+                new Contact('iuhwef', 'wefwef', 'm', 20),
+                new Contact('efwg', 'fweg', 'f', 22),
+                new Contact('iuhwef', 'hrth', 'm', 24),
+                new Contact('gerrhe', 'rehewrg', 'f', 21),
+                new Contact('sdgsgtwe', 'wegwe', 'f', 22),
+            ];
         },
         methods: {
-            getUser: function (user) {
-                this.user = user;
+            getContact: function (contact) {
+                this.contact = contact;
             },
-            submit: function () {
-                if (this.isValid()) {
-                    this.$validator.validateAll();
-                    axios.post('https://jsonplaceholder.typicode.com/users', this.user)
-                        .then(response => {
-                            console.log(response);
-                        })
-                        .catch(response => {
-                            console.log(response.data);
-                        });
+            addContact() {
+                if (this.isValid() && this.contact.empty()) {
+                    this.contacts.push(this.contact);
+                    this.contact = new Contact();
+                }else{
+                    console.log('error');
                 }
+            },
+            reset: function () {
+                this.contact = new Contact();
             },
             isValid: function () {
-                for (let i = 0; i < this.$children.length; i++) {
-                    if (this.$children[i].$validator.errors.any()) {
-                        return false;
-                    }
-                }
-                return true;
+                return this.$children.map(function (child) {
+                   return child.$validator.validateAll();
+                });
             }
         },
     });

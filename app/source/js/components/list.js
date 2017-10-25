@@ -12,11 +12,13 @@ Vue.component('list-box', {
     '                <div class="input-group-btn" v-if="slotExists(\'leftBtn\')">\n' +
     '                    <slot name="leftBtn"></slot>\n' +
     '                </div>\n' +
-    '                <select :name="name" :id="name" class="form-control" v-on:change="updateValue($event.target.value)" v-validate.initial :data-vv-rules="rules">\n' +
+    '                <select :name="name" :id="name" class="form-control" v-on:change="updateValue($event.target.value)" v-validate :data-vv-rules="rules">\n' +
     '                    <option value="" readonly v-text="placeholder" v-if="placeholder"\n' +
     '                            :selected="value == null || value == \'\'"></option>\n' +
-    '                    <option v-for="option in options" :value="option[keyName]" v-text="option[keyName]"\n' +
-    '                            :selected="option[keyName] == value"></option>\n' +
+    '                    <option v-if="keyName || keyValue" v-for="option in options" :value="option[keyValue]" v-text="option"\n' +
+    '                            :selected="option[keyValue] == value"></option>\n' +
+    '                    <option v-else v-for="option in options" :value="option" v-text="option"\n' +
+    '                            :selected="option == value"></option>\n' +
     '                </select>\n' +
     '                <div class="input-group-addon" v-if="slotExists(\'rightAddon\')">\n' +
     '                    <slot name="rightAddon"></slot>\n' +
@@ -44,9 +46,11 @@ Vue.component('list-box', {
         },
         keyName: {
             type: String,
-            default: () => {
-                return 'id'
-            }
+            default: null
+        },
+        keyValue: {
+          type: String,
+          default: null
         },
         labelName: {
             type: String,
@@ -83,7 +87,7 @@ Vue.component('list-box', {
     computed: {
         usingAddons() {
             return !(Object.keys(this.$slots).length === 0 && this.$slots.constructor === Object)
-        }
+        },
     },
     updated() {
         if (this.options.length) {
