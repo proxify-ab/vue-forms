@@ -2,12 +2,12 @@ $(function () {
 
     Vue.use(VeeValidate);
 
-    let index = new Vue({
+    new Vue({
         el: '#root',
         data: {
             contacts: [],
             contact: new Contact(),
-            age: [20,21,22],
+            age: [20, 21, 22, 23, 24],
         },
         mounted() {
             this.contacts = [
@@ -26,8 +26,6 @@ $(function () {
                 if (this.isValid() && this.contact.empty()) {
                     this.contacts.push(this.contact);
                     this.contact = new Contact();
-                }else{
-                    console.log('error');
                 }
             },
             reset: function () {
@@ -35,7 +33,13 @@ $(function () {
             },
             isValid: function () {
                 return this.$children.map(function (child) {
-                   return child.$validator.validateAll();
+                    child.$validator.validateAll()
+                        .then(response => {
+                            return response;
+                        })
+                        .catch(response => {
+                            return response;
+                        });
                 });
             }
         },

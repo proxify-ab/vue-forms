@@ -15,10 +15,10 @@ Vue.component('list-box', {
     '                <select :name="name" :id="name" class="form-control" v-on:change="updateValue($event.target.value)" v-validate :data-vv-rules="rules">\n' +
     '                    <option value="" readonly v-text="placeholder" v-if="placeholder"\n' +
     '                            :selected="value == null || value == \'\'"></option>\n' +
-    '                    <option v-if="keyName || keyValue" v-for="option in options" :value="option[keyValue]" v-text="option"\n' +
-    '                            :selected="option[keyValue] == value"></option>\n' +
-    '                    <option v-else v-for="option in options" :value="option" v-text="option"\n' +
+    '                    <option v-if="!keyName && !keyValue" v-for="option in options" :value="option" v-text="option"\n' +
     '                            :selected="option == value"></option>\n' +
+    '                    <option v-if="keyName && keyValue" v-for="option in options" :value="option[keyValue]" v-text="option[keyName]"\n' +
+    '                            :selected="option[keyValue] == value"></option>\n' +
     '                </select>\n' +
     '                <div class="input-group-addon" v-if="slotExists(\'rightAddon\')">\n' +
     '                    <slot name="rightAddon"></slot>\n' +
@@ -44,14 +44,8 @@ Vue.component('list-box', {
             // type: Array,
             required: true,
         },
-        keyName: {
-            type: String,
-            default: null
-        },
-        keyValue: {
-          type: String,
-          default: null
-        },
+        keyName: String,
+        keyValue: String,
         labelName: {
             type: String,
             default: () => {
