@@ -7,14 +7,14 @@ class Contact {
     }
 
     empty() {
-        if (this.fieldEmpty('lastName') && this.fieldEmpty('firstName') && this.fieldEmpty('gender') && this.fieldEmpty('age')) {
+        if (this.fieldEmpty('lastName') || this.fieldEmpty('firstName') || this.fieldEmpty('gender') || this.fieldEmpty('age')) {
             return true;
         }
         return false;
     }
 
     fieldEmpty(name) {
-        if (this[name] !== null && this[name] !== undefined)
+        if (this[name] === null || this[name] === undefined || this[name] === "" || this[name] === 0)
             return true;
         else
             return false;

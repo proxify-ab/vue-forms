@@ -7,7 +7,7 @@ $(function () {
         locale: 'en',
         dictionary: null,
         strict: true,
-        classes: false,
+        classes: true,
         classNames: {
             touched: 'touched', // the control has been blurred
             untouched: 'untouched', // the control hasn't been blurred
@@ -16,7 +16,7 @@ $(function () {
             pristine: 'pristine', // control has not been interacted with
             dirty: 'dirty' // control has been interacted with
         },
-        events: 'input|blur',
+        events: 'input|blur|submit',
         inject: true,
         validity: false,
         aria: true
@@ -24,6 +24,7 @@ $(function () {
 
 
     Vue.use(VeeValidate, config);
+    // Vue.use(VeeValidate);
 
     new Vue({
         el: '#root',
@@ -46,16 +47,19 @@ $(function () {
                 this.contact = contact;
             },
             addContact() {
-                if (this.isValid() && this.contact.empty()) {
+                if (this.isValid() && !this.contact.empty()) {
                     this.contacts.push(this.contact);
                     this.contact = new Contact();
                 }
             },
             reset: function () {
                 this.contact = new Contact();
+                this.$children.map(function (child) {
+                    child.$validator.reset();
+                });
             },
             isValid: function () {
-                return this.$children.map(function (child) {
+                this.$children.map(function (child) {
                     child.$validator.validateAll()
                         .then(response => {
                             return response;

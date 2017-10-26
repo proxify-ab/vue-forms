@@ -1,37 +1,39 @@
 Vue.component('list-box', {
-    template: '<div class="form-group" :class="{\'has-error\': this.fields[name].touched && this.fields[name].invalid, \'has-success\': this.fields[name].touched && this.fields[name].valid,  \'has-helper\': helper, \'stacked\': stacked }">\n' +
-    '        <div :class="{\'col-sm-4\': !stacked}" v-if="label">\n' +
-    '            <label class="control-label">{{ label }}: <span v-if="required">*</span></label>\n' +
-    '            <p class="help-block" v-text="helper" v-if="helper"></p>\n' +
-    '        </div>\n' +
-    '        <div class="control-container" :class="{\'col-sm-8\': (!stacked && label)}">\n' +
-    '            <div :class="{\'input-group\': usingAddons}">\n' +
-    '                <div class="input-group-addon" v-if="slotExists(\'leftAddon\')">\n' +
-    '                    <slot name="leftAddon"></slot>\n' +
-    '                </div>\n' +
-    '                <div class="input-group-btn" v-if="slotExists(\'leftBtn\')">\n' +
-    '                    <slot name="leftBtn"></slot>\n' +
-    '                </div>\n' +
-    '                <select :name="name" :id="name" class="form-control" v-on:change="updateValue($event.target.value)" v-validate :data-vv-rules="rules">\n' +
-    '                    <option value="" readonly v-text="placeholder" v-if="placeholder"\n' +
-    '                            :selected="value == null || value == \'\'"></option>\n' +
-    '                    <option v-if="!keyName && !keyValue" v-for="option in options" :value="option" v-text="option"\n' +
-    '                            :selected="option == value"></option>\n' +
-    '                    <option v-if="keyName && keyValue" v-for="option in options" :value="option[keyValue]" v-text="option[keyName]"\n' +
-    '                            :selected="option[keyValue] == value"></option>\n' +
-    '                </select>\n' +
-    '                <div class="input-group-addon" v-if="slotExists(\'rightAddon\')">\n' +
-    '                    <slot name="rightAddon"></slot>\n' +
-    '                </div>\n' +
-    '                <div class="input-group-btn" v-if="slotExists(\'rightBtn\')">\n' +
-    '                    <slot name="rightBtn"></slot>\n' +
-    '                </div>\n' +
-    '            </div>\n' +
-    '            <p class="text-danger" v-if="showError" v-text="errorMessage"></p>\n' +
-    '            <p class="text-danger" v-if="this.errors.has(name)" v-text="this.errors.first(name)"></p>\n' +
-    '        </div>\n' +
-    '        <div class="clearfix"></div>\n' +
-    '    </div>\n',
+    template: '<div class="form-group" :class="{\'has-error\': this.fields[name].touched && this.fields[name].invalid, \'has-success\': this.fields[name].touched && this.fields[name].valid,  \'has-helper\': helper, \'stacked\': stacked }">' +
+    '        <div :class="{\'col-sm-4\': !stacked}" v-if="label">' +
+    '            <label class="control-label">{{ label }}: <span v-if="required">*</span></label>' +
+    '            <p class="help-block" v-text="helper" v-if="helper"></p>' +
+    '        </div>' +
+    '        <div class="control-container" :class="{\'col-sm-8\': (!stacked && label)}">' +
+    '            <div :class="{\'input-group\': usingAddons}">' +
+    '                <div class="input-group-addon" v-if="slotExists(\'leftAddon\')">' +
+    '                    <slot name="leftAddon"></slot>' +
+    '                </div>' +
+    '                <div class="input-group-btn" v-if="slotExists(\'leftBtn\')">' +
+    '                    <slot name="leftBtn"></slot>' +
+    '                </div>' +
+    '<div class="wrap-controller">' +
+    '                <select :name="name" :id="name" class="form-control" v-on:change="updateValue($event.target.value)" v-validate :data-vv-rules="rules">' +
+    '                    <option value="" readonly v-text="placeholder" v-if="placeholder"' +
+    '                            :selected="value == null || value == \'\'"></option>' +
+    '                    <option v-if="!keyName && !keyValue" v-for="option in options" :value="option" v-text="option"' +
+    '                            :selected="option == value"></option>' +
+    '                    <option v-if="keyName && keyValue" v-for="option in options" :value="option[keyValue]" v-text="option[keyName]"' +
+    '                            :selected="option[keyValue] == value"></option>' +
+    '                </select>' +
+    '</div>' +
+    '                <div class="input-group-addon" v-if="slotExists(\'rightAddon\')">' +
+    '                    <slot name="rightAddon"></slot>' +
+    '                </div>' +
+    '                <div class="input-group-btn" v-if="slotExists(\'rightBtn\')">' +
+    '                    <slot name="rightBtn"></slot>' +
+    '                </div>' +
+    '            </div>' +
+    '            <p class="text-danger" v-if="showError" v-text="errorMessage"></p>' +
+    '            <p class="text-danger" v-if="this.errors.has(name)" v-text="this.errors.first(name)"></p>' +
+    '        </div>' +
+    '        <div class="clearfix"></div>' +
+    '    </div>',
     props: {
         name: {
             type: String,
