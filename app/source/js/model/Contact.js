@@ -7,10 +7,10 @@ class Contact {
     }
 
     empty() {
-        if (this.fieldEmpty('lastName') || this.fieldEmpty('firstName') || this.fieldEmpty('gender') || this.fieldEmpty('age')) {
+        if (this.fieldEmpty('lastName') || this.fieldEmpty('firstName') || this.fieldEmpty('gender') || this.fieldEmpty('age'))
             return true;
-        }
-        return false;
+        else
+            return false;
     }
 
     fieldEmpty(name) {

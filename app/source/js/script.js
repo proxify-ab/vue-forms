@@ -18,7 +18,7 @@ $(function () {
         },
         events: 'input|blur|submit',
         inject: true,
-        validity: false,
+        validity: true,
         aria: true
     };
 
@@ -32,7 +32,7 @@ $(function () {
                 contacts: [],
                 contact: new Contact(),
                 age: [20, 21, 22, 23, 24],
-                example:{
+                example: {
                     upper: 'Upper',
                     lower: 'Lower',
                     trim: '   trim    ',
@@ -60,9 +60,11 @@ $(function () {
                     this.contact = contact;
                 },
                 addContact() {
-                    if (this.isValid() && !this.contact.empty()) {
+                    this.isValid();
+                    if (!this.contact.empty()) {
                         this.contacts.push(this.contact);
                         this.contact = new Contact();
+                        this.reset();
                     }
                 },
                 reset: function () {
