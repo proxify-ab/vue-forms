@@ -27,7 +27,17 @@ Vue.filter('number', function (value) {
 
 //bool
 Vue.filter('bool', function (value) {
-    return Boolean(value);
+    switch (value) {
+        case true:
+        case "true":
+        case 1:
+        case "1":
+        case "on":
+        case "yes":
+            return true;
+        default:
+            return false;
+    }
 });
 
 //string
@@ -45,8 +55,12 @@ Vue.filter('title', function (value) {
 
 //replace
 Vue.filter('replace', function (value, strWith, strTo) {
-    let regex = new RegExp(strWith, 'g');
-    return value.replace(regex, strTo);
+    if (strWith !== "" && strTo !== "") {
+        let regex = new RegExp(strWith, 'g');
+        return value.replace(regex, strTo);
+    }else{
+        return value;
+    }
 });
 
 //address

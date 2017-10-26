@@ -1,0 +1,79 @@
+main#root
+    .container
+        .row
+            .col-md-6
+                h2  {{example.upper | upperCase}}
+            .col-md-6
+                .row
+                    input-box(name="upper" label="Upper" v-model="example.upper")
+        hr
+        .row
+            .col-md-6
+                h2  {{example.lower | lowerCase}}
+            .col-md-6
+                .row
+                    input-box(name="lower" label="Lower" v-model="example.lower")
+
+        hr
+        .row
+            .col-md-6
+                h2  {{example.trim | trim}}
+            .col-md-6
+                .row
+                    input-box(name="trim" label="Trim" v-model="example.trim")
+
+        hr
+        .row
+            .col-md-6
+                h2  {{example.number | number}}
+            .col-md-6
+                .row
+                    input-box(name="number" label="Number" v-model="example.number")
+
+        hr
+        .row
+            .col-md-6
+                h2  {{example.bool | bool}}
+            .col-md-6
+                .row
+                    input-box(name="bool" label="Bool" v-model="example.bool")
+
+        hr
+        .row
+            .col-md-6
+                h2  {{example.title | title}}
+            .col-md-6
+                .row
+                    input-box(name="title" label="Title" v-model="example.title")
+
+        hr
+        .row
+            .col-md-6
+                h2  {{example.replace | replace('a','_') | replace('c','*')}}
+            .col-md-6
+                .row
+                    input-box(name="replace" label="Replace" v-model="example.replace")
+
+        hr
+        .row
+            .col-md-6
+                h2  {{example.address | address}}
+            .col-md-6
+                .row
+                    input-box(name="address" label="Address" v-model="example.address")
+
+        hr
+        .row
+            .col-md-6
+                h2  {{example.postalCode | postalCode}}
+            .col-md-6
+                .row
+                    input-box(name="postalCode" label="Postal Code" v-model="example.postalCode")
+
+        hr
+        .row
+            .col-md-6
+                h2  {{example.phoneNumber | phoneNumber}}
+            .col-md-6
+                .row
+                    input-box(name="phoneNumber" label="Phone Number" v-model="example.phoneNumber")

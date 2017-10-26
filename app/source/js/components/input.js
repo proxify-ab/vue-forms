@@ -44,7 +44,7 @@ Vue.component('input-box', {
             type: Boolean,
             default: false
         },
-        value: [String, Number],
+        value: [String, Number, Boolean],
         type: {
             type: String,
             default: () => {

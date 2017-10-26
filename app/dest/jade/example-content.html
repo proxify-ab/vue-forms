@@ -1,0 +1,114 @@
+
+<main id="root">
+  <div class="container">
+    <div class="row">
+      <div class="col-md-6">
+        <h2> {{example.upper | upperCase}}</h2>
+      </div>
+      <div class="col-md-6">
+        <div class="row">
+          <input-box name="upper" label="Upper" v-model="example.upper"></input-box>
+        </div>
+      </div>
+    </div>
+    <hr/>
+    <div class="row">
+      <div class="col-md-6">
+        <h2> {{example.lower | lowerCase}}</h2>
+      </div>
+      <div class="col-md-6">
+        <div class="row">
+          <input-box name="lower" label="Lower" v-model="example.lower"></input-box>
+        </div>
+      </div>
+    </div>
+    <hr/>
+    <div class="row">
+      <div class="col-md-6">
+        <h2> {{example.trim | trim}}</h2>
+      </div>
+      <div class="col-md-6">
+        <div class="row">
+          <input-box name="trim" label="Trim" v-model="example.trim"></input-box>
+        </div>
+      </div>
+    </div>
+    <hr/>
+    <div class="row">
+      <div class="col-md-6">
+        <h2> {{example.number | number}}</h2>
+      </div>
+      <div class="col-md-6">
+        <div class="row">
+          <input-box name="number" label="Number" v-model="example.number"></input-box>
+        </div>
+      </div>
+    </div>
+    <hr/>
+    <div class="row">
+      <div class="col-md-6">
+        <h2> {{example.bool | bool}}</h2>
+      </div>
+      <div class="col-md-6">
+        <div class="row">
+          <input-box name="bool" label="Bool" v-model="example.bool"></input-box>
+        </div>
+      </div>
+    </div>
+    <hr/>
+    <div class="row">
+      <div class="col-md-6">
+        <h2> {{example.title | title}}</h2>
+      </div>
+      <div class="col-md-6">
+        <div class="row">
+          <input-box name="title" label="Title" v-model="example.title"></input-box>
+        </div>
+      </div>
+    </div>
+    <hr/>
+    <div class="row">
+      <div class="col-md-6">
+        <h2> {{example.replace | replace('a','_') | replace('c','*')}}</h2>
+      </div>
+      <div class="col-md-6">
+        <div class="row">
+          <input-box name="replace" label="Replace" v-model="example.replace"></input-box>
+        </div>
+      </div>
+    </div>
+    <hr/>
+    <div class="row">
+      <div class="col-md-6">
+        <h2> {{example.address | address}}</h2>
+      </div>
+      <div class="col-md-6">
+        <div class="row">
+          <input-box name="address" label="Address" v-model="example.address"></input-box>
+        </div>
+      </div>
+    </div>
+    <hr/>
+    <div class="row">
+      <div class="col-md-6">
+        <h2> {{example.postalCode | postalCode}}</h2>
+      </div>
+      <div class="col-md-6">
+        <div class="row">
+          <input-box name="postalCode" label="Postal Code" v-model="example.postalCode"></input-box>
+        </div>
+      </div>
+    </div>
+    <hr/>
+    <div class="row">
+      <div class="col-md-6">
+        <h2> {{example.phoneNumber | phoneNumber}}</h2>
+      </div>
+      <div class="col-md-6">
+        <div class="row">
+          <input-box name="phoneNumber" label="Phone Number" v-model="example.phoneNumber"></input-box>
+        </div>
+      </div>
+    </div>
+  </div>
+</main>

@@ -10,7 +10,7 @@ main#root
 
             .col-md-6
                 form(@submit.prevent="addContact")
-                    input-box(type="text" name="firstName" label="First name" stacked=true rules="required|containN" v-model="contact.firstName")
+                    input-box(type="text" name="firstName" label="First name" stacked=true rules="required|alpha_spaces" v-model="contact.firstName")
                     input-box(type="text" name="lastName" label="Last name" stacked=true rules="required|containN" v-model="contact.lastName")
 
                     switch-radio(id="female" name="gender" label="Female" value="f" v-model="contact.gender" rules="required" stacked=true)
