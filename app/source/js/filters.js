@@ -1,10 +1,3 @@
-VeeValidate.Validator.extend('containN', {
-    getMessage: field => 'The ' + field + ' contains numeric.',
-    validate(value, args) {
-        return !parseInt(value.replace(/\D/g, ''));
-    }
-});
-
 //upper
 Vue.filter('upperCase', function (value) {
     return value.toUpperCase();
@@ -22,6 +15,13 @@ Vue.filter('trim', function (value) {
 
 //number
 Vue.filter('number', function (value) {
+    if (value === 'true' || value === '1') {
+        return 1;
+    }
+
+    if (value === 'false' || value === '0') {
+        return 0;
+    }
     return Number(value);
 });
 
@@ -38,11 +38,6 @@ Vue.filter('bool', function (value) {
         default:
             return false;
     }
-});
-
-//string
-Vue.filter('string', function (value) {
-    return String(value);
 });
 
 //title
