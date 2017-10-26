@@ -1,4 +1,4 @@
-VeeValidate.Validator.extend('indexOf', {
+VeeValidate.Validator.extend('containN', {
     getMessage: field => 'The ' + field + ' contains numeric.',
     validate(value, args) {
         return !parseInt(value.replace(/\D/g, ''));

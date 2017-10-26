@@ -33,8 +33,8 @@
           </div>
           <div class="col-md-6">
             <form @submit.prevent="addContact">
-              <input-box type="text" name="firstName" label="First name" stacked rules="required|indexOf" v-model="contact.firstName"></input-box>
-              <input-box type="text" name="lastName" label="Last name" stacked rules="required" v-model="contact.lastName"></input-box>
+              <input-box type="text" name="firstName" label="First name" stacked rules="required|containN" v-model="contact.firstName"></input-box>
+              <input-box type="text" name="lastName" label="Last name" stacked rules="required|containN" v-model="contact.lastName"></input-box>
               <switch-radio id="female" name="gender" label="Female" value="f" v-model="contact.gender" rules="required" stacked></switch-radio>
               <switch-radio id="male" name="gender" label="Male" value="m" v-model="contact.gender" rules="required" stacked></switch-radio>
               <list-box name="age" label="Age" stacked :options="age" v-model="contact.age" rules="required" placeholder="Age"></list-box>
