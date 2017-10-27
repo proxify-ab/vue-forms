@@ -6,7 +6,7 @@ Vue.component('switch-radio', {
     '        </div>' +
     '        <div :class="{\'col-sm-8\': ! stacked  }">' +
     '            <label class="switch-component">' +
-    '                <input :value="value" type="radio" :id="id" :name="name" :checked="checked" v-on:change="updateValue($event.target.value)" v-validate :data-vv-rules="rules">' +
+    '                <input :value="value" type="radio" :id="id" :name="name" v-on:change="updateValue($event.target.value)" v-validate :data-vv-rules="rules">' +
     '                <div class="slider round">' +
     '                    <span class="yes-label" v-if="labels">Yes</span>' +
     '                    <span class="no-label" v-if="labels">No</span>' +
@@ -34,7 +34,6 @@ Vue.component('switch-radio', {
         stacked: Boolean,
         helper: String,
         id: String,
-        checked: {},
         labelColumn: {
             type: String,
             default: 'col-sm-2'
