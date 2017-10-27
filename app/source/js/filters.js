@@ -15,14 +15,16 @@ Vue.filter('trim', function (value) {
 
 //number
 Vue.filter('number', function (value) {
-    if (value === 'true' || value === '1') {
+    if (value === 'true' || value === '1')
         return 1;
-    }
 
-    if (value === 'false' || value === '0') {
+    if (value === 'false' || value === '0')
         return 0;
-    }
-    return Number(value);
+
+    if (isNaN(Number(value)))
+        return '-';
+
+    return Number(value)
 });
 
 //bool
@@ -53,7 +55,7 @@ Vue.filter('replace', function (value, strWith, strTo) {
     if (strWith !== "" && strTo !== "") {
         let regex = new RegExp(strWith, 'g');
         return value.replace(regex, strTo);
-    }else{
+    } else {
         return value;
     }
 });
