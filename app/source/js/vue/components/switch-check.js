@@ -7,13 +7,14 @@ Vue.component('switch-check', {
    '        <div :class="{\'col-sm-8\': ! stacked  }">' +
    '            <label class="switch-component">' +
    '                <div class="wrap-controller">' +
-   '                    <input type="checkbox" :id="id" :name="name" :checked="checked" v-on:change="updateValue($event.target.value)" :class="{\'has-error\': this.errors.has(name)}">' +
+   '                    <input v-validate :data-vv-rules="rules" type="checkbox" :id="id" :name="name" :checked="checked" v-on:change="updateValue($event.target.checked)" :class="{\'has-error\': this.errors.has(name)}">' +
    '                </div>' +
    '                <div class="slider round">' +
    '                    <span class="yes-label" v-if="labels">Yes</span>' +
    '                    <span class="no-label" v-if="labels">No</span>' +
    '                </div>' +
    '            </label>' +
+   '            <p class="text-danger" v-if="this.errors.has(name)" v-text="this.errors.first(name)"></p>' +
    '        </div>' +
    '    </div>',
     model: {
@@ -35,7 +36,10 @@ Vue.component('switch-check', {
         stacked: Boolean,
         helper: String,
         id: String,
-        checked: Boolean,
+        checked: {
+            type: Boolean,
+            default: false
+        },
         labelColumn: {
             type: String,
             default: 'col-sm-2'
@@ -44,10 +48,7 @@ Vue.component('switch-check', {
             type: String,
             default: 'col-sm-10'
         },
-        type:{
-            type: String,
-            default: 'checkbox'
-        }
+        rules: String
     },
     methods: {
         updateValue(value) {

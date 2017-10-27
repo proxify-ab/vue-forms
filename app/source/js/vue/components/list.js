@@ -43,17 +43,10 @@ Vue.component('list-box', {
             type: String,
         },
         options: {
-            // type: Array,
             required: true,
         },
         keyName: String,
         keyValue: String,
-        labelName: {
-            type: String,
-            default: () => {
-                return 'label'
-            }
-        },
         helper: String,
         showError: {
             type: Boolean,

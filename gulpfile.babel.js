@@ -32,7 +32,7 @@ let jadeFiles = [
 gulp.task('jade', function () {
     return gulp.src(jadeFiles)
         .pipe(jade({
-             pretty: true //todo: property witch minify html if set false
+            pretty: true //todo: property witch minify html if set false
         }))
         .pipe(gulp.dest(application.dest))
         .pipe(connect.reload());
@@ -74,7 +74,8 @@ gulp.task('jsLib', function () {
 });
 
 let copyJSSource = [
-    './app/source/js/**/*.js'
+    application.sourceJS + '/model/*.js',
+    application.sourceJS + '/*.js',
 ];
 
 //concat js files
@@ -85,10 +86,28 @@ gulp.task('jsSrc', function () {
             presets: ['env']
         }))
         .pipe(concat('app.min.js'))
-        .pipe(sourcemaps.write('.'))
         .pipe(gulp.dest(application.destJS))
         .pipe(connect.reload());
 });
+
+
+//build vue components filters
+let vueComponents = application.sourceJS + '/vue/components/*.js';
+
+gulp.task('jsVueComponents', function () {
+    return gulp.src(vueComponents)
+        .pipe(babel({
+            presets: ['env']
+        }))
+        .pipe(concat('components.js'))
+        .pipe(gulp.dest(application.destJS + '/vue/'));
+});
+
+gulp.task('jsVueFilters', function () {
+    return gulp.src(application.sourceJS + '/vue/*.js')
+        .pipe(gulp.dest(application.destJS + '/vue/'));
+});
+//end build components and filters
 
 let fonts = [
     application.sourceFonts,
@@ -98,12 +117,6 @@ let fonts = [
 gulp.task('fonts', function () {
     gulp.src(fonts)
         .pipe(gulp.dest(application.destFonts))
-        .pipe(connect.reload());
-});
-
-gulp.task('json', function () {
-    gulp.src(application.app + '/phones/*.json')
-        .pipe(gulp.dest(application.dest + '/phones/'))
         .pipe(connect.reload());
 });
 
@@ -122,13 +135,14 @@ gulp.task('connectDev', function () {
     });
 });
 
-
 //watch
 gulp.task('watch', function () {
     gulp.watch(jadeFiles, ['jade']);
     gulp.watch(application.app + '/stylus/**/*.styl', ['stylus']);
-    gulp.watch(application.sourceJS + '/**/*.js', ['jsSrc']);
+    gulp.watch(application.sourceJS + '/**/*.js', ['jsSrc', 'vue']);
 });
 
-gulp.task('default', ['jade', 'stylus', 'jsLib', 'jsSrc', 'json', 'connectDev', 'watch', 'fonts']);
+gulp.task('vue', ['jsVueComponents', 'jsVueFilters']);
+
+gulp.task('default', ['jade', 'stylus', 'jsLib', 'jsSrc', 'vue', 'connectDev', 'watch', 'fonts']);
 gulp.task('prod', ['clean']);

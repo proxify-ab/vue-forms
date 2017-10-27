@@ -5,7 +5,7 @@ Vue.component('textarea-box', {
     '            <p class="help-block" v-text="helper" v-if="helper"></p>\n' +
     '        </div>\n' +
     '        <div class="control-container" :class="{\'col-sm-8\': !stacked}">\n' +
-    '            <textarea v-validate.initial :data-vv-rules="rules" :name="name" id="name" rows="5" v-on:input="updateValue($event.target.value)"\n' +
+    '            <textarea v-validate :data-vv-rules="rules" :name="name" id="name" :rows="rows" v-on:input="updateValue($event.target.value)"\n' +
     '                      :value="value" class="form-control"></textarea>\n' +
     '            <p class="text-danger" v-if="showError" v-text="errorMessage"></p>\n' +
     '            <p class="text-danger" v-if="this.errors.has(name)" v-text="this.errors.first(name)"></p>\n' +
@@ -36,7 +36,11 @@ Vue.component('textarea-box', {
         },
         id: String,
         errorMessage: String,
-        rules: String
+        rules: String,
+        rows:{
+            type: Number,
+            default: 5
+        },
     },
     methods: {
         updateValue(value) {

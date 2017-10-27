@@ -63,8 +63,8 @@ Vue.component('input-box', {
         errorMessage: String,
         rules: String
     },
-    watch:{
-        value(value){
+    watch: {
+        value(value) {
             this.$validator.validateAll();
         }
     },

@@ -37,7 +37,7 @@ $(function () {
                     lower: 'Lower',
                     trim: '   trim    ',
                     number: 'number',
-                    bool: true,
+                    bool: false,
                     string: 'test',
                     title: 'title',
                     replace: 'abcdefgjklmnoprstqwyz',

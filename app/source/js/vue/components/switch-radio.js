@@ -42,10 +42,6 @@ Vue.component('switch-radio', {
             type: String,
             default: 'col-sm-10'
         },
-        type: {
-            type: String,
-            default: 'checkbox'
-        },
         value: {},
         rules: String
     },
