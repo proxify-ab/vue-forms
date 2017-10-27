@@ -57,7 +57,6 @@ gulp.task('stylus', function () {
 
 let copyJSLib = [
     application.bowerSrc + '/jquery/dist/jquery.min.js',
-    application.bowerSrc + '/bootstrap/dist/js/bootstrap.min.js',
     application.nodeSrc + '/vue/dist/vue.js',
     application.nodeSrc + '/vee-validate/dist/vee-validate.min.js',
     application.nodeSrc + '/axios/dist/axios.js',
@@ -85,7 +84,6 @@ gulp.task('jsSrc', function () {
         .pipe(babel({
             presets: ['env']
         }))
-        // .pipe(uglify())
         .pipe(concat('app.min.js'))
         .pipe(sourcemaps.write('.'))
         .pipe(gulp.dest(application.destJS))
@@ -129,7 +127,6 @@ gulp.task('connectDev', function () {
 gulp.task('watch', function () {
     gulp.watch(jadeFiles, ['jade']);
     gulp.watch(application.app + '/stylus/**/*.styl', ['stylus']);
-    // gulp.watch(application.sourceImg + '/**', ['imageMinify']);
     gulp.watch(application.sourceJS + '/**/*.js', ['jsSrc']);
 });
 
