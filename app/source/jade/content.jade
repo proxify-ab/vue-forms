@@ -13,10 +13,19 @@ main#root
                     input-box(type="text" name="firstName" label="First name" stacked=true rules="required|alpha_spaces" v-model="contact.firstName")
                     input-box(type="text" name="lastName" label="Last name" stacked=true rules="required|alpha_spaces" v-model="contact.lastName")
 
-                    switch-radio(id="female" name="gender" label="Female" value="f" v-model="contact.gender" rules="required" stacked=true)
-                    switch-radio(id="male" name="gender" label="Male" value="m" v-model="contact.gender" rules="required" stacked=true)
+                    radio-group(name="custom_gender" header="Gender" rules="required")
+                        radio-option(value="a" label="A" id="a_rad" v-model="contact.gender")
+                        radio-option(value="b" label="B" id="b_rad" v-model="contact.gender")
 
                     list-box(name="age" label="Age" stacked=true, :options="age" v-model="contact.age" rules="required" placeholder="Age")
 
                     button.btn.btn-default.btn-block(type="submit") SAVE
                     button.btn.btn-default.btn-block(type="reset", @click="reset") RESET
+
+            .col-md-6
+            .col-md-6
+                p {{contact.lastName}}
+                p {{contact.firstName}}
+                p {{contact.gender}}
+                p {{contact.age}}
+

@@ -13,12 +13,21 @@
         <form @submit.prevent="addContact">
           <input-box type="text" name="firstName" label="First name" stacked="stacked" rules="required|alpha_spaces" v-model="contact.firstName"></input-box>
           <input-box type="text" name="lastName" label="Last name" stacked="stacked" rules="required|alpha_spaces" v-model="contact.lastName"></input-box>
-          <switch-radio id="female" name="gender" label="Female" value="f" v-model="contact.gender" rules="required" stacked="stacked"></switch-radio>
-          <switch-radio id="male" name="gender" label="Male" value="m" v-model="contact.gender" rules="required" stacked="stacked"></switch-radio>
+          <radio-group name="custom_gender" header="Gender" rules="required">
+            <radio-option value="a" label="A" id="a_rad" v-model="contact.gender"></radio-option>
+            <radio-option value="b" label="B" id="b_rad" v-model="contact.gender"></radio-option>
+          </radio-group>
           <list-box name="age" label="Age" stacked="stacked" :options="age" v-model="contact.age" rules="required" placeholder="Age"></list-box>
           <button type="submit" class="btn btn-default btn-block">SAVE</button>
           <button type="reset" @click="reset" class="btn btn-default btn-block">RESET</button>
         </form>
+      </div>
+      <div class="col-md-6"></div>
+      <div class="col-md-6">
+        <p>{{contact.lastName}}</p>
+        <p>{{contact.firstName}}</p>
+        <p>{{contact.gender}}</p>
+        <p>{{contact.age}}</p>
       </div>
     </div>
   </div>

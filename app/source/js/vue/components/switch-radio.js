@@ -1,4 +1,28 @@
-Vue.component('switch-radio', {
+Vue.component('radio-group', {
+    template: '<div>' +
+    '<h4>{{header}}</h4>' +
+    '<slot></slot>' +
+    '</div>',
+    props: {
+        header: {
+            type: String,
+            default: 'Header'
+        },
+        name: {
+            type: String,
+            default: 'name',
+            required: true
+        },
+        rules: {
+            type: String
+        }
+    },
+    methods: {},
+
+
+});
+
+Vue.component('radio-option', {
     template: '<div class="form-group switch-group" :class="{\'has-error\': this.fields[name].touched && this.fields[name].invalid, \'has-success\': this.fields[name].touched && this.fields[name].valid,  \'has-helper\': helper, \'stacked\': stacked }">' +
     '        <div :class="{\'col-sm-4\': ! stacked}" v-if="label">' +
     '            <label class="control-label" :for="id">{{ label }}</label>' +
@@ -7,10 +31,6 @@ Vue.component('switch-radio', {
     '        <div :class="{\'col-sm-8\': ! stacked  }">' +
     '            <label class="switch-component">' +
     '                <input :value="value" type="radio" :id="id" :name="name" v-on:change="updateValue($event.target.value)" v-validate :data-vv-rules="rules">' +
-    '                <div class="slider round">' +
-    '                    <span class="yes-label" v-if="labels">Yes</span>' +
-    '                    <span class="no-label" v-if="labels">No</span>' +
-    '                </div>' +
     '            </label>' +
     '            <p class="text-danger" v-if="this.errors.has(name)" v-text="this.errors.first(name)"></p>' +
     '        </div>' +
@@ -20,10 +40,7 @@ Vue.component('switch-radio', {
         event: 'change'
     },
     props: {
-        name: {
-            type: String,
-            required: true
-        },
+
         labels: {
             type: Boolean,
             default: false
@@ -43,7 +60,15 @@ Vue.component('switch-radio', {
             default: 'col-sm-10'
         },
         value: {},
-        rules: String
+
+    },
+    computed: {
+        name: function () {
+            return this.$parent.$options.propsData !== undefined ? this.$parent.$options.propsData.name : '';
+        },
+        rules: function () {
+            return this.$parent.$options.propsData !== undefined ? this.$parent.$options.propsData.rules : '';
+        }
     },
     methods: {
         updateValue(value) {

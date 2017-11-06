@@ -14,7 +14,7 @@ Vue.component('input-box', {
     '                </div>\n' +
     '               <div class="wrap-controller">' +
     '                   <input :type="type" v-on:input="updateValue($event.target.value)" v-on:blur="blur($event.target.value)" class="form-control" v-on:keyup.enter="enterKeyPressed"\n' +
-    '                       :name="name" :id="id" :readonly="readonly" :value="value" :placeholder="placeholder" v-validate.touched :data-vv-rules="rules">\n' +
+    '                       :name="name" :id="id" :readonly="readonly" :value="value" :placeholder="placeholder" v-validate.touched :data-vv-rules="rules" @click.prevent="click">\n' +
     '                </div>' +
     '                <div class="input-group-addon" v-if="slotExists(\'rightAddon\')">\n' +
     '                    <slot name="rightAddon"></slot>\n' +
@@ -61,7 +61,11 @@ Vue.component('input-box', {
         },
         id: String,
         errorMessage: String,
-        rules: String
+        rules: String,
+        click: {
+            type: Function,
+            default: function () {if(this.type === 'submit')console.log(this.name + ' click')}
+        }
     },
     watch: {
         value(value) {

@@ -1,7 +1,7 @@
 'use strict';
 
 Vue.component('input-box', {
-    template: '<div class="form-group" :class="{\'has-error\': this.fields[name].touched && this.fields[name].invalid, \'has-success\': this.fields[name].touched && this.fields[name].valid,  \'has-helper\': helper, \'stacked\': stacked }">\n' + '        <div :class="{\'col-sm-4\': !stacked}" v-if="label">\n' + '            <label class="control-label">{{ label }}: <span v-if="required">*</span></label>\n' + '            <p class="help-block" v-text="helper" v-if="helper"></p>\n' + '        </div>\n' + '        <div class="control-container" :class="{\'col-sm-8\': (!stacked && label)}">\n' + '            <div :class="{\'input-group\': usingAddons}">\n' + '                <div class="input-group-addon" v-if="slotExists(\'leftAddon\')">\n' + '                    <slot name="leftAddon"></slot>\n' + '                </div>\n' + '                <div class="input-group-btn" v-if="slotExists(\'leftBtn\')">\n' + '                    <slot name="leftBtn"></slot>\n' + '                </div>\n' + '               <div class="wrap-controller">' + '                   <input :type="type" v-on:input="updateValue($event.target.value)" v-on:blur="blur($event.target.value)" class="form-control" v-on:keyup.enter="enterKeyPressed"\n' + '                       :name="name" :id="id" :readonly="readonly" :value="value" :placeholder="placeholder" v-validate.touched :data-vv-rules="rules">\n' + '                </div>' + '                <div class="input-group-addon" v-if="slotExists(\'rightAddon\')">\n' + '                    <slot name="rightAddon"></slot>\n' + '                </div>\n' + '                <div class="input-group-btn" v-if="slotExists(\'rightBtn\')">\n' + '                    <slot name="rightBtn"></slot>\n' + '                </div>\n' + '            </div>\n' + '            <p class="text-danger" v-if="showError" v-text="errorMessage"></p>\n' + '            <p class="text-danger" v-if="this.errors.has(name)" v-text="this.errors.first(name)"></p>\n' + '        </div>\n' + '        <div class="clearfix"></div>\n' + '    </div>',
+    template: '<div class="form-group" :class="{\'has-error\': this.fields[name].touched && this.fields[name].invalid, \'has-success\': this.fields[name].touched && this.fields[name].valid,  \'has-helper\': helper, \'stacked\': stacked }">\n' + '        <div :class="{\'col-sm-4\': !stacked}" v-if="label">\n' + '            <label class="control-label">{{ label }}: <span v-if="required">*</span></label>\n' + '            <p class="help-block" v-text="helper" v-if="helper"></p>\n' + '        </div>\n' + '        <div class="control-container" :class="{\'col-sm-8\': (!stacked && label)}">\n' + '            <div :class="{\'input-group\': usingAddons}">\n' + '                <div class="input-group-addon" v-if="slotExists(\'leftAddon\')">\n' + '                    <slot name="leftAddon"></slot>\n' + '                </div>\n' + '                <div class="input-group-btn" v-if="slotExists(\'leftBtn\')">\n' + '                    <slot name="leftBtn"></slot>\n' + '                </div>\n' + '               <div class="wrap-controller">' + '                   <input :type="type" v-on:input="updateValue($event.target.value)" v-on:blur="blur($event.target.value)" class="form-control" v-on:keyup.enter="enterKeyPressed"\n' + '                       :name="name" :id="id" :readonly="readonly" :value="value" :placeholder="placeholder" v-validate.touched :data-vv-rules="rules" @click.prevent="click">\n' + '                </div>' + '                <div class="input-group-addon" v-if="slotExists(\'rightAddon\')">\n' + '                    <slot name="rightAddon"></slot>\n' + '                </div>\n' + '                <div class="input-group-btn" v-if="slotExists(\'rightBtn\')">\n' + '                    <slot name="rightBtn"></slot>\n' + '                </div>\n' + '            </div>\n' + '            <p class="text-danger" v-if="showError" v-text="errorMessage"></p>\n' + '            <p class="text-danger" v-if="this.errors.has(name)" v-text="this.errors.first(name)"></p>\n' + '        </div>\n' + '        <div class="clearfix"></div>\n' + '    </div>',
     props: {
         name: {
             type: String,
@@ -35,7 +35,13 @@ Vue.component('input-box', {
         },
         id: String,
         errorMessage: String,
-        rules: String
+        rules: String,
+        click: {
+            type: Function,
+            default: function _default() {
+                if (this.type === 'submit') console.log(this.name + ' click');
+            }
+        }
     },
     watch: {
         value: function value(_value) {
@@ -165,17 +171,42 @@ Vue.component('switch-check', {
 });
 'use strict';
 
-Vue.component('switch-radio', {
-    template: '<div class="form-group switch-group" :class="{\'has-error\': this.fields[name].touched && this.fields[name].invalid, \'has-success\': this.fields[name].touched && this.fields[name].valid,  \'has-helper\': helper, \'stacked\': stacked }">' + '        <div :class="{\'col-sm-4\': ! stacked}" v-if="label">' + '            <label class="control-label" :for="id">{{ label }}</label>' + '            <p class="help-block" v-if="helper">{{ helper }}</p>' + '        </div>' + '        <div :class="{\'col-sm-8\': ! stacked  }">' + '            <label class="switch-component">' + '                <input :value="value" type="radio" :id="id" :name="name" v-on:change="updateValue($event.target.value)" v-validate :data-vv-rules="rules">' + '                <div class="slider round">' + '                    <span class="yes-label" v-if="labels">Yes</span>' + '                    <span class="no-label" v-if="labels">No</span>' + '                </div>' + '            </label>' + '            <p class="text-danger" v-if="this.errors.has(name)" v-text="this.errors.first(name)"></p>' + '        </div>' + '    </div>',
+Vue.component('switch-group', {
+    template: '',
+    props: {},
+    mounted: function mounted() {},
+    methods: {}
+});
+'use strict';
+
+Vue.component('radio-group', {
+    template: '<div>' + '<h4>{{header}}</h4>' + '<slot></slot>' + '</div>',
+    props: {
+        header: {
+            type: String,
+            default: 'Header'
+        },
+        name: {
+            type: String,
+            default: 'name',
+            required: true
+        },
+        rules: {
+            type: String
+        }
+    },
+    methods: {}
+
+});
+
+Vue.component('radio-option', {
+    template: '<div class="form-group switch-group" :class="{\'has-error\': this.fields[name].touched && this.fields[name].invalid, \'has-success\': this.fields[name].touched && this.fields[name].valid,  \'has-helper\': helper, \'stacked\': stacked }">' + '        <div :class="{\'col-sm-4\': ! stacked}" v-if="label">' + '            <label class="control-label" :for="id">{{ label }}</label>' + '            <p class="help-block" v-if="helper">{{ helper }}</p>' + '        </div>' + '        <div :class="{\'col-sm-8\': ! stacked  }">' + '            <label class="switch-component">' + '                <input :value="value" type="radio" :id="id" :name="name" v-on:change="updateValue($event.target.value)" v-validate :data-vv-rules="rules">' + '            </label>' + '            <p class="text-danger" v-if="this.errors.has(name)" v-text="this.errors.first(name)"></p>' + '        </div>' + '    </div>',
     model: {
         prop: 'checked',
         event: 'change'
     },
     props: {
-        name: {
-            type: String,
-            required: true
-        },
+
         labels: {
             type: Boolean,
             default: false
@@ -194,8 +225,16 @@ Vue.component('switch-radio', {
             type: String,
             default: 'col-sm-10'
         },
-        value: {},
-        rules: String
+        value: {}
+
+    },
+    computed: {
+        name: function name() {
+            return this.$parent.$options.propsData !== undefined ? this.$parent.$options.propsData.name : '';
+        },
+        rules: function rules() {
+            return this.$parent.$options.propsData !== undefined ? this.$parent.$options.propsData.rules : '';
+        }
     },
     methods: {
         updateValue: function updateValue(value) {
