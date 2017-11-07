@@ -1,5 +1,15 @@
 $(function () {
 
+    const EventBus = new Vue();
+
+    Object.defineProperties(Vue.prototype, {
+        $bus: {
+            get: function () {
+                return EventBus
+            }
+        }
+    });
+
     const config = {
         errorBagName: 'errors', // change if property conflicts
         fieldsBagName: 'fields',
@@ -32,7 +42,7 @@ $(function () {
                 contacts: [],
                 contact: new Contact(),
                 age: [20, 21, 22, 23, 24],
-                gender: [{label:'Male', value:'m'}, {label:'Female', value: 'f'}],
+                gender: [{label:'Male', value:'m', check: true}, {label:'Female', value: 'f', check: false}],
                 example: {
                     upper: 'Upper',
                     lower: 'Lower',
@@ -84,6 +94,10 @@ $(function () {
                                 return response;
                             });
                     });
+                },
+                validate(){
+
+                    alert('validate');
                 }
             },
         });

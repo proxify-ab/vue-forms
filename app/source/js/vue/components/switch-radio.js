@@ -70,6 +70,10 @@ Vue.component('radio-option', {
             return this.$parent.$options.propsData !== undefined ? this.$parent.$options.propsData.rules : '';
         }
     },
+    mounted() {
+        this.$parent.$emit('veeValidate', 'test');
+        console.log(this.$parent);
+    },
     methods: {
         updateValue(value) {
             this.$emit('change', value)

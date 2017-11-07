@@ -1,7 +1,38 @@
 'use strict';
 
+Vue.component('button-box', {
+    template: '<button :type="type" @click.prevent="click">{{value}}</button>',
+    props: {
+        type: {
+            type: String,
+            default: 'button'
+        },
+        value: {
+            type: String,
+            require: true
+        },
+        click: {
+            type: Function,
+            default: function _default() {
+                alert('Click');
+            }
+        }
+    },
+    methods: {},
+    computed: {}
+});
+'use strict';
+
+Vue.component('form-box', {
+    template: '<form><slot></slot></form>',
+    props: {},
+    methods: {},
+    computed: {}
+});
+'use strict';
+
 Vue.component('input-box', {
-    template: '<div class="form-group" :class="{\'has-error\': this.fields[name].touched && this.fields[name].invalid, \'has-success\': this.fields[name].touched && this.fields[name].valid,  \'has-helper\': helper, \'stacked\': stacked }">\n' + '        <div :class="{\'col-sm-4\': !stacked}" v-if="label">\n' + '            <label class="control-label">{{ label }}: <span v-if="required">*</span></label>\n' + '            <p class="help-block" v-text="helper" v-if="helper"></p>\n' + '        </div>\n' + '        <div class="control-container" :class="{\'col-sm-8\': (!stacked && label)}">\n' + '            <div :class="{\'input-group\': usingAddons}">\n' + '                <div class="input-group-addon" v-if="slotExists(\'leftAddon\')">\n' + '                    <slot name="leftAddon"></slot>\n' + '                </div>\n' + '                <div class="input-group-btn" v-if="slotExists(\'leftBtn\')">\n' + '                    <slot name="leftBtn"></slot>\n' + '                </div>\n' + '               <div class="wrap-controller">' + '                   <input :type="type" v-on:input="updateValue($event.target.value)" v-on:blur="blur($event.target.value)" class="form-control" v-on:keyup.enter="enterKeyPressed"\n' + '                       :name="name" :id="id" :readonly="readonly" :value="value" :placeholder="placeholder" v-validate.touched :data-vv-rules="rules" @click.prevent="click">\n' + '                </div>' + '                <div class="input-group-addon" v-if="slotExists(\'rightAddon\')">\n' + '                    <slot name="rightAddon"></slot>\n' + '                </div>\n' + '                <div class="input-group-btn" v-if="slotExists(\'rightBtn\')">\n' + '                    <slot name="rightBtn"></slot>\n' + '                </div>\n' + '            </div>\n' + '            <p class="text-danger" v-if="showError" v-text="errorMessage"></p>\n' + '            <p class="text-danger" v-if="this.errors.has(name)" v-text="this.errors.first(name)"></p>\n' + '        </div>\n' + '        <div class="clearfix"></div>\n' + '    </div>',
+    template: '<div class="form-group" :class="{\'has-error\': this.fields[name].touched && this.fields[name].invalid, \'has-success\': this.fields[name].touched && this.fields[name].valid,  \'has-helper\': helper, \'stacked\': stacked }">\n' + '        <div :class="{\'col-sm-4\': !stacked}" v-if="label">\n' + '            <label class="control-label">{{ label }}: <span v-if="required">*</span></label>\n' + '            <p class="help-block" v-text="helper" v-if="helper"></p>\n' + '        </div>\n' + '        <div class="control-container" :class="{\'col-sm-8\': (!stacked && label)}">\n' + '            <div :class="{\'input-group\': usingAddons}">\n' + '                <div class="input-group-addon" v-if="slotExists(\'leftAddon\')">\n' + '                    <slot name="leftAddon"></slot>\n' + '                </div>\n' + '                <div class="input-group-btn" v-if="slotExists(\'leftBtn\')">\n' + '                    <slot name="leftBtn"></slot>\n' + '                </div>\n' + '               <div class="wrap-controller">' + '                   <input :type="type" v-on:input="updateValue($event.target.value)" v-on:blur="blur($event.target.value)" class="form-control" v-on:keyup.enter="enterKeyPressed"\n' + '                       :name="name" :id="id" :readonly="readonly" :value="value" :placeholder="placeholder" v-validate.touched :data-vv-rules="rules" @click.prevent="click">\n' + '                </div>' + '                <div class="input-group-addon" v-if="slotExists(\'rightAddon\')">\n' + '                    <slot name="rightAddon"></slot>\n' + '                </div>\n' + '                <div class="input-group-btn" v-if="slotExists(\'rightBtn\')">\n' + '                    <slot name="rightBtn"></slot>\n' + '                </div>\n' + '            </div>\n' + '            <p class="text-danger" v-if="showError" v-text="errorMessage"></p>\n' + '            <p class="text-danger" v-text="this.errors.first(name)"></p>\n' + '        </div>\n' + '        <div class="clearfix"></div>\n' + '    </div>',
     props: {
         name: {
             type: String,
@@ -236,6 +267,11 @@ Vue.component('radio-option', {
             return this.$parent.$options.propsData !== undefined ? this.$parent.$options.propsData.rules : '';
         }
     },
+    mounted: function mounted() {
+        this.$parent.$emit('veeValidate', 'test');
+        console.log(this.$parent);
+    },
+
     methods: {
         updateValue: function updateValue(value) {
             this.$emit('change', value);
@@ -279,6 +315,223 @@ Vue.component('textarea-box', {
     methods: {
         updateValue: function updateValue(value) {
             this.$emit('input', value);
+        }
+    }
+});
+'use strict';
+
+Vue.component('button-box', {
+    template: '<button :type="type" :class="classes" :id="id">{{value}}</button>',
+    props: {
+        type: {
+            type: String,
+            validate: function validate(value) {
+                return ['button', 'submit'].indexOf(value) > -1;
+            },
+            required: true
+        },
+        classes: {},
+        id: {},
+        value: {
+            type: String
+        }
+    },
+    mounted: function mounted() {},
+
+    methods: {}
+});
+'use strict';
+
+Vue.component('check-group-box', {
+    template: '<div class="form-group"><slot></slot></div>',
+    props: {},
+    mounted: function mounted() {},
+
+    methods: {}
+});
+'use strict';
+
+Vue.component('check-box', {
+    template: '<div :class="{\'form-group\':group}"><label :for="id" v-if="label">{{label}}</label><input type="checkbox" :name="name" :id="id" :checked="checked" v-on:change="updateValue($event.target.checked)"></div>',
+    props: {
+        name: {},
+        id: {},
+        classes: {
+            default: 'test'
+        },
+        label: {},
+        checked: Boolean,
+        group: {
+            type: Boolean,
+            default: false
+        }
+    },
+    model: {
+        prop: 'checked',
+        event: 'change'
+    },
+    mounted: function mounted() {},
+
+    methods: {
+        updateValue: function updateValue(value) {
+            this.$emit('change', value);
+        }
+    }
+});
+'use strict';
+
+Vue.component('form-box', {
+    template: '<form><slot></slot></form>',
+    props: {},
+    mounted: function mounted() {},
+
+    methods: {}
+});
+'use strict';
+
+Vue.component('input-box', {
+    template: '<div class="form-group" ><input  :type="type" :id="id" :class="classes" class="form-control" :name="name" :value="value" v-on:input="updateValue($event.target.value)" v-on:blur="blur($event.target.value)"><span v-if="this.errors.has(name)">{{ errors.first(name) }}</span></div>',
+    props: {
+        name: {
+            type: String,
+            required: true
+        },
+        type: {
+            type: String,
+            validator: function validator(value) {
+                return ['hidden', 'text', 'number'].indexOf(value) > -1;
+            },
+            default: 'text'
+        },
+        id: {},
+        classes: {
+            type: String
+        },
+        value: {}
+    },
+    mounted: function mounted() {},
+
+    methods: {
+        enterKeyPressed: function enterKeyPressed() {
+            this.$emit('enter');
+        },
+        updateValue: function updateValue(value) {
+            this.$emit('input', value);
+        },
+        blur: function blur(value) {
+            this.$emit('blur', value);
+        }
+    }
+});
+'use strict';
+
+Vue.component('radio-group-box', {
+    template: '<div class="form-group"><slot></slot></div>',
+    props: {
+        name: {
+            type: String,
+            required: true
+        }
+    },
+    mounted: function mounted() {},
+
+    methods: {}
+});
+'use strict';
+
+Vue.component('radio-box', {
+    template: '<div><label :for="id" v-if="label">{{label}}</label><input type="radio" :name="name" :id="id" :value="value" v-on:change="updateValue($event.target.value)"></div>',
+    props: {
+        type: {},
+        id: {},
+        classes: {},
+        label: {},
+        value: {}
+    },
+    model: {
+        prop: 'checked',
+        event: 'change'
+    },
+    mounted: function mounted() {},
+
+    computed: {
+        name: function name() {
+            return this.$parent.$options.propsData !== undefined ? this.$parent.$options.propsData.name : 'radio-btn';
+        }
+    },
+    methods: {
+        updateValue: function updateValue(value) {
+            this.$emit('change', value);
+        }
+    }
+});
+'use strict';
+
+Vue.component('select-option-box', {
+    template: '<option :value="value">{{label}}</option>',
+    props: {
+        value: {
+            required: true
+        },
+        label: {
+            type: String,
+            default: 'label'
+        }
+    },
+    mounted: function mounted() {},
+
+    methods: {}
+});
+'use strict';
+
+Vue.component('select-box', {
+    template: '<select :name="name" :id="id" :class="classes" class="form-control"><slot></slot></select>',
+    props: {
+        name: {
+            type: String,
+            required: true
+        },
+        type: {},
+        id: {},
+        classes: {}
+    },
+    mounted: function mounted() {},
+
+    methods: {}
+});
+'use strict';
+
+Vue.component('textarea-box', {
+    template: '<div class="form-group" ><textarea :id="id" :class="classes" class="form-control" :name="name" v-on:input="updateValue($event.target.value)" v-on:blur="blur($event.target.value)">{{value}}</textarea><span v-if="this.errors.has(name)">{{ errors.first(name) }}</span></div>',
+    props: {
+        name: {
+            type: String,
+            required: true
+        },
+        type: {
+            type: String,
+            validator: function validator(value) {
+                return ['hidden', 'text', 'number'].indexOf(value) > -1;
+            },
+            default: 'text'
+        },
+        id: {},
+        classes: {
+            type: String
+        },
+        value: {}
+    },
+    mounted: function mounted() {},
+
+    methods: {
+        enterKeyPressed: function enterKeyPressed() {
+            this.$emit('enter');
+        },
+        updateValue: function updateValue(value) {
+            this.$emit('input', value);
+        },
+        blur: function blur(value) {
+            this.$emit('blur', value);
         }
     }
 });

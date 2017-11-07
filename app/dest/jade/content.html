@@ -2,14 +2,14 @@
 <main id="root">
   <div class="container">
     <div class="row">
-      <div class="col-md-6">
+      <div class="col-md-6 hide">
         <ul>
           <li v-for="contact in contacts" @click="getContact(contact)" style="cursor: pointer; background: #eee; margin-bottom:5px;">
             <p><span>{{contact.firstName | title}} {{contact.lastName | title}}</span><span class="small pull-right">{{contact.gender}} {{contact.age}}</span></p>
           </li>
         </ul>
       </div>
-      <div class="col-md-6">
+      <div class="col-md-6 hide">
         <form @submit.prevent="addContact">
           <input-box type="text" name="firstName" label="First name" stacked="stacked" rules="required|alpha_spaces" v-model="contact.firstName"></input-box>
           <input-box type="text" name="lastName" label="Last name" stacked="stacked" rules="required|alpha_spaces" v-model="contact.lastName"></input-box>
@@ -22,12 +22,38 @@
           <button type="reset" @click="reset" class="btn btn-default btn-block">RESET</button>
         </form>
       </div>
-      <div class="col-md-6"></div>
       <div class="col-md-6">
         <p>{{contact.lastName}}</p>
         <p>{{contact.firstName}}</p>
         <p>{{contact.gender}}</p>
         <p>{{contact.age}}</p>
+        <p>{{contact.check}}</p>
+      </div>
+      <div class="col-md-12">
+        <h1>Form</h1>
+        <form-box>
+          <input-box name="f1" id="f1" classes="custom" v-model="contact.firstName" v-validate="'required|email'"></input-box>
+          <textarea-box name="t1" v-validate="'required'" v-model="contact.lastName"></textarea-box>
+          <check-group-box>
+            <check-box name="c1" id="c1" classes="check-box" label="c1" value="c1" v-model="contact.check"></check-box>
+            <check-box name="c1" id="c1" classes="check-box" label="c1" value="c1" v-model="contact.check"></check-box>
+            <check-box name="c1" id="c1" classes="check-box" label="c1" value="c1" v-model="contact.check"></check-box>
+          </check-group-box>
+          <check-box name="c2" id="c2" classes="check-box" label="c2" value="c2" v-model="contact.check" group="group"></check-box>
+          <radio-group-box name="r1">
+            <radio-box id="r1" label="r1" v-model="contact.gender" value="r1"></radio-box>
+            <radio-box id="r2" label="r2" v-model="contact.gender" value="r2"></radio-box>
+            <radio-box id="r3" label="r3" v-model="contact.gender" value="r3"></radio-box>
+            <radio-box id="r4" label="r4" v-model="contact.gender" value="r4"></radio-box>
+          </radio-group-box>
+          <select-box name="s1" label="s1">
+            <select-option-box label="op1" value="op1"></select-option-box>
+            <select-option-box label="op1" value="op2"></select-option-box>
+            <select-option-box label="op1" value="op3"></select-option-box>
+            <select-option-box label="op1" value="op4"></select-option-box>
+          </select-box>
+          <button-box @click.prevent="validate" value="Save" classes="btn btn-default" type="button"></button-box>
+        </form-box>
       </div>
     </div>
   </div>

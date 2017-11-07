@@ -24,7 +24,7 @@ Vue.component('input-box', {
     '                </div>\n' +
     '            </div>\n' +
     '            <p class="text-danger" v-if="showError" v-text="errorMessage"></p>\n' +
-    '            <p class="text-danger" v-if="this.errors.has(name)" v-text="this.errors.first(name)"></p>\n' +
+    '            <p class="text-danger" v-text="this.errors.first(name)"></p>\n' +
     '        </div>\n' +
     '        <div class="clearfix"></div>\n' +
     '    </div>',

@@ -1,9 +1,10 @@
 class Contact {
-    constructor(lastName, firstName, gender, age) {
+    constructor(lastName, firstName, gender, age, check) {
         this.lastName = lastName;
         this.firstName = firstName;
         this.gender = gender;
         this.age = age;
+        this.check = check;
     }
 
     empty() {

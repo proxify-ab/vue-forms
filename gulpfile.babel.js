@@ -92,7 +92,10 @@ gulp.task('jsSrc', function () {
 
 
 //build vue components filters
-let vueComponents = application.sourceJS + '/vue/components/*.js';
+let vueComponents = [
+    application.sourceJS + '/vue/components/*.js',
+    application.sourceJS + '/vue/components2/*.js'
+];
 
 gulp.task('jsVueComponents', function () {
     return gulp.src(vueComponents)
