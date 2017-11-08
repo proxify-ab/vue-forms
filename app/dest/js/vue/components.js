@@ -320,7 +320,7 @@ Vue.component('textarea-box', {
 });
 'use strict';
 
-Vue.component('button-box', {
+Vue.component('v-button', {
     template: '<button :type="type" :class="classes" :id="id">{{value}}</button>',
     props: {
         type: {
@@ -342,29 +342,40 @@ Vue.component('button-box', {
 });
 'use strict';
 
-Vue.component('check-group-box', {
-    template: '<div class="form-group"><slot></slot></div>',
-    props: {},
+Vue.component('v-check-group', {
+    template: '<div class="form-group row"><div class="col-md-3" v-if="header"><label>{{header}}</label></div><div class="col-md-9"><slot></slot></div></div>',
+    props: {
+        header: {
+            type: String
+        },
+        inline: {
+            type: Boolean,
+            default: false
+        }
+    },
     mounted: function mounted() {},
 
     methods: {}
 });
 'use strict';
 
-Vue.component('check-box', {
-    template: '<div :class="{\'form-group\':group}"><label :for="id" v-if="label">{{label}}</label><input type="checkbox" :name="name" :id="id" :checked="checked" v-on:change="updateValue($event.target.checked)"></div>',
+Vue.component('v-check', {
+    template: '<div :class="{\'form-group\':single, \'display-inline\':inline}">' + '<input type="checkbox" :name="name" :id="id" :value="value" :checked="checked" v-on:change="updateValue($event.target.checked)">' + '<label :for="id" v-if="label">{{label}}</label>' + '</div>',
     props: {
-        name: {},
-        id: {},
-        classes: {
-            default: 'test'
+        name: {
+            type: String,
+            required: true
         },
-        label: {},
+        id: {
+            type: String
+        },
+        classes: String,
+        label: {
+            type: String,
+            required: true
+        },
         checked: Boolean,
-        group: {
-            type: Boolean,
-            default: false
-        }
+        value: {}
     },
     model: {
         prop: 'checked',
@@ -376,21 +387,40 @@ Vue.component('check-box', {
         updateValue: function updateValue(value) {
             this.$emit('change', value);
         }
+    },
+    computed: {
+        inline: function inline() {
+            return this.$parent.$options.name === 'v-check-group' ? this.$parent.$props.inline : false;
+        },
+        single: function single() {
+            return this.$parent.$options.name !== 'v-check-group';
+        }
     }
 });
 'use strict';
 
-Vue.component('form-box', {
-    template: '<form><slot></slot></form>',
-    props: {},
+Vue.component('v-form', {
+    template: '<form :class="{\'form-inline\':inline, classes}" @submit.prevent="submit"><slot></slot></form>',
+    props: {
+        inline: {
+            type: Boolean,
+            default: false
+        },
+        classes: {
+            type: String
+        },
+        submit: {
+            type: Function
+        }
+    },
     mounted: function mounted() {},
 
     methods: {}
 });
 'use strict';
 
-Vue.component('input-box', {
-    template: '<div class="form-group" ><input  :type="type" :id="id" :class="classes" class="form-control" :name="name" :value="value" v-on:input="updateValue($event.target.value)" v-on:blur="blur($event.target.value)"><span v-if="this.errors.has(name)">{{ errors.first(name) }}</span></div>',
+Vue.component('v-input', {
+    template: '<div class="form-group row" >' + '<div :class="[inline ? \'col-md-3\' : \'col-md-12\']">' + '<label v-if="label">{{label}}</label>' + '</div>' + '<div :class="[inline ? \'col-md-9\' : \'col-md-12\']">' + '<input :type="type" :id="id" :class="classes" class="form-control" :name="name" :value="value" v-on:input="updateValue($event.target.value)" v-on:blur="blur($event.target.value)" :placeholder="placeholder">' + '<span v-show="errors.has(name)" class="help is-danger">{{ errors.first(name) }}</span>' + '</div>' + '<span v-if="this.errors.has(name)">{{ errors.first(name) }}</span>' + '</div>',
     props: {
         name: {
             type: String,
@@ -407,7 +437,15 @@ Vue.component('input-box', {
         classes: {
             type: String
         },
-        value: {}
+        value: {},
+        placeholder: {},
+        label: {
+            type: String
+        },
+        inline: {
+            type: Boolean,
+            default: false
+        }
     },
     mounted: function mounted() {},
 
@@ -425,12 +463,15 @@ Vue.component('input-box', {
 });
 'use strict';
 
-Vue.component('radio-group-box', {
-    template: '<div class="form-group"><slot></slot></div>',
+Vue.component('v-radio-group', {
+    template: '<div class="form-group row"><div class="col-md-3" v-if="header"><label>{{header}}</label></div><div :class="[ header ? \'col-md-9\' : \'col-md-12\' ]"><slot></slot></div></div>',
     props: {
         name: {
             type: String,
             required: true
+        },
+        header: {
+            type: String
         }
     },
     mounted: function mounted() {},
@@ -439,8 +480,8 @@ Vue.component('radio-group-box', {
 });
 'use strict';
 
-Vue.component('radio-box', {
-    template: '<div><label :for="id" v-if="label">{{label}}</label><input type="radio" :name="name" :id="id" :value="value" v-on:change="updateValue($event.target.value)"></div>',
+Vue.component('v-radio', {
+    template: '<div><input type="radio" :name="name" :id="id" :value="value" v-on:change="updateValue($event.target.value)"><label :for="id" v-if="label">{{label}}</label></div>',
     props: {
         type: {},
         id: {},
@@ -456,7 +497,7 @@ Vue.component('radio-box', {
 
     computed: {
         name: function name() {
-            return this.$parent.$options.propsData !== undefined ? this.$parent.$options.propsData.name : 'radio-btn';
+            return this.$parent.$options.propsData !== undefined ? this.$parent.$props.name : 'radio-btn';
         }
     },
     methods: {
@@ -467,7 +508,7 @@ Vue.component('radio-box', {
 });
 'use strict';
 
-Vue.component('select-option-box', {
+Vue.component('v-select-option', {
     template: '<option :value="value">{{label}}</option>',
     props: {
         value: {
@@ -484,25 +525,35 @@ Vue.component('select-option-box', {
 });
 'use strict';
 
-Vue.component('select-box', {
-    template: '<select :name="name" :id="id" :class="classes" class="form-control"><slot></slot></select>',
+Vue.component('v-select', {
+    template: '<div class="form-group row">' + '<div :class="[inline? \'col-md-3\' : \'col-md-12\']" v-if="label"><label>{{label}}</label></div>' + '<div :class="[inline? \'col-md-9\' : \'col-md-12\']">' + '<select :name="name" :id="id" :class="classes" class="form-control" v-on:change="updateValue($event.target.value)"><slot></slot></select>' + '</div>' + '</div>',
     props: {
         name: {
             type: String,
             required: true
         },
-        type: {},
         id: {},
-        classes: {}
+        classes: {},
+        label: {
+            type: String
+        },
+        inline: {
+            type: Boolean,
+            default: false
+        }
     },
     mounted: function mounted() {},
 
-    methods: {}
+    methods: {
+        updateValue: function updateValue(value) {
+            this.$emit('input', value);
+        }
+    }
 });
 'use strict';
 
-Vue.component('textarea-box', {
-    template: '<div class="form-group" ><textarea :id="id" :class="classes" class="form-control" :name="name" v-on:input="updateValue($event.target.value)" v-on:blur="blur($event.target.value)">{{value}}</textarea><span v-if="this.errors.has(name)">{{ errors.first(name) }}</span></div>',
+Vue.component('v-textarea', {
+    template: '<div class="form-group row" >' + '<div :class="[inline?\'col-md-3\':\'col-md-12\']">' + '<label v-if="label">{{label}}</label>' + '</div>' + '<div :class="[inline?\'col-md-9\':\'col-md-12\']">' + '<textarea :id="id" :class="classes" class="form-control" :name="name" v-on:input="updateValue($event.target.value)" v-on:blur="blur($event.target.value)" :placeholder="placeholder">{{value}}</textarea>' + '</div>' + '<span v-if="this.errors.has(name)">{{ errors.first(name) }}</span>' + '</div>',
     props: {
         name: {
             type: String,
@@ -519,7 +570,15 @@ Vue.component('textarea-box', {
         classes: {
             type: String
         },
-        value: {}
+        value: {},
+        placeholder: {},
+        inline: {
+            type: Boolean,
+            default: false
+        },
+        label: {
+            type: String
+        }
     },
     mounted: function mounted() {},
 

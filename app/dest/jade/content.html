@@ -10,17 +10,18 @@
         </ul>
       </div>
       <div class="col-md-6 hide">
-        <form @submit.prevent="addContact">
-          <input-box type="text" name="firstName" label="First name" stacked="stacked" rules="required|alpha_spaces" v-model="contact.firstName"></input-box>
-          <input-box type="text" name="lastName" label="Last name" stacked="stacked" rules="required|alpha_spaces" v-model="contact.lastName"></input-box>
-          <radio-group name="custom_gender" header="Gender" rules="required">
-            <radio-option value="a" label="A" id="a_rad" v-model="contact.gender"></radio-option>
-            <radio-option value="b" label="B" id="b_rad" v-model="contact.gender"></radio-option>
-          </radio-group>
-          <list-box name="age" label="Age" stacked="stacked" :options="age" v-model="contact.age" rules="required" placeholder="Age"></list-box>
-          <button type="submit" class="btn btn-default btn-block">SAVE</button>
-          <button type="reset" @click="reset" class="btn btn-default btn-block">RESET</button>
-        </form>
+        <!--form(@submit.prevent="addContact")-->
+        <!--    input-box(type="text" name="firstName" label="First name" stacked=true rules="required|alpha_spaces" v-model="contact.firstName")-->
+        <!--    input-box(type="text" name="lastName" label="Last name" stacked=true rules="required|alpha_spaces" v-model="contact.lastName")-->
+        <!---->
+        <!--    radio-group(name="custom_gender" header="Gender" rules="required")-->
+        <!--        radio-option(value="a" label="A" id="a_rad" v-model="contact.gender")-->
+        <!--        radio-option(value="b" label="B" id="b_rad" v-model="contact.gender")-->
+        <!---->
+        <!--    //list-box(name="age" label="Age" stacked=true, :options="age" v-model="contact.age" rules="required" placeholder="Age")-->
+        <!---->
+        <!--    button.btn.btn-default.btn-block(type="submit") SAVE-->
+        <!--    button.btn.btn-default.btn-block(type="reset", @click="reset") RESET-->
       </div>
       <div class="col-md-6">
         <p>{{contact.lastName}}</p>
@@ -31,29 +32,30 @@
       </div>
       <div class="col-md-12">
         <h1>Form</h1>
-        <form-box>
-          <input-box name="f1" id="f1" classes="custom" v-model="contact.firstName" v-validate="'required|email'"></input-box>
-          <textarea-box name="t1" v-validate="'required'" v-model="contact.lastName"></textarea-box>
-          <check-group-box>
-            <check-box name="c1" id="c1" classes="check-box" label="c1" value="c1" v-model="contact.check"></check-box>
-            <check-box name="c1" id="c1" classes="check-box" label="c1" value="c1" v-model="contact.check"></check-box>
-            <check-box name="c1" id="c1" classes="check-box" label="c1" value="c1" v-model="contact.check"></check-box>
-          </check-group-box>
-          <check-box name="c2" id="c2" classes="check-box" label="c2" value="c2" v-model="contact.check" group="group"></check-box>
-          <radio-group-box name="r1">
-            <radio-box id="r1" label="r1" v-model="contact.gender" value="r1"></radio-box>
-            <radio-box id="r2" label="r2" v-model="contact.gender" value="r2"></radio-box>
-            <radio-box id="r3" label="r3" v-model="contact.gender" value="r3"></radio-box>
-            <radio-box id="r4" label="r4" v-model="contact.gender" value="r4"></radio-box>
-          </radio-group-box>
-          <select-box name="s1" label="s1">
-            <select-option-box label="op1" value="op1"></select-option-box>
-            <select-option-box label="op1" value="op2"></select-option-box>
-            <select-option-box label="op1" value="op3"></select-option-box>
-            <select-option-box label="op1" value="op4"></select-option-box>
-          </select-box>
-          <button-box @click.prevent="validate" value="Save" classes="btn btn-default" type="button"></button-box>
-        </form-box>
+        <v-form :submit="validate">
+          <v-input name="f1" id="f1" classes="custom" v-model="contact.firstName" placeholder="First name" label="First name" inline="inline" @input="handleValidate"></v-input>
+          <v-textarea name="t1" v-validate="'required'" v-model="contact.lastName" placeholder="Last name" label="Last name" inline="inline"></v-textarea>
+          <v-check-group header="Group 1" inline="inline">
+            <v-check name="c1" id="c1" classes="check-box" label="c1" value="c1" v-model="contact.check"></v-check>
+            <v-check name="c1" id="c1" classes="check-box" label="c1" value="c1" v-model="contact.check"></v-check>
+            <v-check name="c1" id="c1" classes="check-box" label="c1" value="c1" v-model="contact.check"></v-check>
+          </v-check-group>
+          <v-check name="c2" id="c2" classes="check-box" label="c2" value="c2" v-model="contact.check"></v-check>
+          <v-radio-group name="r1" header="Radio group 1">
+            <v-radio id="r1" label="r1" v-model="contact.gender" value="r1"></v-radio>
+            <v-radio id="r2" label="r2" v-model="contact.gender" value="r2"></v-radio>
+            <v-radio id="r3" label="r3" v-model="contact.gender" value="r3"></v-radio>
+            <v-radio id="r4" label="r4" v-model="contact.gender" value="r4"></v-radio>
+          </v-radio-group>
+          <v-select name="s1" v-model="contact.age" id="s1" classes="select" label="Age" inline="inline">
+            <v-select-option label="Select" value=""></v-select-option>
+            <v-select-option label="op1" value="op1"></v-select-option>
+            <v-select-option label="op1" value="op2"></v-select-option>
+            <v-select-option label="op1" value="op3"></v-select-option>
+            <v-select-option label="op1" value="op4"></v-select-option>
+          </v-select>
+          <v-button @click.prevent="validate" value="Save" classes="btn btn-default" type="submit"></v-button>
+        </v-form>
       </div>
     </div>
   </div>

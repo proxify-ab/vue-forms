@@ -1,4 +1,4 @@
-Vue.component('button-box', {
+Vue.component('v-button', {
     template: '<button :type="type" :class="classes" :id="id">{{value}}</button>',
     props: {
         type: {

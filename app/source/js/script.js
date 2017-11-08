@@ -95,9 +95,12 @@ $(function () {
                             });
                     });
                 },
-                validate(){
-
-                    alert('validate');
+                handleValidate: function (val) {
+                    this.selected = val;
+                    this.$nextTick(function () {
+                        var $validity = this.$refs.validity
+                        $validity.validate()
+                    })
                 }
             },
         });

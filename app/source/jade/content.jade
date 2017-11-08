@@ -9,18 +9,18 @@ main#root
                             span.small.pull-right {{contact.gender}} {{contact.age}}
 
             .col-md-6.hide
-                form(@submit.prevent="addContact")
-                    input-box(type="text" name="firstName" label="First name" stacked=true rules="required|alpha_spaces" v-model="contact.firstName")
-                    input-box(type="text" name="lastName" label="Last name" stacked=true rules="required|alpha_spaces" v-model="contact.lastName")
-
-                    radio-group(name="custom_gender" header="Gender" rules="required")
-                        radio-option(value="a" label="A" id="a_rad" v-model="contact.gender")
-                        radio-option(value="b" label="B" id="b_rad" v-model="contact.gender")
-
-                    list-box(name="age" label="Age" stacked=true, :options="age" v-model="contact.age" rules="required" placeholder="Age")
-
-                    button.btn.btn-default.btn-block(type="submit") SAVE
-                    button.btn.btn-default.btn-block(type="reset", @click="reset") RESET
+                //form(@submit.prevent="addContact")
+                //    input-box(type="text" name="firstName" label="First name" stacked=true rules="required|alpha_spaces" v-model="contact.firstName")
+                //    input-box(type="text" name="lastName" label="Last name" stacked=true rules="required|alpha_spaces" v-model="contact.lastName")
+                //
+                //    radio-group(name="custom_gender" header="Gender" rules="required")
+                //        radio-option(value="a" label="A" id="a_rad" v-model="contact.gender")
+                //        radio-option(value="b" label="B" id="b_rad" v-model="contact.gender")
+                //
+                //    //list-box(name="age" label="Age" stacked=true, :options="age" v-model="contact.age" rules="required" placeholder="Age")
+                //
+                //    button.btn.btn-default.btn-block(type="submit") SAVE
+                //    button.btn.btn-default.btn-block(type="reset", @click="reset") RESET
 
             .col-md-6
                 p {{contact.lastName}}
@@ -31,22 +31,23 @@ main#root
 
             .col-md-12
                 h1 Form
-                form-box
-                    input-box(name="f1" id="f1" classes="custom" v-model="contact.firstName" v-validate="'required|email'")
-                    textarea-box(name="t1" v-validate="'required'" v-model="contact.lastName")
-                    check-group-box
-                        check-box(name="c1" id="c1" classes="check-box" label="c1" value="c1" v-model="contact.check" )
-                        check-box(name="c1" id="c1" classes="check-box" label="c1" value="c1" v-model="contact.check" )
-                        check-box(name="c1" id="c1" classes="check-box" label="c1" value="c1" v-model="contact.check" )
-                    check-box(name="c2" id="c2" classes="check-box" label="c2" value="c2" v-model="contact.check" group=true)
-                    radio-group-box(name="r1")
-                        radio-box(id="r1" label="r1" v-model="contact.gender" value="r1")
-                        radio-box(id="r2" label="r2" v-model="contact.gender" value="r2")
-                        radio-box(id="r3" label="r3" v-model="contact.gender" value="r3")
-                        radio-box(id="r4" label="r4" v-model="contact.gender" value="r4")
-                    select-box(name="s1" label="s1")
-                        select-option-box(label="op1" value="op1")
-                        select-option-box(label="op1" value="op2")
-                        select-option-box(label="op1" value="op3")
-                        select-option-box(label="op1" value="op4")
-                    button-box(@click.prevent="validate" value="Save" classes="btn btn-default" type="button")
+                v-form(:submit="validate")
+                    v-input(name="f1" id="f1" classes="custom" v-model="contact.firstName" placeholder="First name" label="First name" inline=true, @input="handleValidate")
+                    v-textarea(name="t1" v-validate="'required'" v-model="contact.lastName" placeholder="Last name" label="Last name" inline=true)
+                    v-check-group(header="Group 1" inline=true)
+                        v-check(name="c1" id="c1" classes="check-box" label="c1" value="c1" v-model="contact.check")
+                        v-check(name="c1" id="c1" classes="check-box" label="c1" value="c1" v-model="contact.check")
+                        v-check(name="c1" id="c1" classes="check-box" label="c1" value="c1" v-model="contact.check")
+                    v-check(name="c2" id="c2" classes="check-box" label="c2" value="c2" v-model="contact.check")
+                    v-radio-group(name="r1" header="Radio group 1")
+                        v-radio(id="r1" label="r1" v-model="contact.gender" value="r1")
+                        v-radio(id="r2" label="r2" v-model="contact.gender" value="r2")
+                        v-radio(id="r3" label="r3" v-model="contact.gender" value="r3")
+                        v-radio(id="r4" label="r4" v-model="contact.gender" value="r4")
+                    v-select(name="s1" v-model="contact.age" id="s1" classes="select" label="Age" inline=true)
+                        v-select-option(label="Select" value="")
+                        v-select-option(label="op1" value="op1")
+                        v-select-option(label="op1" value="op2")
+                        v-select-option(label="op1" value="op3")
+                        v-select-option(label="op1" value="op4")
+                    v-button(@click.prevent="validate" value="Save" classes="btn btn-default" type="submit")

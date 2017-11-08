@@ -1,5 +1,13 @@
-Vue.component('textarea-box', {
-    template: '<div class="form-group" ><textarea :id="id" :class="classes" class="form-control" :name="name" v-on:input="updateValue($event.target.value)" v-on:blur="blur($event.target.value)">{{value}}</textarea><span v-if="this.errors.has(name)">{{ errors.first(name) }}</span></div>',
+Vue.component('v-textarea', {
+    template: '<div class="form-group row" >' +
+    '<div :class="[inline?\'col-md-3\':\'col-md-12\']">' +
+    '<label v-if="label">{{label}}</label>' +
+    '</div>' +
+    '<div :class="[inline?\'col-md-9\':\'col-md-12\']">' +
+    '<textarea :id="id" :class="classes" class="form-control" :name="name" v-on:input="updateValue($event.target.value)" v-on:blur="blur($event.target.value)" :placeholder="placeholder">{{value}}</textarea>' +
+    '</div>' +
+    '<span v-if="this.errors.has(name)">{{ errors.first(name) }}</span>' +
+    '</div>',
     props: {
         name: {
             type: String,
@@ -16,7 +24,15 @@ Vue.component('textarea-box', {
         classes: {
             type: String
         },
-        value: {}
+        value: {},
+        placeholder: {},
+        inline: {
+            type: Boolean,
+            default: false
+        },
+        label: {
+            type: String
+        }
     },
     mounted() {
 

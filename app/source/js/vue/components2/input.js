@@ -1,5 +1,14 @@
-Vue.component('input-box', {
-    template: '<div class="form-group" ><input  :type="type" :id="id" :class="classes" class="form-control" :name="name" :value="value" v-on:input="updateValue($event.target.value)" v-on:blur="blur($event.target.value)"><span v-if="this.errors.has(name)">{{ errors.first(name) }}</span></div>',
+Vue.component('v-input', {
+    template: '<div class="form-group row" >' +
+    '<div :class="[inline ? \'col-md-3\' : \'col-md-12\']">' +
+    '<label v-if="label">{{label}}</label>' +
+    '</div>' +
+    '<div :class="[inline ? \'col-md-9\' : \'col-md-12\']">' +
+    '<input :type="type" :id="id" :class="classes" class="form-control" :name="name" :value="value" v-on:input="updateValue($event.target.value)" v-on:blur="blur($event.target.value)" :placeholder="placeholder">' +
+    '<span v-show="errors.has(name)" class="help is-danger">{{ errors.first(name) }}</span>' +
+    '</div>' +
+    '<span v-if="this.errors.has(name)">{{ errors.first(name) }}</span>' +
+    '</div>',
     props: {
         name: {
             type: String,
@@ -16,7 +25,15 @@ Vue.component('input-box', {
         classes: {
             type: String
         },
-        value: {}
+        value: {},
+        placeholder: {},
+        label: {
+            type: String
+        },
+        inline: {
+            type: Boolean,
+            default: false
+        }
     },
     mounted() {
 

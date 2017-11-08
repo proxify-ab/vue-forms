@@ -1,4 +1,4 @@
-Vue.component('select-option-box', {
+Vue.component('v-select-option', {
     template: '<option :value="value">{{label}}</option>',
     props: {
         value: {
