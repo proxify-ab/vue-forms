@@ -1,5 +1,5 @@
 Vue.component('v-button', {
-    template: '<button :type="type" :class="classes" :id="id">{{value}}</button>',
+    template: '<button @click.prevent="click" :type="type" :class="classes" :id="id">{{value}}</button>',
     props: {
         type: {
             type: String,
@@ -12,7 +12,8 @@ Vue.component('v-button', {
         id: {},
         value:{
             type: String
-        }
+        },
+        click: Function,
     },
     mounted() {
 

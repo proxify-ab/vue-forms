@@ -55,7 +55,8 @@ $(function () {
                     address: ' Lgh Väg',
                     postalCode: '11111',
                     phoneNumber: '32321231321'
-                }
+                },
+                validation: {}
             },
             mounted() {
                 this.contacts = [
@@ -95,13 +96,10 @@ $(function () {
                             });
                     });
                 },
-                handleValidate: function (val) {
-                    this.selected = val;
-                    this.$nextTick(function () {
-                        var $validity = this.$refs.validity
-                        $validity.validate()
-                    })
+                submit: function () {
+                    
                 }
+                
             },
         });
 

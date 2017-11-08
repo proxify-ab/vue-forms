@@ -36,7 +36,12 @@ Vue.component('v-input', {
         }
     },
     mounted() {
-
+        let vm = this;
+        $(this.$el)
+            .val(this.value)
+            .on('change', function () {
+                vm.$emit('input', this.value)
+            });
     },
     methods: {
         enterKeyPressed() {

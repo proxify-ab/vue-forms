@@ -321,7 +321,7 @@ Vue.component('textarea-box', {
 'use strict';
 
 Vue.component('v-button', {
-    template: '<button :type="type" :class="classes" :id="id">{{value}}</button>',
+    template: '<button @click.prevent="click" :type="type" :class="classes" :id="id">{{value}}</button>',
     props: {
         type: {
             type: String,
@@ -334,7 +334,8 @@ Vue.component('v-button', {
         id: {},
         value: {
             type: String
-        }
+        },
+        click: Function
     },
     mounted: function mounted() {},
 
@@ -447,7 +448,12 @@ Vue.component('v-input', {
             default: false
         }
     },
-    mounted: function mounted() {},
+    mounted: function mounted() {
+        var vm = this;
+        $(this.$el).val(this.value).on('change', function () {
+            vm.$emit('input', this.value);
+        });
+    },
 
     methods: {
         enterKeyPressed: function enterKeyPressed() {

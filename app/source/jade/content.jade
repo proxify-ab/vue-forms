@@ -31,8 +31,8 @@ main#root
 
             .col-md-12
                 h1 Form
-                v-form(:submit="validate")
-                    v-input(name="f1" id="f1" classes="custom" v-model="contact.firstName" placeholder="First name" label="First name" inline=true, @input="handleValidate")
+                v-form(:submit="submit")
+                    v-input(name="f1" id="f1" classes="custom" v-model="contact.firstName" placeholder="First name" label="First name" inline=true v-validate:value="{min:1, max:10}")
                     v-textarea(name="t1" v-validate="'required'" v-model="contact.lastName" placeholder="Last name" label="Last name" inline=true)
                     v-check-group(header="Group 1" inline=true)
                         v-check(name="c1" id="c1" classes="check-box" label="c1" value="c1" v-model="contact.check")
@@ -50,4 +50,4 @@ main#root
                         v-select-option(label="op1" value="op2")
                         v-select-option(label="op1" value="op3")
                         v-select-option(label="op1" value="op4")
-                    v-button(@click.prevent="validate" value="Save" classes="btn btn-default" type="submit")
+                    v-button(:click="submit" value="Save" classes="btn btn-default" type="submit")
