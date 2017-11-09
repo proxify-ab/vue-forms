@@ -59,7 +59,7 @@ let copyJSLib = [
     application.bowerSrc + '/jquery/dist/jquery.min.js',
     application.nodeSrc + '/vue/dist/vue.js',
     application.nodeSrc + '/vee-validate/dist/vee-validate.min.js',
-    application.nodeSrc + '/vue-validator/dist/vue-validator.min.js',
+    // application.nodeSrc + '/vue-validator/dist/vue-validator.min.js',
     application.nodeSrc + '/axios/dist/axios.js',
 ];
 

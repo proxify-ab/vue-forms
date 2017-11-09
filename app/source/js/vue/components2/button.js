@@ -1,5 +1,5 @@
 Vue.component('v-button', {
-    template: '<button @click.prevent="click" :type="type" :class="classes" :id="id">{{value}}</button>',
+    template: '<div class="form-group"><button @click.prevent="click" :type="type" :class="classes" :id="id">{{value}}</button></div>',
     props: {
         type: {
             type: String,

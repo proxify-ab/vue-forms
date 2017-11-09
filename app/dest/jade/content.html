@@ -33,7 +33,7 @@
       <div class="col-md-12">
         <h1>Form</h1>
         <v-form :submit="submit">
-          <v-input name="f1" id="f1" classes="custom" v-model="contact.firstName" placeholder="First name" label="First name" inline="inline" v-validate:value="{min:1, max:10}"></v-input>
+          <v-input name="f1" id="f1" classes="custom" v-model="contact.firstName" placeholder="First name" label="First name" inline="inline" v-validate="'required'"></v-input>
           <v-textarea name="t1" v-validate="'required'" v-model="contact.lastName" placeholder="Last name" label="Last name" inline="inline"></v-textarea>
           <v-check-group header="Group 1" inline="inline">
             <v-check name="c1" id="c1" classes="check-box" label="c1" value="c1" v-model="contact.check"></v-check>
@@ -53,8 +53,8 @@
             <v-select-option label="op1" value="op2"></v-select-option>
             <v-select-option label="op1" value="op3"></v-select-option>
             <v-select-option label="op1" value="op4"></v-select-option>
-          </v-select>
-          <v-button :click="submit" value="Save" classes="btn btn-default" type="submit"></v-button>
+          </v-select><span>{{ errors }}</span>
+          <v-button :disabled="errors.any()" :click="submit" value="Save" classes="btn btn-default" type="submit"></v-button>
         </v-form>
       </div>
     </div>

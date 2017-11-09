@@ -1,14 +1,6 @@
 $(function () {
 
-    const EventBus = new Vue();
-
-    Object.defineProperties(Vue.prototype, {
-        $bus: {
-            get: function () {
-                return EventBus
-            }
-        }
-    });
+    Vue.prototype.$eventHub = new Vue();
 
     const config = {
         errorBagName: 'errors', // change if property conflicts
@@ -42,7 +34,7 @@ $(function () {
                 contacts: [],
                 contact: new Contact(),
                 age: [20, 21, 22, 23, 24],
-                gender: [{label:'Male', value:'m', check: true}, {label:'Female', value: 'f', check: false}],
+                gender: [{label: 'Male', value: 'm', check: true}, {label: 'Female', value: 'f', check: false}],
                 example: {
                     upper: 'Upper',
                     lower: 'Lower',
@@ -58,6 +50,14 @@ $(function () {
                 },
                 validation: {}
             },
+            created() {
+                this.$eventHub.$on('errors-changed', (errors) => {
+                    this.errors.clear();
+                    errors.forEach((e) => {
+                        this.errors.add(e.field, e.msg, e.rule, e.scope);
+                    });
+                });
+            },
             mounted() {
                 this.contacts = [
                     new Contact('iuhwef', 'wefwef', 'm', 20),
@@ -66,6 +66,23 @@ $(function () {
                     new Contact('gerrhe', 'rehewrg', 'f', 21),
                     new Contact('sdgsgtwe', 'wegwe', 'f', 22),
                 ];
+
+                this.$on('veeValidate', () => {
+                    this.$eventHub.$emit('validate');
+                });
+                //Listen on the this.$eventHub for changers to the child components error bag and merge in/remove errors
+                this.$eventHub.$on('errors-changed', (newErrors, oldErrors) => {
+                    newErrors.forEach(error => {
+                        if (!this.errors.has(error.field)) {
+                            this.errors.add(error.field, error.msg)
+                        }
+                    });
+                    if (oldErrors) {
+                        oldErrors.forEach(error => {
+                            this.errors.remove(error.field)
+                        })
+                    }
+                })
             },
             methods: {
                 getContact: function (contact) {
@@ -96,10 +113,21 @@ $(function () {
                             });
                     });
                 },
-                submit: function () {
-                    
+                submit() {
+                    //On button pressed run validation
+                    this.$validator.validateAll();
+                    console.log(this.errors);
+                    if (!this.errors.any()) {
+
+                    }
+                },
+                validateChild() {
+                    this.$eventHub.$emit('validate');
+                },
+                clearChild() {
+                    this.$eventHub.$emit('clear');
                 }
-                
+
             },
         });
 
