@@ -57,29 +57,29 @@
           </div>
           <div class="col-md-12">
             <h1>Form</h1>
-            <v-form :submit="submit">
-              <v-input name="f1" id="f1" classes="custom" v-model="contact.firstName" placeholder="First name" label="First name" inline v-validate="'required'"></v-input>
-              <v-textarea name="t1" v-validate="'required'" v-model="contact.lastName" placeholder="Last name" label="Last name" inline></v-textarea>
+            <v-form>
+              <v-input name="f1" id="f1" classes="custom" v-model="contact.firstName" placeholder="First name" label="First name" inline rules="email|alpha"></v-input>
+              <v-textarea name="t1" v-model="contact.lastName" placeholder="Last name" label="Last name" inline></v-textarea>
               <v-check-group header="Group 1" inline>
                 <v-check name="c1" id="c1" classes="check-box" label="c1" value="c1" v-model="contact.check"></v-check>
                 <v-check name="c1" id="c1" classes="check-box" label="c1" value="c1" v-model="contact.check"></v-check>
                 <v-check name="c1" id="c1" classes="check-box" label="c1" value="c1" v-model="contact.check"></v-check>
               </v-check-group>
-              <v-check name="c2" id="c2" classes="check-box" label="c2" value="c2" v-model="contact.check"></v-check>
-              <v-radio-group name="r1" header="Radio group 1">
+              <v-check name="c2" id="c2" classes="check-box" label="c2" value="c2" v-model="contact.check" rules="required"></v-check>
+              <v-radio-group name="r1" header="Radio group 1" rules="required">
                 <v-radio id="r1" label="r1" v-model="contact.gender" value="r1"></v-radio>
                 <v-radio id="r2" label="r2" v-model="contact.gender" value="r2"></v-radio>
                 <v-radio id="r3" label="r3" v-model="contact.gender" value="r3"></v-radio>
                 <v-radio id="r4" label="r4" v-model="contact.gender" value="r4"></v-radio>
               </v-radio-group>
-              <v-select name="s1" v-model="contact.age" id="s1" classes="select" label="Age" inline>
+              <v-select name="s1" v-model="contact.age" id="s1" classes="select" label="Age" inline rules="required">
                 <v-select-option label="Select" value=""></v-select-option>
                 <v-select-option label="op1" value="op1"></v-select-option>
                 <v-select-option label="op1" value="op2"></v-select-option>
                 <v-select-option label="op1" value="op3"></v-select-option>
                 <v-select-option label="op1" value="op4"></v-select-option>
               </v-select><span>{{ errors }}</span>
-              <v-button :disabled="errors.any()" :click="submit" value="Save" classes="btn btn-default" type="submit"></v-button>
+              <v-button :disabled="errors.any()" :click="submit" value="Save" classes="btn btn-info" type="submit"></v-button>
             </v-form>
           </div>
         </div>

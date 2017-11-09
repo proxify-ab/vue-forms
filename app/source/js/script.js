@@ -53,9 +53,10 @@ $(function () {
             created() {
                 this.$eventHub.$on('errors-changed', (errors) => {
                     this.errors.clear();
-                    errors.forEach((e) => {
-                        this.errors.add(e.field, e.msg, e.rule, e.scope);
-                    });
+                    // console.log(this.errors);
+                    // this.errors.forEach((e) => {
+                    //     this.errors.add(e.field, e.msg, e.rule, e.scope);
+                    // });
                 });
             },
             mounted() {
@@ -67,21 +68,26 @@ $(function () {
                     new Contact('sdgsgtwe', 'wegwe', 'f', 22),
                 ];
 
-                this.$on('veeValidate', () => {
+                //Emit that validation is required on the this.$eventHub
+                this.$on('VeeValidate', () => {
                     this.$eventHub.$emit('validate');
                 });
                 //Listen on the this.$eventHub for changers to the child components error bag and merge in/remove errors
                 this.$eventHub.$on('errors-changed', (newErrors, oldErrors) => {
-                    newErrors.forEach(error => {
-                        if (!this.errors.has(error.field)) {
-                            this.errors.add(error.field, error.msg)
-                        }
-                    });
-                    if (oldErrors) {
-                        oldErrors.forEach(error => {
-                            this.errors.remove(error.field)
-                        })
-                    }
+                    // console.log('error-changes', newErrors, oldErrors);
+                    // return;
+                    // if (newErrors) {
+                    //     newErrors.items.forEach(error => {
+                    //         if (!this.errors.has(error.field)) {
+                    //             this.errors.add(error.field, error.msg)
+                    //         }
+                    //     });
+                    // }
+                    // if (oldErrors) {
+                    //     oldErrors.forEach(error => {
+                    //         this.errors.remove(error.field)
+                    //     })
+                    // }
                 })
             },
             methods: {
@@ -114,12 +120,11 @@ $(function () {
                     });
                 },
                 submit() {
-                    //On button pressed run validation
-                    this.$validator.validateAll();
-                    console.log(this.errors);
-                    if (!this.errors.any()) {
-
-                    }
+                    // this.$validator.validateAll();
+                    // if (this.errors.any()) {
+                    //     this.$eventHub.$emit('errors-changed', this.errors)
+                    // }
+                    this.$eventHub.$emit('validate');
                 },
                 validateChild() {
                     this.$eventHub.$emit('validate');
