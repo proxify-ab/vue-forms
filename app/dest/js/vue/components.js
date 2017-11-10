@@ -344,14 +344,18 @@ Vue.component('v-button', {
 'use strict';
 
 Vue.component('v-check-group', {
-    template: '<div class="form-group row"><div class="col-md-3" v-if="header"><label>{{header}}</label></div><div class="col-md-9"><slot></slot></div></div>',
+    template: '<div class="form-group row">' + '<div class="col-md-3" v-if="header">' + '<label>{{header}}</label>' + '</div>' + '<div class="col-md-9">' + '<slot></slot>' + '</div>' + '</div>',
     props: {
+        name: {},
         header: {
             type: String
         },
         inline: {
             type: Boolean,
             default: false
+        },
+        rules: {
+            type: String
         }
     },
     mounted: function mounted() {},
@@ -361,7 +365,7 @@ Vue.component('v-check-group', {
 'use strict';
 
 Vue.component('v-check', {
-    template: '<div :class="{\'form-group\':single, \'display-inline\':inline}">' + '<input type="checkbox" :name="name" :id="id" :value="value" :checked="checked" v-on:change="updateValue($event.target.checked)">' + '<label :for="id" v-if="label">{{label}}</label>' + '</div>',
+    template: '<div :class="{\'form-group\':single, \'display-inline\':inline}">' + '<input v-validate :data-vv-rules="rules" type="checkbox" :name="name" :id="id" :value="value" :checked="checked" v-on:change="updateValue($event.target.checked)">' + '<label :for="id" v-if="label">{{label}}</label>' + '<span v-if="errors.has(name)" class="small text-danger">{{ errors.first(name) }}</span>' + '</div>',
     props: {
         name: {
             type: String,
@@ -376,17 +380,32 @@ Vue.component('v-check', {
             required: true
         },
         checked: Boolean,
-        value: {}
+        value: {},
+        rules: {
+            type: String
+        }
     },
     model: {
         prop: 'checked',
         event: 'change'
     },
-    mounted: function mounted() {},
+    mounted: function mounted() {
+        var _this = this;
+
+        this.$eventHub.$on('validate', this.onValidate);
+        this.$watch(function () {
+            return _this.errors.items;
+        }, function (newValue, oldValue) {
+            _this.$eventHub.$emit('errors-changed', newValue, oldValue, _this.name);
+        });
+    },
 
     methods: {
         updateValue: function updateValue(value) {
             this.$emit('change', value);
+        },
+        onValidate: function onValidate() {
+            this.$validator.validateAll();
         }
     },
     computed: {
@@ -396,6 +415,10 @@ Vue.component('v-check', {
         single: function single() {
             return this.$parent.$options.name !== 'v-check-group';
         }
+    },
+    beforeDestroy: function beforeDestroy() {
+        this.$eventHub.$emit('errors-changed', [], this.errors);
+        this.$eventHub.$off('validate', this.onValidate);
     }
 });
 'use strict';
@@ -403,7 +426,7 @@ Vue.component('v-check', {
 Vue.prototype.$eventHub = new Vue();
 
 Vue.component('v-form', {
-    template: '<form :class="{\'form-inline\':inline, classes}" @submit.prevent="submit"><slot></slot></form>',
+    template: '<form :ref="customRef" :class="{\'form-inline\':inline, classes}" @submit.prevent="submit"><slot></slot></form>',
     props: {
         inline: {
             type: Boolean,
@@ -414,35 +437,24 @@ Vue.component('v-form', {
         },
         submit: {
             type: Function
+        },
+        customRef: {
+            type: String,
+            default: 'form'
         }
     },
-    mounted: function mounted() {
-        var _this = this;
+    mounted: function mounted() {},
 
-        this.$on('veeValidate', function () {
-            _this.$eventHub.$emit('validate');
-        });
-        //Listen on the this.$eventHub for changers to the child components error bag and merge in/remove errors
-        this.$eventHub.$on('errors-changed', function (newErrors, oldErrors) {
-            newErrors.forEach(function (error) {
-                if (!_this.errors.has(error.field)) {
-                    _this.errors.add(error.field, error.msg);
-                }
-            });
-            if (oldErrors) {
-                oldErrors.forEach(function (error) {
-                    _this.errors.remove(error.field);
-                });
-            }
-        });
-    },
-
-    methods: {}
+    methods: {
+        validate: function validate() {
+            this.$emit('val');
+        }
+    }
 });
 'use strict';
 
 Vue.component('v-input', {
-    template: '<div class="form-group row" >' + '<div :class="[inline ? \'col-md-3\' : \'col-md-12\']">' + '<label v-if="label">{{label}}</label>' + '</div>' + '<div :class="[inline ? \'col-md-9\' : \'col-md-12\']">' + '<input v-validate.touched :data-vv-rules="rules" :type="type" :id="id" :class="classes" class="form-control" :name="name" :value="value" v-on:input="updateValue($event.target.value)" v-on:blur="blur($event.target.value)" :placeholder="placeholder">' + '<span v-if="errors.has(name)" class="help text-danger">{{ errors.first(name) }}</span>' + '</div>' + '</div>',
+    template: '<div class="form-group row" >' + '<div :class="[inline ? \'col-md-3\' : \'col-md-12\']">' + '<label v-if="label">{{label}}</label>' + '</div>' + '<div :class="[inline ? \'col-md-9\' : \'col-md-12\']">' + '<input v-validate :data-vv-rules="rules" :type="type" :id="id" :class="classes" class="form-control" :name="name" :value="value" v-on:input="updateValue($event.target.value)" v-on:blur="blur($event.target.value)" :placeholder="placeholder">' + '<span v-if="errors.has(name)" class="small text-danger">{{ errors.first(name) }}</span>' + '</div>' + '</div>',
     props: {
         name: {
             type: String,
@@ -478,21 +490,14 @@ Vue.component('v-input', {
     mounted: function mounted() {
         var _this = this;
 
-        //Listen on the bus for the parent component running validation
         this.$eventHub.$on('validate', this.onValidate);
-        //Watch for the changes to the childs error bag and pass back to the parent
         this.$watch(function () {
             return _this.errors.items;
         }, function (newValue, oldValue) {
-            var newErrors = newValue.filter(function (error) {
-                return find(propEq('field', error.field))(oldValue) === undefined;
-            });
-
-            // Look for errors that we already have in our Errors object
-            var oldErrors = oldValue.filter(function (error) {
-                return find(propEq('field', error.field))(newValue) === undefined;
-            });
-            _this.$eventHub.$emit('errors-changed', newErrors, oldErrors);
+            _this.$eventHub.$emit('errors-changed', newValue, oldValue, _this.name);
+        });
+        this.$on('val', function () {
+            alert('Val');
         });
     },
 
@@ -507,16 +512,10 @@ Vue.component('v-input', {
             this.$emit('blur', value);
         },
         onValidate: function onValidate() {
-            // console.log('validate');
             this.$validator.validateAll();
-            if (this.errors.any()) {
-                this.$eventHub.$emit('errors-changed', this.errors);
-            }
         }
     },
     beforeDestroy: function beforeDestroy() {
-        //When destroying the element remove the listeners on the bus.
-        //Useful for dynaically adding and removing child components
         this.$eventHub.$emit('errors-changed', [], this.errors);
         this.$eventHub.$off('validate', this.onValidate);
     }
@@ -524,7 +523,7 @@ Vue.component('v-input', {
 'use strict';
 
 Vue.component('v-radio-group', {
-    template: '<div class="form-group row"><div :class="[inline ? \'col-md-3\' : \'col-md-12\']" v-if="header"><label>{{header}}</label></div><div :class="[ inline ? \'col-md-9\' : \'col-md-12\' ]"><slot></slot></div></div>',
+    template: '<div class="form-group row">' + '<div :class="[inline ? \'col-md-3\' : \'col-md-12\']" v-if="header">' + '<label>{{header}}</label>' + '</div>' + '<div :class="[ inline ? \'col-md-9\' : \'col-md-12\' ]">' + '<slot></slot>' + '</div>' + '<div class="col-md-12">' + '<span v-if="errors.has(name)" class="small text-danger">{{ errors.first(name) }}</span>' + '</div>' + '</div>',
     props: {
         name: {
             type: String,
@@ -536,16 +535,60 @@ Vue.component('v-radio-group', {
         inline: {
             type: Boolean,
             default: false
+        },
+        rules: {
+            type: String
         }
     },
-    mounted: function mounted() {},
+    mounted: function mounted() {
+        var _this = this;
 
-    methods: {}
+        this.$eventHub.$on('validate', this.onValidate);
+        this.$watch(function () {
+            return _this.errors.items;
+        }, function (newValue, oldValue) {
+            _this.$eventHub.$emit('errors-changed', newValue, oldValue, _this.name);
+        });
+        this.$eventHub.$on(this.name + 'return_validate', this.onReturnValidate);
+    },
+
+    methods: {
+        onValidate: function onValidate() {
+            this.$eventHub.$emit(this.name + 'validate', this.name);
+        },
+
+        onReturnValidate: function onReturnValidate(newErrors, oldErrors) {
+            var _this2 = this;
+
+            if (oldErrors !== undefined && Array.isArray(oldErrors)) {
+                if (oldErrors.length === 0) {} else {
+                    oldErrors.forEach(function (error) {
+                        _this2.errors.remove(error.field);
+                    });
+                }
+            }
+            if (newErrors !== undefined && Array.isArray(newErrors)) {
+                if (newErrors.length === 0) {
+                    this.errors.remove(this.name);
+                } else {
+                    newErrors.forEach(function (error) {
+                        if (!_this2.errors.has(error.field)) {
+                            _this2.errors.add(error.field, error.msg, error.rule);
+                        }
+                    });
+                }
+            }
+        }
+    },
+    beforeDestroy: function beforeDestroy() {
+        this.$eventHub.$emit('errors-changed', [], this.errors);
+        this.$eventHub.$off('validate', this.onValidate);
+    }
 });
 'use strict';
 
 Vue.component('v-radio', {
-    template: '<div><input type="radio" :name="name" :id="id" :value="value" v-on:change="updateValue($event.target.value)"><label :for="id" v-if="label">{{label}}</label></div>',
+    template: '<div>' + '<input v-validate :data-vv-rules="rules" type="radio" :name="name" :id="id" :value="value" v-on:change="updateValue($event.target.value)">' + '<label :for="id" v-if="label">{{label}}</label>' + '</div>',
     props: {
         type: {},
         id: {},
@@ -557,16 +600,31 @@ Vue.component('v-radio', {
         prop: 'checked',
         event: 'change'
     },
-    mounted: function mounted() {},
+    mounted: function mounted() {
+        var _this = this;
+
+        this.$eventHub.$on(this.name + 'validate', this.onValidate);
+        this.$watch(function () {
+            return _this.errors.items;
+        }, function (newValue, oldValue) {
+            _this.$eventHub.$emit(_this.name + 'return_validate', newValue, oldValue);
+        });
+    },
 
     computed: {
         name: function name() {
-            return this.$parent.$options.propsData !== undefined ? this.$parent.$props.name : 'radio-btn';
+            return this.$parent.$options.propsData !== undefined ? this.$parent.$props.name : '';
+        },
+        rules: function rules() {
+            return this.$parent.$options.propsData !== undefined ? this.$parent.$props.rules : '';
         }
     },
     methods: {
         updateValue: function updateValue(value) {
             this.$emit('change', value);
+        },
+        onValidate: function onValidate() {
+            this.$validator.validateAll();
         }
     }
 });
@@ -590,7 +648,7 @@ Vue.component('v-select-option', {
 'use strict';
 
 Vue.component('v-select', {
-    template: '<div class="form-group row">' + '<div :class="[inline? \'col-md-3\' : \'col-md-12\']" v-if="label"><label>{{label}}</label></div>' + '<div :class="[inline? \'col-md-9\' : \'col-md-12\']">' + '<select :name="name" :id="id" :class="classes" class="form-control" v-on:change="updateValue($event.target.value)"><slot></slot></select>' + '</div>' + '</div>',
+    template: '<div class="form-group row">' + '<div :class="[inline? \'col-md-3\' : \'col-md-12\']" v-if="label"><label>{{label}}</label></div>' + '<div :class="[inline? \'col-md-9\' : \'col-md-12\']">' + '<select v-validate :data-vv-rules="rules" :name="name" :id="id" :class="classes" class="form-control" v-on:change="updateValue($event.target.value)"><slot></slot></select>' + '<span v-if="errors.has(name)" class="small text-danger">{{ errors.first(name) }}</span>' + '</div>' + '</div>',
     props: {
         name: {
             type: String,
@@ -604,31 +662,43 @@ Vue.component('v-select', {
         inline: {
             type: Boolean,
             default: false
+        },
+        rules: {
+            type: String
         }
     },
-    mounted: function mounted() {},
+    mounted: function mounted() {
+        var _this = this;
+
+        this.$eventHub.$on('validate', this.onValidate);
+        this.$watch(function () {
+            return _this.errors.items;
+        }, function (newValue, oldValue) {
+            _this.$eventHub.$emit('errors-changed', newValue, oldValue, _this.name);
+        });
+    },
 
     methods: {
         updateValue: function updateValue(value) {
             this.$emit('input', value);
+        },
+        onValidate: function onValidate() {
+            this.$validator.validateAll();
         }
+    },
+    beforeDestroy: function beforeDestroy() {
+        this.$eventHub.$emit('errors-changed', [], this.errors);
+        this.$eventHub.$off('validate', this.onValidate);
     }
 });
 'use strict';
 
 Vue.component('v-textarea', {
-    template: '<div class="form-group row" >' + '<div :class="[inline?\'col-md-3\':\'col-md-12\']">' + '<label v-if="label">{{label}}</label>' + '</div>' + '<div :class="[inline?\'col-md-9\':\'col-md-12\']">' + '<textarea v-validate.touched :data-vv-rules="rules" :id="id" :class="classes" class="form-control" :name="name" v-on:input="updateValue($event.target.value)" v-on:blur="blur($event.target.value)" :placeholder="placeholder">{{value}}</textarea>' + '</div>' + '<span v-if="this.errors.has(name)">{{ errors.first(name) }}</span>' + '</div>',
+    template: '<div class="form-group row" >' + '<div :class="[inline?\'col-md-3\':\'col-md-12\']">' + '<label v-if="label">{{label}}</label>' + '</div>' + '<div :class="[inline?\'col-md-9\':\'col-md-12\']">' + '<textarea v-validate :data-vv-rules="rules" :id="id" :class="classes" class="form-control" :name="name" v-on:input="updateValue($event.target.value)" v-on:blur="blur($event.target.value)" :placeholder="placeholder">{{value}}</textarea>' + '<span class="text-danger" v-if="this.errors.has(name)">{{ errors.first(name) }}</span>' + '</div>' + '</div>',
     props: {
         name: {
             type: String,
             required: true
-        },
-        type: {
-            type: String,
-            validator: function validator(value) {
-                return ['hidden', 'text', 'number'].indexOf(value) > -1;
-            },
-            default: 'text'
         },
         id: {},
         classes: {
@@ -651,20 +721,10 @@ Vue.component('v-textarea', {
         var _this = this;
 
         this.$eventHub.$on('validate', this.onValidate);
-        //Watch for the changes to the childs error bag and pass back to the parent
         this.$watch(function () {
-            return _this.errors;
+            return _this.errors.items;
         }, function (newValue, oldValue) {
-            // Look for any new errors when the Errors object has changed
-            var newErrors = newValue.filter(function (error) {
-                return find(propEq('field', error.field))(oldValue) === undefined;
-            });
-
-            // Look for errors that we already have in our Errors object
-            var oldErrors = oldValue.filter(function (error) {
-                return find(propEq('field', error.field))(newValue) === undefined;
-            });
-            _this.$eventHub.$emit('errors-changed', newErrors, oldErrors);
+            _this.$eventHub.$emit('errors-changed', newValue, oldValue, _this.name);
         });
     },
 
@@ -680,14 +740,9 @@ Vue.component('v-textarea', {
         },
         onValidate: function onValidate() {
             this.$validator.validateAll();
-            if (this.errors.any()) {
-                this.$eventHub.$emit('errors-changed', this.errors);
-            }
         }
     },
     beforeDestroy: function beforeDestroy() {
-        //When destroying the element remove the listeners on the bus.
-        //Useful for dynaically adding and removing child components
         this.$eventHub.$emit('errors-changed', [], this.errors);
         this.$eventHub.$off('validate', this.onValidate);
     }

@@ -10,13 +10,12 @@ Vue.component('v-button', {
         },
         classes: {},
         id: {},
-        value:{
+        value: {
             type: String
         },
         click: Function,
     },
     mounted() {
-
     },
     methods: {}
 });

@@ -27,7 +27,7 @@ $(function () {
 
     Vue.use(VeeValidate, config);
 
-    if ($('#root'))
+    if ($('#root')) {
         new Vue({
             el: '#root',
             data: {
@@ -50,15 +50,6 @@ $(function () {
                 },
                 validation: {}
             },
-            created() {
-                this.$eventHub.$on('errors-changed', (errors) => {
-                    this.errors.clear();
-                    // console.log(this.errors);
-                    // this.errors.forEach((e) => {
-                    //     this.errors.add(e.field, e.msg, e.rule, e.scope);
-                    // });
-                });
-            },
             mounted() {
                 this.contacts = [
                     new Contact('iuhwef', 'wefwef', 'm', 20),
@@ -67,73 +58,62 @@ $(function () {
                     new Contact('gerrhe', 'rehewrg', 'f', 21),
                     new Contact('sdgsgtwe', 'wegwe', 'f', 22),
                 ];
-
-                //Emit that validation is required on the this.$eventHub
-                this.$on('VeeValidate', () => {
-                    this.$eventHub.$emit('validate');
-                });
-                //Listen on the this.$eventHub for changers to the child components error bag and merge in/remove errors
-                this.$eventHub.$on('errors-changed', (newErrors, oldErrors) => {
-                    // console.log('error-changes', newErrors, oldErrors);
-                    // return;
-                    // if (newErrors) {
-                    //     newErrors.items.forEach(error => {
-                    //         if (!this.errors.has(error.field)) {
-                    //             this.errors.add(error.field, error.msg)
-                    //         }
-                    //     });
-                    // }
-                    // if (oldErrors) {
-                    //     oldErrors.forEach(error => {
-                    //         this.errors.remove(error.field)
-                    //     })
-                    // }
+                this.$eventHub.$on('errors-changed', (newErrors, oldErrors, name) => {
+                    if (oldErrors !== undefined && Array.isArray(oldErrors)) {
+                        if (oldErrors.length === 0) {
+                        } else {
+                            oldErrors.forEach(error => {
+                                this.errors.remove(error.field)
+                            })
+                        }
+                    }
+                    if (newErrors !== undefined && Array.isArray(newErrors)) {
+                        if (newErrors.length === 0) {
+                            this.errors.remove(name);
+                        } else {
+                            newErrors.forEach(error => {
+                                if (!this.errors.has(error.field)) {
+                                    this.errors.add(error.field, error.msg, error.rule)
+                                }
+                            })
+                        }
+                    }
                 })
             },
             methods: {
-                getContact: function (contact) {
-                    this.contact = contact;
-                },
-                addContact() {
-                    this.isValid();
-                    if (!this.contact.empty()) {
-                        this.contacts.push(this.contact);
-                        this.contact = new Contact();
-                        this.reset();
-                    }
-                },
-                reset: function () {
-                    this.contact = new Contact();
-                    this.$children.map(function (child) {
-                        child.$validator.reset();
-                    });
-                },
-                isValid: function () {
-                    this.$children.map(function (child) {
-                        child.$validator.validateAll()
-                            .then(response => {
-                                return response;
-                            })
-                            .catch(response => {
-                                return response;
-                            });
-                    });
-                },
+                // getContact: function (contact) {
+                //     this.contact = contact;
+                // },
+                // addContact() {
+                //     this.isValid();
+                //     if (!this.contact.empty()) {
+                //         this.contacts.push(this.contact);
+                //         this.contact = new Contact();
+                //         this.reset();
+                //     }
+                // },
+                // reset: function () {
+                //     this.contact = new Contact();
+                //     this.$children.map(function (child) {
+                //         child.$validator.reset();
+                //     });
+                // },
+                // isValid: function () {
+                //     this.$children.map(function (child) {
+                //         child.$validator.validateAll()
+                //             .then(response => {
+                //                 return response;
+                //             })
+                //             .catch(response => {
+                //                 return response;
+                //             });
+                //     });
+                // },
                 submit() {
-                    // this.$validator.validateAll();
-                    // if (this.errors.any()) {
-                    //     this.$eventHub.$emit('errors-changed', this.errors)
-                    // }
+                    console.log(this);
                     this.$eventHub.$emit('validate');
                 },
-                validateChild() {
-                    this.$eventHub.$emit('validate');
-                },
-                clearChild() {
-                    this.$eventHub.$emit('clear');
-                }
-
             },
         });
-
+    }
 });

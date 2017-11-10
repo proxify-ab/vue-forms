@@ -1,7 +1,7 @@
 Vue.prototype.$eventHub = new Vue();
 
 Vue.component('v-form', {
-    template: '<form :class="{\'form-inline\':inline, classes}" @submit.prevent="submit"><slot></slot></form>',
+    template: '<form :ref="customRef" :class="{\'form-inline\':inline, classes}" @submit.prevent="submit"><slot></slot></form>',
     props: {
         inline: {
             type: Boolean,
@@ -12,25 +12,16 @@ Vue.component('v-form', {
         },
         submit: {
             type: Function
+        },
+        customRef:{
+            type: String,
+            default: 'form'
         }
     },
-    mounted() {
-        this.$on('veeValidate', () => {
-            this.$eventHub.$emit('validate');
-        });
-        //Listen on the this.$eventHub for changers to the child components error bag and merge in/remove errors
-        this.$eventHub.$on('errors-changed', (newErrors, oldErrors) => {
-            newErrors.forEach(error => {
-                if (!this.errors.has(error.field)) {
-                    this.errors.add(error.field, error.msg)
-                }
-            });
-            if (oldErrors) {
-                oldErrors.forEach(error => {
-                    this.errors.remove(error.field)
-                })
-            }
-        });
-    },
-    methods: {}
+    mounted() {},
+    methods: {
+        validate: function () {
+            this.$emit('val');
+        }
+    }
 });
