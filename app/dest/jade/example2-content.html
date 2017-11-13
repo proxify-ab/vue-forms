@@ -1,0 +1,23 @@
+
+<div id="root">
+  <v-steps @on-complete="form2">
+    <h2 slot="header"> Header</h2>
+    <v-step :validating="true">
+      <v-input name="f1" type="text" label="step 1" rules="required"></v-input>
+      <v-input name="f2" type="text" label="step 1" rules="required"></v-input>
+      <v-input name="f3" type="text" label="step 1" rules="required"></v-input>
+    </v-step>
+    <v-step :validating="true">
+      <v-input name="f4" type="text" label="step 2" rules="required"></v-input>
+      <v-input name="f5" type="text" label="step 2" rules="required"></v-input>
+    </v-step>
+    <v-step :validating="true">
+      <v-input name="f5" type="text" label="step 3" rules="required"></v-input>
+      <v-input name="f6" type="text" label="step 3" rules="required"></v-input>
+    </v-step>
+    <v-step :validating="true">
+      <v-input name="f7" type="text" label="step 4" rules="required"></v-input>
+    </v-step>
+    <h2 slot="footer">Footer</h2>
+  </v-steps>
+</div>

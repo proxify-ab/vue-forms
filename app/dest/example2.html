@@ -1,0 +1,57 @@
+<!DOCTYPE html>
+<html lang="en">
+  <head>
+    <title>index page</title>
+    <meta charset="utf-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1">
+    <link rel="stylesheet" href="https://maxcdn.bootstrapcdn.com/bootstrap/3.3.7/css/bootstrap.min.css">
+    <link rel="stylesheet" href="https://maxcdn.bootstrapcdn.com/bootstrap/3.3.7/css/bootstrap-theme.min.css">
+    <link href="css/main.css" rel="stylesheet">
+  </head>
+  <body>
+    <header>
+      <!--nav.navbar.navbar-default-->
+      <!--    .container-fluid-->
+      <!--        .navbar-header-->
+      <!--            button.navbar-toggle.collapsed(type='button', data-toggle='collapse', data-target='#navbar', aria-expanded='false', aria-controls='navbar')-->
+      <!--                span.sr-only Toggle navigation-->
+      <!--                span.icon-bar-->
+      <!--                span.icon-bar-->
+      <!--                span.icon-bar-->
+      <!--            a.navbar-brand(href='#') Project name-->
+      <!--        #navbar.navbar-collapse.collapse-->
+      <!--            ul.nav.navbar-nav-->
+      <!--                li.active-->
+      <!--                    a(href='/index.html') Home-->
+      <!--                li-->
+      <!--                    a(href='/example.html') Example-->
+    </header>
+    <div id="root">
+      <v-steps @on-complete="form2">
+        <h2 slot="header"> Header</h2>
+        <v-step :validating="true">
+          <v-input name="f1" type="text" label="step 1" rules="required"></v-input>
+          <v-input name="f2" type="text" label="step 1" rules="required"></v-input>
+          <v-input name="f3" type="text" label="step 1" rules="required"></v-input>
+        </v-step>
+        <v-step :validating="true">
+          <v-input name="f4" type="text" label="step 2" rules="required"></v-input>
+          <v-input name="f5" type="text" label="step 2" rules="required"></v-input>
+        </v-step>
+        <v-step :validating="true">
+          <v-input name="f5" type="text" label="step 3" rules="required"></v-input>
+          <v-input name="f6" type="text" label="step 3" rules="required"></v-input>
+        </v-step>
+        <v-step :validating="true">
+          <v-input name="f7" type="text" label="step 4" rules="required"></v-input>
+        </v-step>
+        <h2 slot="footer">Footer</h2>
+      </v-steps>
+    </div>
+    <script src="js/lib.min.js"></script>
+    <script src="https://maxcdn.bootstrapcdn.com/bootstrap/3.3.7/js/bootstrap.min.js"></script>
+    <script src="js/vue/components.js"></script>
+    <script src="js/vue/filters.js"></script>
+    <script src="js/app.min.js"></script>
+  </body>
+</html>

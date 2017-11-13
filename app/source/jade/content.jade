@@ -31,7 +31,7 @@ main#root
 
             .col-md-12
                 h1 Form
-                v-form( ref="qqq")
+                v-form( ref="form1")
                     v-input(name="f1" id="f1" classes="custom" v-model="contact.firstName" placeholder="First name" label="First name" inline=true rules="required")
                     v-textarea(name="t1" v-model="contact.lastName" placeholder="Last name" label="Last name" inline=true rules="required")
                     v-check-group(header="Group 1" inline=true)
@@ -44,13 +44,13 @@ main#root
                         v-radio(id="r2" label="r2" v-model="contact.gender" value="r2")
                         v-radio(id="r3" label="r3" v-model="contact.gender" value="r3")
                         v-radio(id="r4" label="r4" v-model="contact.gender" value="r4")
-                        
+
                     v-radio-group(name="rr1" header="Radio group 1" rules="required")
                         v-radio(id="rr1" label="rr1" v-model="contact.gender" value="rr1")
                         v-radio(id="rr2" label="r2" v-model="contact.gender" value="r2")
                         v-radio(id="rr3" label="r3" v-model="contact.gender" value="r3")
                         v-radio(id="rr4" label="r4" v-model="contact.gender" value="r4")
-                        
+
                     v-select(name="s1" v-model="contact.age" id="s1" classes="select" label="Age" inline=true rules="required")
                         v-select-option(label="Select" value="")
                         v-select-option(label="op1" value="op1")
@@ -58,5 +58,19 @@ main#root
                         v-select-option(label="op1" value="op3")
                         v-select-option(label="op1" value="op4")
                     v-button( :disabled="errors.any()", :click="submit" value="Save" classes="btn btn-info" type="submit")
+                    p(v-for="error in errors.items")
+                        span(v-text="error.msg")
+
+            .col-md-12
+                v-form( ref="qqq")
+                    v-input(name="ff2" id="fff1" classes="custom" v-model="contact.firstName" placeholder="First name" label="First name" inline=true rules="required")
+
+                    v-select(name="ssss1" v-model="contact.age" id="ssss1" classes="select" label="Age" inline=true rules="required")
+                        v-select-option(label="Select" value="")
+                        v-select-option(label="op1" value="op1")
+                        v-select-option(label="op1" value="op2")
+                        v-select-option(label="op1" value="op3")
+                        v-select-option(label="op1" value="op4")
+                    v-button( :disabled="errors.any()", :click="submit('qqq')" value="Save" classes="btn btn-info" type="submit")
                     p(v-for="error in errors.items")
                         span(v-text="error.msg")

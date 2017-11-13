@@ -1,7 +1,7 @@
 Vue.prototype.$eventHub = new Vue();
 
 Vue.component('v-form', {
-    template: '<form :ref="customRef" :class="{\'form-inline\':inline, classes}" @submit.prevent="submit"><slot></slot></form>',
+    template: '<form ref="form" :class="{\'form-inline\':inline, classes}" @submit.prevent="submit"><slot></slot></form>',
     props: {
         inline: {
             type: Boolean,
@@ -13,15 +13,13 @@ Vue.component('v-form', {
         submit: {
             type: Function
         },
-        customRef:{
-            type: String,
-            default: 'form'
-        }
     },
-    mounted() {},
+    mounted() {
+        this.$eventHub.$on('form_validate', this.validate);
+    },
     methods: {
         validate: function () {
-            this.$emit('val');
+            this.$eventHub.$emit('validate_' + this._uid);
         }
     }
 });

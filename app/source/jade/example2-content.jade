@@ -1,0 +1,18 @@
+#root
+
+    v-steps(@on-complete="form2")
+        h2(slot="header")  Header
+        v-step(:validating="true")
+            v-input(name="f1" type="text" label="step 1" rules="required")
+            v-input(name="f2" type="text" label="step 1" rules="required")
+            v-input(name="f3" type="text" label="step 1" rules="required")
+        v-step(:validating="true")
+            v-input(name="f4" type="text" label="step 2" rules="required")
+            v-input(name="f5" type="text" label="step 2" rules="required")
+        v-step(:validating="true")
+            v-input(name="f5" type="text" label="step 3" rules="required")
+            v-input(name="f6" type="text" label="step 3" rules="required")
+        v-step(:validating="true")
+            v-input(name="f7" type="text" label="step 4" rules="required")
+        h2(slot="footer") Footer
+

@@ -1,5 +1,5 @@
 Vue.component('v-textarea', {
-    template: '<div class="form-group row" >' +
+    template: '<div class="form-group row" :class="[errors.first(name)?\'has-error\':\'has-success\']">' +
     '<div :class="[inline?\'col-md-3\':\'col-md-12\']">' +
     '<label v-if="label">{{label}}</label>' +
     '</div>' +
@@ -31,7 +31,7 @@ Vue.component('v-textarea', {
         }
     },
     mounted() {
-        this.$eventHub.$on('validate', this.onValidate);
+        this.$eventHub.$on('validate_' + this.$parent, this.onValidate);
         this.$watch(() => this.errors.items, (newValue, oldValue) => {
             this.$eventHub.$emit('errors-changed', newValue, oldValue, this.name);
         })

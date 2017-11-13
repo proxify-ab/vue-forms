@@ -1,5 +1,5 @@
 Vue.component('v-radio-group', {
-    template: '<div class="form-group row">' +
+    template: '<div class="form-group row" :class="[errors.first(name)?\'has-error\':\'has-success\']">' +
     '<div :class="[inline ? \'col-md-3\' : \'col-md-12\']" v-if="header">' +
     '<label>{{header}}</label>' +
     '</div>' +
@@ -27,7 +27,7 @@ Vue.component('v-radio-group', {
         }
     },
     mounted() {
-        this.$eventHub.$on('validate', this.onValidate);
+        this.$eventHub.$on('validate_' + this.$parent._uid, this.onValidate);
         this.$watch(() => this.errors.items, (newValue, oldValue) => {
             this.$eventHub.$emit('errors-changed', newValue, oldValue, this.name);
         });
@@ -35,7 +35,7 @@ Vue.component('v-radio-group', {
     },
     methods: {
         onValidate() {
-            this.$eventHub.$emit(this.name + 'validate', this.name);
+            this.$eventHub.$emit(this.name + '_validate', this.name);
         },
         onReturnValidate: function (newErrors, oldErrors) {
             if (oldErrors !== undefined && Array.isArray(oldErrors)) {

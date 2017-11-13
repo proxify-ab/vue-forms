@@ -28,7 +28,7 @@ Vue.component('v-check', {
         event: 'change'
     },
     mounted() {
-        this.$eventHub.$on('validate', this.onValidate);
+        this.$eventHub.$on('validate_' + this.$parent._uid, this.onValidate);
         this.$watch(() => this.errors.items, (newValue, oldValue) => {
             this.$eventHub.$emit('errors-changed', newValue, oldValue, this.name);
         })

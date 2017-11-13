@@ -1,5 +1,5 @@
 Vue.component('v-select', {
-    template: '<div class="form-group row">' +
+    template: '<div class="form-group row" :class="[errors.first(name)?\'has-error\':\'has-success\']">' +
     '<div :class="[inline? \'col-md-3\' : \'col-md-12\']" v-if="label"><label>{{label}}</label></div>' +
     '<div :class="[inline? \'col-md-9\' : \'col-md-12\']">' +
     '<select v-validate :data-vv-rules="rules" :name="name" :id="id" :class="classes" class="form-control" v-on:change="updateValue($event.target.value)"><slot></slot></select>' +
@@ -25,7 +25,7 @@ Vue.component('v-select', {
         }
     },
     mounted() {
-        this.$eventHub.$on('validate', this.onValidate);
+        this.$eventHub.$on('validate_' + this.$parent._uid, this.onValidate);
         this.$watch(() => this.errors.items, (newValue, oldValue) => {
             this.$eventHub.$emit('errors-changed', newValue, oldValue, this.name);
         })

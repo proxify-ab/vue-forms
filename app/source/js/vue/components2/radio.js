@@ -15,7 +15,7 @@ Vue.component('v-radio', {
         event: 'change'
     },
     mounted() {
-        this.$eventHub.$on(this.name + 'validate', this.onValidate);
+        this.$eventHub.$on(this.name + '_validate', this.onValidate);
         this.$watch(() => this.errors.items, (newValue, oldValue) => {
             this.$eventHub.$emit(this.name + 'return_validate', newValue, oldValue);
         })

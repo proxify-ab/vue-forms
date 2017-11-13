@@ -32,7 +32,7 @@
       </div>
       <div class="col-md-12">
         <h1>Form</h1>
-        <v-form ref="qqq">
+        <v-form ref="form1">
           <v-input name="f1" id="f1" classes="custom" v-model="contact.firstName" placeholder="First name" label="First name" inline="inline" rules="required"></v-input>
           <v-textarea name="t1" v-model="contact.lastName" placeholder="Last name" label="Last name" inline="inline" rules="required"></v-textarea>
           <v-check-group header="Group 1" inline="inline">
@@ -61,6 +61,20 @@
             <v-select-option label="op1" value="op4"></v-select-option>
           </v-select>
           <v-button :disabled="errors.any()" :click="submit" value="Save" classes="btn btn-info" type="submit"></v-button>
+          <p v-for="error in errors.items"><span v-text="error.msg"></span></p>
+        </v-form>
+      </div>
+      <div class="col-md-12">
+        <v-form ref="qqq">
+          <v-input name="ff2" id="fff1" classes="custom" v-model="contact.firstName" placeholder="First name" label="First name" inline="inline" rules="required"></v-input>
+          <v-select name="ssss1" v-model="contact.age" id="ssss1" classes="select" label="Age" inline="inline" rules="required">
+            <v-select-option label="Select" value=""></v-select-option>
+            <v-select-option label="op1" value="op1"></v-select-option>
+            <v-select-option label="op1" value="op2"></v-select-option>
+            <v-select-option label="op1" value="op3"></v-select-option>
+            <v-select-option label="op1" value="op4"></v-select-option>
+          </v-select>
+          <v-button :disabled="errors.any()" :click="submit('qqq')" value="Save" classes="btn btn-info" type="submit"></v-button>
           <p v-for="error in errors.items"><span v-text="error.msg"></span></p>
         </v-form>
       </div>

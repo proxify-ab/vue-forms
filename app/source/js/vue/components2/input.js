@@ -1,10 +1,10 @@
 Vue.component('v-input', {
-    template: '<div class="form-group row" >' +
+    template: '<div class="form-group row" :class="[errors.first(name)?\'has-error\':\'has-success\']">' +
     '<div :class="[inline ? \'col-md-3\' : \'col-md-12\']">' +
     '<label v-if="label">{{label}}</label>' +
     '</div>' +
-    '<div :class="[inline ? \'col-md-9\' : \'col-md-12\']">' +
-    '<input v-validate :data-vv-rules="rules" :type="type" :id="id" :class="classes" class="form-control" :name="name" :value="value" v-on:input="updateValue($event.target.value)" v-on:blur="blur($event.target.value)" :placeholder="placeholder">' +
+    '<div :class="[inline ? \'col-md-9\' : \'col-md-6\']">' +
+    '<input v-validate :data-vv-rules="rules" :type="type" :id="id" :class="[classes, errors.first(name)?\'has-error\':\'has-success\']" class="form-control" :name="name" :value="value" v-on:input="updateValue($event.target.value)" v-on:blur="blur($event.target.value)" :placeholder="placeholder" :readonly="readonly" :required="required">' +
     '<span v-if="errors.has(name)" class="small text-danger">{{ errors.first(name) }}</span>' +
     '</div>' +
     '</div>',
@@ -38,15 +38,14 @@ Vue.component('v-input', {
         },
         rules: {
             type: String,
-        }
+        },
+        readonly: {},
+        required: {}
     },
     mounted() {
-        this.$eventHub.$on('validate', this.onValidate);
+        this.$eventHub.$on('validate_' + this.$parent._uid, this.onValidate);
         this.$watch(() => this.errors.items, (newValue, oldValue) => {
             this.$eventHub.$emit('errors-changed', newValue, oldValue, this.name);
-        });
-        this.$on('val', () => {
-            alert('Val');
         });
     },
     methods: {
@@ -65,6 +64,6 @@ Vue.component('v-input', {
     },
     beforeDestroy() {
         this.$eventHub.$emit('errors-changed', [], this.errors);
-        this.$eventHub.$off('validate', this.onValidate)
+        this.$eventHub.$off('validate_' + this.$parent._uid, this.onValidate)
     },
 });

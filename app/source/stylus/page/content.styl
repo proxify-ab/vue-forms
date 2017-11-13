@@ -37,3 +37,31 @@
       margin auto
       font: normal normal normal 18px / 1 FontAwesome;
       content "\f00c"
+
+.steps
+  padding 30px 0
+  &-navigation
+    padding 20px 0
+    transition 0.5s
+    @media screen and (min-width: 992px)
+      padding 25px 15px
+      position fixed
+      top 0
+      left 0
+      right 0
+    &-progress
+      background #ccc
+      position relative
+      overflow hidden
+      border-radius 4px
+      &-bar
+        transition width 0.5s
+        background green
+        position absolute
+        top 0
+        left 0
+        height 100%
+
+
+
+
