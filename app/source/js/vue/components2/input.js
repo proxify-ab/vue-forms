@@ -1,13 +1,20 @@
 Vue.component('v-input', {
-    template: '<div class="form-group row" :class="[errors.first(name)?\'has-error\':\'has-success\']">' +
-    '<div :class="[inline ? \'col-md-3\' : \'col-md-12\']">' +
-    '<label v-if="label">{{label}}</label>' +
-    '</div>' +
-    '<div :class="[inline ? \'col-md-9\' : \'col-md-6\']">' +
-    '<input v-validate :data-vv-rules="rules" :type="type" :id="id" :class="[classes, errors.first(name)?\'has-error\':\'has-success\']" class="form-control" :name="name" :value="value" v-on:input="updateValue($event.target.value)" v-on:blur="blur($event.target.value)" :placeholder="placeholder" :readonly="readonly" :required="required">' +
-    '<span v-if="errors.has(name)" class="small text-danger">{{ errors.first(name) }}</span>' +
-    '</div>' +
-    '</div>',
+    template:
+    '<div class="form-group row" :class="[errors.first(name)?\'has-error\':\'has-success\']">\n' +
+    '            <div :class="{\'col-md-12\':!inline}">\n' +
+    '              <div :class="{\'row\':!inline}">\n' +
+    '                <div :class="labelCols">\n' +
+    '                  <label v-if="label">{{label}}</label>\n' +
+    '                </div>\n' +
+    '              </div>\n' +
+    '              <div :class="{\'row\':!inline}">\n' +
+    '                <div :class="inputCols">\n' +
+    '                  <input v-validate :data-vv-rules="rules" :type="type" :id="id" :class="classes" class="form-control" :name="name" :value="value" @input="updateValue($event.target.value)" @blur="blur($event.target.value)" :placeholder="placeholder" :readonly="readonly" :required="required">\n' +
+    '                  <span v-if="errors.has(name)" class="small text-danger"><i class="fa fa-warning"></i>{{ errors.first(name) }}</span>' +
+    '                </div>\n' +
+    '              </div>\n' +
+    '            </div>\n' +
+    '          </div>',
     props: {
         name: {
             type: String,
@@ -39,8 +46,22 @@ Vue.component('v-input', {
         rules: {
             type: String,
         },
-        readonly: {},
-        required: {}
+        readonly: {
+            type: Boolean,
+            default: false
+        },
+        required: {
+            type: Boolean,
+            default: false
+        },
+        labelCols:{
+            type: String,
+            default: 'col-md-12'
+        },
+        inputCols:{
+            type: String,
+            default: 'col-md-12'
+        }
     },
     mounted() {
         this.$eventHub.$on('validate_' + this.$parent._uid, this.onValidate);

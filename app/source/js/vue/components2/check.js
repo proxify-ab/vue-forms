@@ -2,7 +2,7 @@ Vue.component('v-check', {
     template: '<div :class="{\'form-group\':single, \'display-inline\':inline}">' +
     '<input v-validate :data-vv-rules="rules" type="checkbox" :name="name" :id="id" :value="value" :checked="checked" v-on:change="updateValue($event.target.checked)">' +
     '<label :for="id" v-if="label">{{label}}</label>' +
-    '<span v-if="errors.has(name)" class="small text-danger">{{ errors.first(name) }}</span>' +
+    '<span v-if="errors.has(name)" class="small text-danger"><i class="fa fa-warning"></i>{{ errors.first(name) }}</span>' +
     '</div>',
     props: {
         name: {

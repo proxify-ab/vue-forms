@@ -4,8 +4,8 @@ Vue.component('v-textarea', {
     '<label v-if="label">{{label}}</label>' +
     '</div>' +
     '<div :class="[inline?\'col-md-9\':\'col-md-12\']">' +
-    '<textarea v-validate :data-vv-rules="rules" :id="id" :class="classes" class="form-control" :name="name" v-on:input="updateValue($event.target.value)" v-on:blur="blur($event.target.value)" :placeholder="placeholder">{{value}}</textarea>' +
-    '<span class="text-danger" v-if="this.errors.has(name)">{{ errors.first(name) }}</span>' +
+    '<textarea :rows="rows" v-validate :data-vv-rules="rules" :data-vv-value="value" :id="id" :class="classes" class="form-control" :name="name" @input="updateValue($event.target.value)" @blur="blur($event.target.value)" :placeholder="placeholder">{{value}}</textarea>' +
+    '<span v-if="errors.has(name)" class="small text-danger"><i class="fa fa-warning"></i>{{ errors.first(name) }}</span>' +
     '</div>' +
     '</div>',
     props: {
@@ -28,13 +28,16 @@ Vue.component('v-textarea', {
         },
         rules: {
             type: String
-        }
+        },
+        rows: {
+            default: 5
+        },
     },
     mounted() {
-        this.$eventHub.$on('validate_' + this.$parent, this.onValidate);
+        this.$eventHub.$on('validate_' + this.$parent._uid, this.onValidate);
         this.$watch(() => this.errors.items, (newValue, oldValue) => {
             this.$eventHub.$emit('errors-changed', newValue, oldValue, this.name);
-        })
+        });
     },
     methods: {
         enterKeyPressed() {
@@ -52,6 +55,6 @@ Vue.component('v-textarea', {
     },
     beforeDestroy() {
         this.$eventHub.$emit('errors-changed', [], this.errors);
-        this.$eventHub.$off('validate', this.onValidate)
+        this.$eventHub.$off('validate_' + this.$parent._uid, this.onValidate)
     },
 });

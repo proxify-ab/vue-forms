@@ -2,8 +2,8 @@ Vue.component('v-select', {
     template: '<div class="form-group row" :class="[errors.first(name)?\'has-error\':\'has-success\']">' +
     '<div :class="[inline? \'col-md-3\' : \'col-md-12\']" v-if="label"><label>{{label}}</label></div>' +
     '<div :class="[inline? \'col-md-9\' : \'col-md-12\']">' +
-    '<select v-validate :data-vv-rules="rules" :name="name" :id="id" :class="classes" class="form-control" v-on:change="updateValue($event.target.value)"><slot></slot></select>' +
-    '<span v-if="errors.has(name)" class="small text-danger">{{ errors.first(name) }}</span>' +
+    '<select v-validate :data-vv-rules="rules" :name="name" :id="id" :class="classes" class="form-control" @change="updateValue($event.target.value)"><slot></slot></select>' +
+    '<span v-if="errors.has(name)" class="small text-danger"><i class="fa fa-warning"></i>{{ errors.first(name) }}</span>' +
     '</div>' +
     '</div>',
     props: {

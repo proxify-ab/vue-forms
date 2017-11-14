@@ -7,7 +7,7 @@ Vue.component('v-radio-group', {
     '<slot></slot>' +
     '</div>' +
     '<div class="col-md-12">' +
-    '<span v-if="errors.has(name)" class="small text-danger">{{ errors.first(name) }}</span>' +
+    '<span v-if="errors.has(name)" class="small text-danger"><i class="fa fa-warning"></i>{{ errors.first(name) }}</span>' +
     '</div>' +
     '</div>',
     props: {
@@ -19,6 +19,10 @@ Vue.component('v-radio-group', {
             type: String
         },
         inline: {
+            type: Boolean,
+            default: false
+        },
+        inlineItems: {
             type: Boolean,
             default: false
         },
