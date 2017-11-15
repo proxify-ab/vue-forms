@@ -1,8 +1,9 @@
 Vue.component('v-select', {
-    template: '<div class="form-group row" :class="[errors.first(name)?\'has-error\':\'has-success\']">' +
-    '<div :class="[inline? \'col-md-3\' : \'col-md-12\']" v-if="label"><label>{{label}}</label></div>' +
+    template: '<div class="form-group row" :class="{\'has-error\':errors.first(name), \'has-success\':!errors.first(name) && fields[name].touched}">' +
+    '<div :class="[inline? \'col-md-3\' : \'col-md-12\']" v-if="label"><label class="control-label">{{label}}</label></div>' +
     '<div :class="[inline? \'col-md-9\' : \'col-md-12\']">' +
     '<select v-validate :data-vv-rules="rules" :name="name" :id="id" :class="classes" class="form-control" @change="updateValue($event.target.value)"><slot></slot></select>' +
+    '<span class="help-block" v-if="helpText">{{helpText}}</span>' +
     '<span v-if="errors.has(name)" class="small text-danger"><i class="fa fa-warning"></i>{{ errors.first(name) }}</span>' +
     '</div>' +
     '</div>',
@@ -21,6 +22,9 @@ Vue.component('v-select', {
             default: false
         },
         rules: {
+            type: String
+        },
+        helpText: {
             type: String
         }
     },

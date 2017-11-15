@@ -1,13 +1,14 @@
 Vue.component('v-radio-group', {
-    template: '<div class="form-group row" :class="[errors.first(name)?\'has-error\':\'has-success\']">' +
+    template: '<div class="form-group row" :class="{\'has-error\':errors.first(name), \'has-success\':!errors.first(name) && fields[name].touched}">' +
     '<div :class="[inline ? \'col-md-3\' : \'col-md-12\']" v-if="header">' +
-    '<label>{{header}}</label>' +
+    '<label class="control-label">{{header}}</label>' +
     '</div>' +
     '<div :class="[ inline ? \'col-md-9\' : \'col-md-12\' ]">' +
     '<slot></slot>' +
+    '<span class="help-block" v-if="helpText">{{helpText}}</span>' +
     '</div>' +
-    '<div class="col-md-12">' +
-    '<span v-if="errors.has(name)" class="small text-danger"><i class="fa fa-warning"></i>{{ errors.first(name) }}</span>' +
+    '<div class="col-md-12" v-if="errors.has(name)">' +
+    '<span class="small text-danger"><i class="fa fa-warning"></i>{{ errors.first(name) }}</span>' +
     '</div>' +
     '</div>',
     props: {
@@ -27,6 +28,9 @@ Vue.component('v-radio-group', {
             default: false
         },
         rules: {
+            type: String
+        },
+        helpText: {
             type: String
         }
     },
@@ -68,3 +72,4 @@ Vue.component('v-radio-group', {
         this.$eventHub.$off('validate', this.onValidate)
     },
 });
+

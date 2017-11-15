@@ -14,7 +14,6 @@ Vue.component('v-button', {
         classesBtn: {},
         id: {},
         clicked: {}
-
     },
     mounted: function mounted() {},
 
@@ -44,7 +43,7 @@ Vue.component('v-check-group', {
 'use strict';
 
 Vue.component('v-check', {
-    template: '<div :class="{\'form-group\':single, \'display-inline\':inline}">' + '<input v-validate :data-vv-rules="rules" type="checkbox" :name="name" :id="id" :value="value" :checked="checked" v-on:change="updateValue($event.target.checked)">' + '<label :for="id" v-if="label">{{label}}</label>' + '<span v-if="errors.has(name)" class="small text-danger"><i class="fa fa-warning"></i>{{ errors.first(name) }}</span>' + '</div>',
+    template: '<div :class="{\'form-group\':single, \'display-inline\':inline, \'has-error\':errors.first(name), \'has-success\':!errors.first(name) && fields[name].touched}">' + '<input v-validate :data-vv-rules="rules" type="checkbox" :name="name" :id="id" :value="value" :checked="checked" v-on:change="updateValue($event.target.checked)">' + '<label :for="id" v-if="label" class="control-label">{{label}}</label>' + '<span class="help-block" v-if="helpText">{{helpText}}</span>' + '<span v-if="errors.has(name)" class="small text-danger"><i class="fa fa-warning"></i>{{ errors.first(name) }}</span>' + '</div>',
     props: {
         name: {
             type: String,
@@ -61,6 +60,9 @@ Vue.component('v-check', {
         checked: Boolean,
         value: {},
         rules: {
+            type: String
+        },
+        helpText: {
             type: String
         }
     },
@@ -131,7 +133,7 @@ Vue.component('v-form', {
 'use strict';
 
 Vue.component('v-input', {
-    template: '<div class="form-group row" :class="[errors.first(name)?\'has-error\':\'has-success\']">\n' + '            <div :class="{\'col-md-12\':!inline}">\n' + '              <div :class="{\'row\':!inline}">\n' + '                <div :class="labelCols">\n' + '                  <label v-if="label">{{label}}</label>\n' + '                </div>\n' + '              </div>\n' + '              <div :class="{\'row\':!inline}">\n' + '                <div :class="inputCols">\n' + '                  <input v-validate :data-vv-rules="rules" :type="type" :id="id" :class="classes" class="form-control" :name="name" :value="value" @input="updateValue($event.target.value)" @blur="blur($event.target.value)" :placeholder="placeholder" :readonly="readonly" :required="required">\n' + '                  <span v-if="errors.has(name)" class="small text-danger"><i class="fa fa-warning"></i>{{ errors.first(name) }}</span>' + '                </div>\n' + '              </div>\n' + '            </div>\n' + '          </div>',
+    template: '<div class="form-group row" :class="{\'has-error\':errors.first(name), \'has-success\':!errors.first(name) && fields[name].touched}">\n' + '<div :class="{\'col-md-12\':!inline}">\n' + '              <div :class="{\'row\':!inline}">\n' + '                <div :class="labelCols">\n' + '                  <label v-if="label" class="control-label">{{label}}</label>\n' + '                </div>\n' + '              </div>\n' + '              <div :class="{\'row\':!inline}">\n' + '                <div :class="inputCols">\n' + '                  <input v-validate :data-vv-rules="rules" :type="type" :id="id" :class="classes" class="form-control" :name="name" :value="value" @change="updateValue($event.target.value)" @input="updateValue($event.target.value)" @blur="blur($event.target.value)" :placeholder="placeholder" :readonly="readonly" :required="required">' + '                  <span class="help-block" v-if="helpText">{{helpText}}</span>' + '                  <span v-if="errors.has(name)" class="small text-danger"><i class="fa fa-warning"></i>{{ errors.first(name) }}</span>' + '                </div>\n' + '              </div>\n' + '            </div>\n' + '          </div>',
     props: {
         name: {
             type: String,
@@ -178,6 +180,9 @@ Vue.component('v-input', {
         inputCols: {
             type: String,
             default: 'col-md-12'
+        },
+        helpText: {
+            type: String
         }
     },
     mounted: function mounted() {
@@ -213,7 +218,7 @@ Vue.component('v-input', {
 'use strict';
 
 Vue.component('v-radio-group', {
-    template: '<div class="form-group row" :class="[errors.first(name)?\'has-error\':\'has-success\']">' + '<div :class="[inline ? \'col-md-3\' : \'col-md-12\']" v-if="header">' + '<label>{{header}}</label>' + '</div>' + '<div :class="[ inline ? \'col-md-9\' : \'col-md-12\' ]">' + '<slot></slot>' + '</div>' + '<div class="col-md-12">' + '<span v-if="errors.has(name)" class="small text-danger"><i class="fa fa-warning"></i>{{ errors.first(name) }}</span>' + '</div>' + '</div>',
+    template: '<div class="form-group row" :class="{\'has-error\':errors.first(name), \'has-success\':!errors.first(name) && fields[name].touched}">' + '<div :class="[inline ? \'col-md-3\' : \'col-md-12\']" v-if="header">' + '<label class="control-label">{{header}}</label>' + '</div>' + '<div :class="[ inline ? \'col-md-9\' : \'col-md-12\' ]">' + '<slot></slot>' + '<span class="help-block" v-if="helpText">{{helpText}}</span>' + '</div>' + '<div class="col-md-12" v-if="errors.has(name)">' + '<span class="small text-danger"><i class="fa fa-warning"></i>{{ errors.first(name) }}</span>' + '</div>' + '</div>',
     props: {
         name: {
             type: String,
@@ -231,6 +236,9 @@ Vue.component('v-radio-group', {
             default: false
         },
         rules: {
+            type: String
+        },
+        helpText: {
             type: String
         }
     },
@@ -282,11 +290,14 @@ Vue.component('v-radio-group', {
 'use strict';
 
 Vue.component('v-radio', {
-    template: '<div :class="{\'d-inline\':inline}" class="v-radio">' + '<input v-validate :data-vv-rules="rules" type="radio" :name="name" :id="id" :value="value" @change="updateValue($event.target.value)" :class="classes">' + '<label :for="id"><slot name="icon"></slot><slot name="text"></slot></label>' + '</div>',
+    template: '<div :class="{\'d-inline\':inline}">' + '<label :for="id" class="radio-box radio-box-inline control-label">' + '<input v-validate :data-vv-rules="rules" type="radio" :name="name" :id="id" :value="value" @change="updateValue($event.target.value)" :class="classes">' + '<slot></slot></label>' + '<span class="help-block" v-if="helpText">{{helpText}}</span>' + '</div>',
     props: {
         id: {},
         classes: {},
-        value: {}
+        value: {},
+        helpText: {
+            type: String
+        }
     },
     model: {
         prop: 'checked',
@@ -343,7 +354,7 @@ Vue.component('v-select-option', {
 'use strict';
 
 Vue.component('v-select', {
-    template: '<div class="form-group row" :class="[errors.first(name)?\'has-error\':\'has-success\']">' + '<div :class="[inline? \'col-md-3\' : \'col-md-12\']" v-if="label"><label>{{label}}</label></div>' + '<div :class="[inline? \'col-md-9\' : \'col-md-12\']">' + '<select v-validate :data-vv-rules="rules" :name="name" :id="id" :class="classes" class="form-control" @change="updateValue($event.target.value)"><slot></slot></select>' + '<span v-if="errors.has(name)" class="small text-danger"><i class="fa fa-warning"></i>{{ errors.first(name) }}</span>' + '</div>' + '</div>',
+    template: '<div class="form-group row" :class="{\'has-error\':errors.first(name), \'has-success\':!errors.first(name) && fields[name].touched}">' + '<div :class="[inline? \'col-md-3\' : \'col-md-12\']" v-if="label"><label class="control-label">{{label}}</label></div>' + '<div :class="[inline? \'col-md-9\' : \'col-md-12\']">' + '<select v-validate :data-vv-rules="rules" :name="name" :id="id" :class="classes" class="form-control" @change="updateValue($event.target.value)"><slot></slot></select>' + '<span class="help-block" v-if="helpText">{{helpText}}</span>' + '<span v-if="errors.has(name)" class="small text-danger"><i class="fa fa-warning"></i>{{ errors.first(name) }}</span>' + '</div>' + '</div>',
     props: {
         name: {
             type: String,
@@ -359,6 +370,9 @@ Vue.component('v-select', {
             default: false
         },
         rules: {
+            type: String
+        },
+        helpText: {
             type: String
         }
     },
@@ -389,7 +403,7 @@ Vue.component('v-select', {
 'use strict';
 
 Vue.component('v-textarea', {
-    template: '<div class="form-group row" :class="[errors.first(name)?\'has-error\':\'has-success\']">' + '<div :class="[inline?\'col-md-3\':\'col-md-12\']">' + '<label v-if="label">{{label}}</label>' + '</div>' + '<div :class="[inline?\'col-md-9\':\'col-md-12\']">' + '<textarea :rows="rows" v-validate :data-vv-rules="rules" :data-vv-value="value" :id="id" :class="classes" class="form-control" :name="name" @input="updateValue($event.target.value)" @blur="blur($event.target.value)" :placeholder="placeholder">{{value}}</textarea>' + '<span v-if="errors.has(name)" class="small text-danger"><i class="fa fa-warning"></i>{{ errors.first(name) }}</span>' + '</div>' + '</div>',
+    template: '<div class="form-group row" :class="{\'has-error\':errors.first(name), \'has-success\':!errors.first(name) && fields[name].touched}">' + '<div :class="[inline?\'col-md-3\':\'col-md-12\']">' + '<label v-if="label" class="control-label">{{label}}</label>' + '</div>' + '<div :class="[inline?\'col-md-9\':\'col-md-12\']">' + '<textarea :rows="rows" v-validate :data-vv-rules="rules" :data-vv-value="value" :id="id" :class="classes" class="form-control" :name="name" @input="updateValue($event.target.value)" @blur="blur($event.target.value)" :placeholder="placeholder">{{value}}</textarea>' + '<span class="help-block" v-if="helpText">{{helpText}}</span>' + '<span v-if="errors.has(name)" class="small text-danger"><i class="fa fa-warning"></i>{{ errors.first(name) }}</span>' + '</div>' + '</div>',
     props: {
         name: {
             type: String,
@@ -413,6 +427,9 @@ Vue.component('v-textarea', {
         },
         rows: {
             default: 5
+        },
+        helpText: {
+            type: String
         }
     },
     mounted: function mounted() {
@@ -524,7 +541,7 @@ Vue.component('v-step', {
 
 Vue.component('v-steps', {
     name: 'steps',
-    template: '<div class="col-md-12">\n' + '<div class="steps">\n' + '<v-step-nav :width="progress"></v-step-nav>' + '<div class="steps-header"><slot name="header"></slot></div>\n' + '<div class="steps-content"><slot></slot></div>\n' + '<div class="steps-btn clearfix">' + '<v-button :clicked="prevStep" v-if="!isFirstStep" classes="pull-left" classes-btn="btn btn-success btn-lg">Prev</v-button>' + '<v-button :clicked="nextStep" classes="pull-right" classes-btn="btn btn-success btn-lg" v-if="!isLastStep">Next</v-button>' + '<v-button :clicked="nextStep" v-if="isLastStep" classes="pull-right" classes-btn="btn btn-success btn-lg">Finish</v-button>' + '</div>\n' + '<div class="steps-footer "><slot name="footer"></slot></div>' + '</div>\n' + '</div>',
+    template: '<div class="steps">' + '<v-step-nav :width="progress"></v-step-nav>' + '<div class="steps-header"><slot name="header"></slot></div>' + '<div class="steps-content"><slot></slot></div>' + '<div class="steps-btn v-row">' + '<v-button :clicked="prevStep" v-if="!isFirstStep" classes="v-col d-inline" classes-btn="btn btn-default btn-lg">Prev</v-button>' + '<v-button :clicked="nextStep" v-if="!isLastStep" classes="v-col d-inline" classes-btn="btn btn-success btn-lg">Next</v-button>' + '<v-button :clicked="nextStep" v-if="isLastStep" classes="v-col d-inline" classes-btn="btn btn-success btn-lg">Finish</v-button>' + '</div>' + '<div class="steps-footer "><slot name="footer"></slot></div>' + '</div>',
     props: {
         prevButton: {
             type: Boolean,

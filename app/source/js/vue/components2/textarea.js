@@ -1,10 +1,11 @@
 Vue.component('v-textarea', {
-    template: '<div class="form-group row" :class="[errors.first(name)?\'has-error\':\'has-success\']">' +
+    template: '<div class="form-group row" :class="{\'has-error\':errors.first(name), \'has-success\':!errors.first(name) && fields[name].touched}">' +
     '<div :class="[inline?\'col-md-3\':\'col-md-12\']">' +
-    '<label v-if="label">{{label}}</label>' +
+    '<label v-if="label" class="control-label">{{label}}</label>' +
     '</div>' +
     '<div :class="[inline?\'col-md-9\':\'col-md-12\']">' +
     '<textarea :rows="rows" v-validate :data-vv-rules="rules" :data-vv-value="value" :id="id" :class="classes" class="form-control" :name="name" @input="updateValue($event.target.value)" @blur="blur($event.target.value)" :placeholder="placeholder">{{value}}</textarea>' +
+    '<span class="help-block" v-if="helpText">{{helpText}}</span>' +
     '<span v-if="errors.has(name)" class="small text-danger"><i class="fa fa-warning"></i>{{ errors.first(name) }}</span>' +
     '</div>' +
     '</div>',
@@ -32,6 +33,9 @@ Vue.component('v-textarea', {
         rows: {
             default: 5
         },
+        helpText: {
+            type: String
+        }
     },
     mounted() {
         this.$eventHub.$on('validate_' + this.$parent._uid, this.onValidate);

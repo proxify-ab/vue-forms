@@ -1,15 +1,16 @@
 Vue.component('v-input', {
     template:
-    '<div class="form-group row" :class="[errors.first(name)?\'has-error\':\'has-success\']">\n' +
-    '            <div :class="{\'col-md-12\':!inline}">\n' +
+    '<div class="form-group row" :class="{\'has-error\':errors.first(name), \'has-success\':!errors.first(name) && fields[name].touched}">\n' +
+    '<div :class="{\'col-md-12\':!inline}">\n' +
     '              <div :class="{\'row\':!inline}">\n' +
     '                <div :class="labelCols">\n' +
-    '                  <label v-if="label">{{label}}</label>\n' +
+    '                  <label v-if="label" class="control-label">{{label}}</label>\n' +
     '                </div>\n' +
     '              </div>\n' +
     '              <div :class="{\'row\':!inline}">\n' +
     '                <div :class="inputCols">\n' +
-    '                  <input v-validate :data-vv-rules="rules" :type="type" :id="id" :class="classes" class="form-control" :name="name" :value="value" @input="updateValue($event.target.value)" @blur="blur($event.target.value)" :placeholder="placeholder" :readonly="readonly" :required="required">\n' +
+    '                  <input v-validate :data-vv-rules="rules" :type="type" :id="id" :class="classes" class="form-control" :name="name" :value="value" @change="updateValue($event.target.value)" @input="updateValue($event.target.value)" @blur="blur($event.target.value)" :placeholder="placeholder" :readonly="readonly" :required="required">' +
+    '                  <span class="help-block" v-if="helpText">{{helpText}}</span>' +
     '                  <span v-if="errors.has(name)" class="small text-danger"><i class="fa fa-warning"></i>{{ errors.first(name) }}</span>' +
     '                </div>\n' +
     '              </div>\n' +
@@ -61,6 +62,9 @@ Vue.component('v-input', {
         inputCols:{
             type: String,
             default: 'col-md-12'
+        },
+        helpText:{
+            type: String
         }
     },
     mounted() {

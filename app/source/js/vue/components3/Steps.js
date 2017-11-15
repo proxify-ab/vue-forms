@@ -1,17 +1,15 @@
 Vue.component('v-steps', {
     name: 'steps',
-    template: '<div class="col-md-12">\n' +
-    '<div class="steps">\n' +
+    template: '<div class="steps">' +
     '<v-step-nav :width="progress"></v-step-nav>' +
-    '<div class="steps-header"><slot name="header"></slot></div>\n' +
-    '<div class="steps-content"><slot></slot></div>\n' +
-    '<div class="steps-btn clearfix">' +
-    '<v-button :clicked="prevStep" v-if="!isFirstStep" classes="pull-left" classes-btn="btn btn-success btn-lg">Prev</v-button>' +
-    '<v-button :clicked="nextStep" classes="pull-right" classes-btn="btn btn-success btn-lg" v-if="!isLastStep">Next</v-button>' +
-    '<v-button :clicked="nextStep" v-if="isLastStep" classes="pull-right" classes-btn="btn btn-success btn-lg">Finish</v-button>' +
-    '</div>\n' +
+    '<div class="steps-header"><slot name="header"></slot></div>' +
+    '<div class="steps-content"><slot></slot></div>' +
+    '<div class="steps-btn v-row">' +
+    '<v-button :clicked="prevStep" v-if="!isFirstStep" classes="v-col d-inline" classes-btn="btn btn-default btn-lg">Prev</v-button>' +
+    '<v-button :clicked="nextStep" v-if="!isLastStep" classes="v-col d-inline" classes-btn="btn btn-success btn-lg">Next</v-button>' +
+    '<v-button :clicked="nextStep" v-if="isLastStep" classes="v-col d-inline" classes-btn="btn btn-success btn-lg">Finish</v-button>' +
+    '</div>' +
     '<div class="steps-footer "><slot name="footer"></slot></div>' +
-    '</div>\n' +
     '</div>',
     props: {
         prevButton: {

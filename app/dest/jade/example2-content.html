@@ -6,9 +6,9 @@
       <v-input name="f1" type="text" label="step 1" rules="required" inline="inline" input-cols="col-md-10 col-sm-6" label-cols="col-md-2"></v-input>
       <v-input name="f2" type="text" label="step 1" rules="required" inline="inline"></v-input>
       <v-input name="f3" type="text" label="step 1" rules="required" inline="inline"></v-input>
-      <v-radio-group name="r1" header="Radio" rules="required" :inline-items="true">
-        <v-radio id="sp_male2" value="m"><i slot="icon" class="fa fa-vk icon"></i><span slot="text">Make</span></v-radio>
-        <v-radio id="sp_male1" value="m"><i slot="icon" class="fa fa-vk icon"></i><span slot="text">Make</span></v-radio>
+      <v-radio-group name="r1" header="Radio" rules="required" inline-items="inline-items">
+        <v-radio id="sp_male2" value="m"><i class="fa fa-vk icon"></i>Make</v-radio>
+        <v-radio id="sp_male1" value="m"><i class="fa fa-vk icon"></i>Make</v-radio>
       </v-radio-group>
     </v-step>
     <v-step :validating="true">
@@ -24,24 +24,4 @@
     </v-step>
     <h2 slot="footer">Footer</h2>
   </v-steps>
-</div>
-<div class="container-fluid">
-  <div class="row">
-    <div class="col-md-12">
-      <div class="form-group row">
-        <div class="col-md-12">
-          <div class="row">
-            <div class="col-md-12">
-              <label>qwe</label>
-            </div>
-          </div>
-          <div class="row">
-            <div class="col-md-12">
-              <input value="qwdwq"/>
-            </div>
-          </div>
-        </div>
-      </div>
-    </div>
-  </div>
 </div>

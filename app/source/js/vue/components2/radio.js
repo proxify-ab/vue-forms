@@ -1,12 +1,17 @@
 Vue.component('v-radio', {
-    template: '<div :class="{\'d-inline\':inline}" class="v-radio">' +
+    template: '<div :class="{\'d-inline\':inline}">' +
+    '<label :for="id" class="radio-box radio-box-inline control-label">' +
     '<input v-validate :data-vv-rules="rules" type="radio" :name="name" :id="id" :value="value" @change="updateValue($event.target.value)" :class="classes">' +
-    '<label :for="id"><slot name="icon"></slot><slot name="text"></slot></label>' +
+    '<slot></slot></label>' +
+    '<span class="help-block" v-if="helpText">{{helpText}}</span>' +
     '</div>',
     props: {
         id: {},
         classes: {},
         value: {},
+        helpText: {
+            type: String
+        }
     },
     model: {
         prop: 'checked',

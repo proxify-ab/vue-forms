@@ -12,7 +12,6 @@ Vue.component('v-button', {
         classesBtn: {},
         id: {},
         clicked: {}
-
     },
     mounted() {
     },

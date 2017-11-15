@@ -4,19 +4,8 @@
     position: relative
     &:active, &:focus
       border-color: #a94442
-  .control-container .wrap-controller
-    position relative
-    &::after
-      position: absolute
-      height 20px
-      width 30px
-      text-align center
-      top: 0
-      right: 5px
-      bottom: 0
-      margin auto
-      font: normal normal normal 18px / 1 FontAwesome;
-      content "\f00d"
+  .radio-box
+    border-color #a94442
 
 .has-success
   color #3c763d
@@ -24,31 +13,45 @@
     position: relative
     &:active, &:focus
       border-color: #3c763d
-  .control-container .wrap-controller
-    position relative
-    &::after
-      position: absolute
-      height 20px
-      width 30px
-      text-align center
-      top: 0
-      right: 5px
-      bottom: 0
-      margin auto
-      font: normal normal normal 18px / 1 FontAwesome;
-      content "\f00c"
+  .radio-box
+    border-color #3c763d
+
+.radio-box
+  position relative
+  padding 10px 15px 10px 40px
+  input
+    position absolute
+    top 0
+    bottom 0
+    left 15px
+    width 15px
+    margin auto
 
 .steps
-  padding 50px 0
+  padding 0 0 30px
+  @media screen and (min-width: 992px)
+    padding 70px 15px
   &-navigation
     padding 20px 0
     transition 0.5s
     @media screen and (min-width: 992px)
-      padding 20px 30px
+      padding 30px
       position fixed
       top 0
       right 0
       width calc(100% - 250px)
+    @media screen and (max-width: 992px){
+      &.fixed{
+        padding 30px
+        position fixed
+        top 0
+        right 0
+        width 100%
+        z-index 2
+        background #fff
+        box-shadow 0 2px 17px -8px #414141
+      }
+    }
     &-progress
       min-height 10 px
       background #ccc
@@ -66,30 +69,11 @@
 .d-inline
   display inline-block !important
   width auto !important
-  min-width 130px
 
-.v-radio
-  border: 1px solid
-  padding: 5px 10px
-  border-radius: 3px
-  position relative
-  margin-bottom 5px
-  text-align center
-  label
-    margin 0
-    &::before
-      content ''
-      position: absolute
-      width 100%
-      height 100%
-      top 0
-      left 0
-      cursor pointer
-      background transparent
-      transition 0.2s
-    .icon
-      padding 0 5px
-  input
-    margin 6px 0
-  input:checked + label::before
-    background rgba(69, 193, 69, 0.188)
+.v-row
+  margin-left -5px
+  margin-right -5px
+
+.v-col
+  padding-left 5px
+  padding-right 5px

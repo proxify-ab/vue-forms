@@ -6,13 +6,13 @@
             v-input(name="f1" type="text" label="step 1" rules="required" inline input-cols="col-md-10 col-sm-6" label-cols="col-md-2")
             v-input(name="f2" type="text" label="step 1" rules="required" inline)
             v-input(name="f3" type="text" label="step 1" rules="required" inline)
-            v-radio-group(name="r1" header="Radio" rules="required", :inline-items="true")
+            v-radio-group(name="r1" header="Radio" rules="required" inline-items)
                 v-radio(id="sp_male2" value="m")
-                    i.fa.fa-vk.icon(slot="icon")
-                    span(slot="text") Make
+                    i.fa.fa-vk.icon
+                    | Make
                 v-radio(id="sp_male1" value="m")
-                    i.fa.fa-vk.icon(slot="icon")
-                    span(slot="text") Make
+                    i.fa.fa-vk.icon
+                    | Make
         v-step(:validating="true")
             v-input(name="f4" type="text" label="step 2" rules="required")
             v-input(name="f5" type="text" label="step 2" rules="required")
@@ -23,15 +23,3 @@
             v-input(name="f7" type="text" label="step 4" rules="required")
         h2(slot="footer") Footer
 
-
-.container-fluid
-    .row
-        .col-md-12
-            .form-group.row
-                .col-md-12
-                    .row
-                        .col-md-12
-                            label() qwe
-                    .row
-                        .col-md-12
-                            input(value="qwdwq")
