@@ -1,20 +1,24 @@
 Vue.component('v-input', {
     template:
-    '<div class="form-group row" :class="{\'has-error\':errors.first(name), \'has-success\':!errors.first(name) && fields[name].touched}">\n' +
-    '<div :class="{\'col-md-12\':!inline}">\n' +
-    '              <div :class="{\'row\':!inline}">\n' +
-    '                <div :class="labelCols">\n' +
-    '                  <label v-if="label" class="control-label">{{label}}</label>\n' +
-    '                </div>\n' +
-    '              </div>\n' +
-    '              <div :class="{\'row\':!inline}">\n' +
-    '                <div :class="inputCols">\n' +
-    '                  <input v-validate :data-vv-rules="rules" :type="type" :id="id" :class="classes" class="form-control" :name="name" :value="value" @change="updateValue($event.target.value)" @input="updateValue($event.target.value)" @blur="blur($event.target.value)" :placeholder="placeholder" :readonly="readonly" :required="required">' +
+    '<div class="form-group row" :class="{\'has-error\':errors.first(name), \'has-success\':!errors.first(name) && fields[name].touched}"> ' +
+    '<div :class="{\'col-md-12\':!inline}"> ' +
+    '              <div :class="{\'row\':!inline}"> ' +
+    '                <div :class="labelCols"> ' +
+    '                  <label v-if="label" class="control-label">{{label}}</label> ' +
+    '                </div> ' +
+    '              </div> ' +
+    '              <div :class="{\'row\':!inline}"> ' +
+    '                <div :class="inputCols">' +
+    '                  <div :class="{\'input-group\':usingAddons}">' +
+    '                    <input v-validate :data-vv-rules="rules" :data-vv-validate-on="validateEvent" :type="type" :id="id" :class="classes" class="form-control" :name="name" :value="value" @change="updateValue($event.target.value)" @input="updateValue($event.target.value)" @blur="blur($event.target.value)" :placeholder="placeholder" :readonly="readonly" :required="required">' +
+    '                    <span class="input-group-btn" v-if="usingAddons"> ' +
+    '                      <button class="btn btn-secondary" type="button" @click="clickAddons">{{addons}}</button> ' +
+    '                    </span></div> ' +
     '                  <span class="help-block" v-if="helpText">{{helpText}}</span>' +
     '                  <span v-if="errors.has(name)" class="small text-danger"><i class="fa fa-warning"></i>{{ errors.first(name) }}</span>' +
-    '                </div>\n' +
-    '              </div>\n' +
-    '            </div>\n' +
+    '                </div> ' +
+    '              </div> ' +
+    '            </div> ' +
     '          </div>',
     props: {
         name: {
@@ -55,16 +59,28 @@ Vue.component('v-input', {
             type: Boolean,
             default: false
         },
-        labelCols:{
+        labelCols: {
             type: String,
             default: 'col-md-12'
         },
-        inputCols:{
+        inputCols: {
             type: String,
             default: 'col-md-12'
         },
-        helpText:{
+        helpText: {
             type: String
+        },
+        validateEvent: {
+            type: String,
+            default: 'input'
+        },
+        usingAddons: {
+            type: Boolean,
+            default: false
+        },
+        addons: {
+            type: String,
+            default: 'Search'
         }
     },
     mounted() {
@@ -86,6 +102,9 @@ Vue.component('v-input', {
         onValidate() {
             this.$validator.validateAll();
         },
+        clickAddons: function () {
+            this.$emit('on-addons', this.value, this.name);
+        }
     },
     beforeDestroy() {
         this.$eventHub.$emit('errors-changed', [], this.errors);

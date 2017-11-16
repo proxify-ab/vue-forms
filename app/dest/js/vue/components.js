@@ -133,7 +133,7 @@ Vue.component('v-form', {
 'use strict';
 
 Vue.component('v-input', {
-    template: '<div class="form-group row" :class="{\'has-error\':errors.first(name), \'has-success\':!errors.first(name) && fields[name].touched}">\n' + '<div :class="{\'col-md-12\':!inline}">\n' + '              <div :class="{\'row\':!inline}">\n' + '                <div :class="labelCols">\n' + '                  <label v-if="label" class="control-label">{{label}}</label>\n' + '                </div>\n' + '              </div>\n' + '              <div :class="{\'row\':!inline}">\n' + '                <div :class="inputCols">\n' + '                  <input v-validate :data-vv-rules="rules" :type="type" :id="id" :class="classes" class="form-control" :name="name" :value="value" @change="updateValue($event.target.value)" @input="updateValue($event.target.value)" @blur="blur($event.target.value)" :placeholder="placeholder" :readonly="readonly" :required="required">' + '                  <span class="help-block" v-if="helpText">{{helpText}}</span>' + '                  <span v-if="errors.has(name)" class="small text-danger"><i class="fa fa-warning"></i>{{ errors.first(name) }}</span>' + '                </div>\n' + '              </div>\n' + '            </div>\n' + '          </div>',
+    template: '<div class="form-group row" :class="{\'has-error\':errors.first(name), \'has-success\':!errors.first(name) && fields[name].touched}"> ' + '<div :class="{\'col-md-12\':!inline}"> ' + '              <div :class="{\'row\':!inline}"> ' + '                <div :class="labelCols"> ' + '                  <label v-if="label" class="control-label">{{label}}</label> ' + '                </div> ' + '              </div> ' + '              <div :class="{\'row\':!inline}"> ' + '                <div :class="inputCols">' + '                  <div :class="{\'input-group\':usingAddons}">' + '                    <input v-validate :data-vv-rules="rules" :data-vv-validate-on="validateEvent" :type="type" :id="id" :class="classes" class="form-control" :name="name" :value="value" @change="updateValue($event.target.value)" @input="updateValue($event.target.value)" @blur="blur($event.target.value)" :placeholder="placeholder" :readonly="readonly" :required="required">' + '                    <span class="input-group-btn" v-if="usingAddons"> ' + '                      <button class="btn btn-secondary" type="button" @click="clickAddons">{{addons}}</button> ' + '                    </span></div> ' + '                  <span class="help-block" v-if="helpText">{{helpText}}</span>' + '                  <span v-if="errors.has(name)" class="small text-danger"><i class="fa fa-warning"></i>{{ errors.first(name) }}</span>' + '                </div> ' + '              </div> ' + '            </div> ' + '          </div>',
     props: {
         name: {
             type: String,
@@ -183,6 +183,18 @@ Vue.component('v-input', {
         },
         helpText: {
             type: String
+        },
+        validateEvent: {
+            type: String,
+            default: 'input'
+        },
+        usingAddons: {
+            type: Boolean,
+            default: false
+        },
+        addons: {
+            type: String,
+            default: 'Search'
         }
     },
     mounted: function mounted() {
@@ -208,6 +220,10 @@ Vue.component('v-input', {
         },
         onValidate: function onValidate() {
             this.$validator.validateAll();
+        },
+
+        clickAddons: function clickAddons() {
+            this.$emit('on-addons', this.value, this.name);
         }
     },
     beforeDestroy: function beforeDestroy() {
@@ -541,7 +557,7 @@ Vue.component('v-step', {
 
 Vue.component('v-steps', {
     name: 'steps',
-    template: '<div class="steps">' + '<v-step-nav :width="progress"></v-step-nav>' + '<div class="steps-header"><slot name="header"></slot></div>' + '<div class="steps-content"><slot></slot></div>' + '<div class="steps-btn v-row">' + '<v-button :clicked="prevStep" v-if="!isFirstStep" classes="v-col d-inline" classes-btn="btn btn-default btn-lg">Prev</v-button>' + '<v-button :clicked="nextStep" v-if="!isLastStep" classes="v-col d-inline" classes-btn="btn btn-success btn-lg">Next</v-button>' + '<v-button :clicked="nextStep" v-if="isLastStep" classes="v-col d-inline" classes-btn="btn btn-success btn-lg">Finish</v-button>' + '</div>' + '<div class="steps-footer "><slot name="footer"></slot></div>' + '</div>',
+    template: '<div class="steps">' + '<v-step-nav :width="progress"></v-step-nav>' + '<div class="steps-header"><slot name="header"></slot></div>' + '<div class="steps-content"><slot></slot></div>' + '<div class="steps-btn v-row">' + '<v-button :clicked="prevStep" v-if="!isFirstStep" classes="v-col d-inline" classes-btn="btn btn-default">Previous</v-button>' + '<v-button :clicked="nextStep" v-if="!isLastStep" classes="v-col d-inline" classes-btn="btn btn-success">Next</v-button>' + '<v-button :clicked="nextStep" v-if="isLastStep" classes="v-col d-inline" classes-btn="btn btn-success">Finish</v-button>' + '</div>' + '<div class="steps-footer "><slot name="footer"></slot></div>' + '</div>',
     props: {
         prevButton: {
             type: Boolean,
@@ -778,12 +794,13 @@ Vue.component('v-steps', {
                 this.activeStep.validate();
                 setTimeout(function () {
                     if (!_this4.activeStep.errors.any()) {
-                        // this.setValidationError(null);
                         callback();
+                        $('html, body').animate({ scrollTop: '0px' }, 300);
                     }
                 }, 100);
             } else {
                 callback();
+                $('html, body').animate({ scrollTop: '0px' }, 300);
             }
         },
         executeBeforeChange: function executeBeforeChange(validationResult, callback) {

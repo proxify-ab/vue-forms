@@ -96,9 +96,9 @@ $(function () {
                 form2(){
                     alert('complete');
                 },
-                // change(){
-                //     alert('before change');
-                // },
+                change(value){
+                    alert(value);
+                },
                 // val2(){
                 //     return new Promise(function (resolve, reject) {
                 //     });

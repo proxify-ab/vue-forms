@@ -5,9 +5,9 @@ Vue.component('v-steps', {
     '<div class="steps-header"><slot name="header"></slot></div>' +
     '<div class="steps-content"><slot></slot></div>' +
     '<div class="steps-btn v-row">' +
-    '<v-button :clicked="prevStep" v-if="!isFirstStep" classes="v-col d-inline" classes-btn="btn btn-default btn-lg">Prev</v-button>' +
-    '<v-button :clicked="nextStep" v-if="!isLastStep" classes="v-col d-inline" classes-btn="btn btn-success btn-lg">Next</v-button>' +
-    '<v-button :clicked="nextStep" v-if="isLastStep" classes="v-col d-inline" classes-btn="btn btn-success btn-lg">Finish</v-button>' +
+    '<v-button :clicked="prevStep" v-if="!isFirstStep" classes="v-col d-inline" classes-btn="btn btn-default">Previous</v-button>' +
+    '<v-button :clicked="nextStep" v-if="!isLastStep" classes="v-col d-inline" classes-btn="btn btn-success">Next</v-button>' +
+    '<v-button :clicked="nextStep" v-if="isLastStep" classes="v-col d-inline" classes-btn="btn btn-success">Finish</v-button>' +
     '</div>' +
     '<div class="steps-footer "><slot name="footer"></slot></div>' +
     '</div>',
@@ -236,12 +236,13 @@ Vue.component('v-steps', {
                 this.activeStep.validate();
                 setTimeout(() => {
                     if (!this.activeStep.errors.any()) {
-                        // this.setValidationError(null);
                         callback();
+                        $('html, body').animate({scrollTop: '0px'}, 300);
                     }
                 }, 100);
             } else {
                 callback();
+                $('html, body').animate({scrollTop: '0px'}, 300);
             }
         },
         executeBeforeChange(validationResult, callback) {
