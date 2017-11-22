@@ -7,6 +7,7 @@ Vue.component('v-radio', {
     '</div>',
     props: {
         id: {},
+        idSlots: {},
         classes: {},
         value: {},
         helpText: {
@@ -18,9 +19,10 @@ Vue.component('v-radio', {
         event: 'change'
     },
     mounted() {
+        this.$parent.addRadio(this);
         this.$eventHub.$on(this.name + '_validate', this.onValidate);
         this.$watch(() => this.errors.items, (newValue, oldValue) => {
-            this.$eventHub.$emit(this.name + 'return_validate', newValue, oldValue);
+            this.$eventHub.$emit(this.name + '_return_validate', newValue, oldValue);
         })
     },
     computed: {
@@ -36,6 +38,7 @@ Vue.component('v-radio', {
     },
     methods: {
         updateValue(value) {
+            this.$parent.setSelected(this);
             this.$emit('change', value);
         },
         onValidate() {

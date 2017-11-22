@@ -1,5 +1,5 @@
 Vue.component('v-button', {
-    template: '<div class="form-group" :class="classes"><button @click.prevent="clicked" :type="type" :class="classesBtn" :id="id"><slot></slot></button></div>',
+    template: '<div :class="[inForm?\'form-group\':\'\', classes]"><button @click.prevent="clicked" :type="type" :class="classesBtn" :id="id"><slot></slot></button></div>',
     props: {
         type: {
             type: String,
@@ -11,10 +11,16 @@ Vue.component('v-button', {
         classes: {},
         classesBtn: {},
         id: {},
-        clicked: {}
+        inForm: {
+            type: Boolean,
+            default: true
+        }
     },
     mounted() {
     },
     methods: {
+        clicked(){
+            this.$emit('clicked');
+        }
     }
 });

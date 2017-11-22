@@ -1,15 +1,17 @@
 Vue.component('v-radio-group', {
-    template: '<div class="form-group row" :class="{\'has-error\':errors.first(name), \'has-success\':!errors.first(name) && fields[name].touched}">' +
-    '<div :class="[inline ? \'col-md-3\' : \'col-md-12\']" v-if="header">' +
-    '<label class="control-label">{{header}}</label>' +
-    '</div>' +
-    '<div :class="[ inline ? \'col-md-9\' : \'col-md-12\' ]">' +
-    '<slot></slot>' +
-    '<span class="help-block" v-if="helpText">{{helpText}}</span>' +
-    '</div>' +
-    '<div class="col-md-12" v-if="errors.has(name)">' +
-    '<span class="small text-danger"><i class="fa fa-warning"></i>{{ errors.first(name) }}</span>' +
-    '</div>' +
+    template:
+    '<div class="form-group row" :class="{\'has-error\':errors.first(name), \'has-success\':!errors.first(name) && fields[name].touched}">' +
+    '   <div :class="[inline ? \'col-md-3\' : \'col-md-12\']" v-if="header">' +
+    '       <label class="control-label">{{header}}</label>' +
+    '   </div>' +
+    '   <div :class="[ inline ? \'col-md-9\' : \'col-md-12\', classes]">' +
+    '       <slot></slot>' +
+    '       <span class="help-block" v-if="helpText">{{helpText}}</span>' +
+    '   </div>' +
+    '   <div class="col-md-12" v-if="errors.has(name)">' +
+    '       <span class="small text-danger"><i class="fa fa-warning"></i>{{ errors.first(name) }}</span>' +
+    '   </div>' +
+    '   <slot v-for="radio in radios" :name="radio.id" v-if="hasIn(radio)"></slot>' +
     '</div>',
     props: {
         name: {
@@ -32,14 +34,25 @@ Vue.component('v-radio-group', {
         },
         helpText: {
             type: String
+        },
+        classes: {
+            default: 'radio-box-group'
+        },
+
+    },
+    data() {
+        return {
+            radios: [],
+            selected: {}
         }
     },
     mounted() {
+        this.selected = {};
         this.$eventHub.$on('validate_' + this.$parent._uid, this.onValidate);
         this.$watch(() => this.errors.items, (newValue, oldValue) => {
             this.$eventHub.$emit('errors-changed', newValue, oldValue, this.name);
         });
-        this.$eventHub.$on(this.name + 'return_validate', this.onReturnValidate);
+        this.$eventHub.$on(this.name + '_return_validate', this.onReturnValidate);
     },
     methods: {
         onValidate() {
@@ -65,6 +78,15 @@ Vue.component('v-radio-group', {
                     })
                 }
             }
+        },
+        addRadio(radio) {
+            this.radios.push(radio);
+        },
+        setSelected(radio) {
+            this.selected = radio;
+        },
+        hasIn(radio) {
+            return this.selected.idSlots && this.selected.idSlots.indexOf(radio.id) > -1;
         }
     },
     beforeDestroy() {

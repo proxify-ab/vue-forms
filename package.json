@@ -31,9 +31,12 @@
     "gulp-sourcemaps": "^2.6.1",
     "gulp-stylus": "^2.6.0",
     "gulp-uglify": "^3.0.0",
+    "moment": "^2.19.2",
+    "normalize.css": "^7.0.0",
     "ramda": "^0.25.0",
     "vee-validate": "^2.0.0-rc.19",
     "vue": "^2.5.2",
+    "vue-animate": "0.0.4",
     "vue-validator": "^3.0.0-alpha.2"
   }
 }

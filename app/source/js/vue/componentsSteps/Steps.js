@@ -4,10 +4,10 @@ Vue.component('v-steps', {
     '<v-step-nav :width="progress"></v-step-nav>' +
     '<div class="steps-header"><slot name="header"></slot></div>' +
     '<div class="steps-content"><slot></slot></div>' +
-    '<div class="steps-btn v-row">' +
-    '<v-button :clicked="prevStep" v-if="!isFirstStep" classes="v-col d-inline" classes-btn="btn btn-default">Previous</v-button>' +
-    '<v-button :clicked="nextStep" v-if="!isLastStep" classes="v-col d-inline" classes-btn="btn btn-success">Next</v-button>' +
-    '<v-button :clicked="nextStep" v-if="isLastStep" classes="v-col d-inline" classes-btn="btn btn-success">Finish</v-button>' +
+    '<div class="steps-btn v-row" v-if="showNavBtn">' +
+    '<v-button @clicked="prevStep" v-if="!isFirstStep" :in-form="false" classes="v-col d-inline" classes-btn="btn btn-default"><slot name="prevBtn">{{prevLabel}}</slot></v-button>' +
+    '<v-button @clicked="nextStep" v-if="!isLastStep" :in-form="false" classes="v-col d-inline" classes-btn="btn btn-success"><slot name="nextBtn">{{nextLabel}}</slot></v-button>' +
+    '<v-button @clicked="nextStep" v-if="isLastStep" :in-form="false" classes="v-col d-inline" classes-btn="btn btn-success"><slot name="finishBtn">{{finishLabel}}</slot></v-button>' +
     '</div>' +
     '<div class="steps-footer "><slot name="footer"></slot></div>' +
     '</div>',
@@ -33,50 +33,33 @@ Vue.component('v-steps', {
             default: false
         },
         validateOnBack: Boolean,
-        /***
-         * Applies to text, border and circle
-         */
-        color: {
-            type: String,
-            default: '#2EA70A'
-        },
-        errorColor: {
-            type: String,
-            default: '#8b0000'
-        },
-        shape: {
-            type: String,
-            default: 'circle'
-        },
         stepsClasses: {
             type: [String, Array],
             default: ''
         },
-        stepSize: {
-            type: String,
-            default: 'md',
-            validator: (value) => {
-                let acceptedValues = ['xs', 'sm', 'md', 'lg'];
-                return acceptedValues.indexOf(value) !== -1
-            }
-        },
-        /**
-         * Name of the transition when transition between steps
-         * */
         transition: {
             type: String,
             default: ''
         },
-        /***
-         *
-         * Index of the initial step to display
-         */
         startIndex: {
             type: Number,
             default: 0,
             validator: (value) => {
                 return value >= 0
             }
+        },
+        showNavBtn: {
+            type: Boolean,
+            default: true
+        },
+        prevLabel: {
+            default: 'Previous'
+        },
+        nextLabel: {
+            default: 'Next'
+        },
+        finishLabel: {
+            default: 'Finish'
         }
     },
     data() {

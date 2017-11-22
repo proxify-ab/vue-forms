@@ -60,7 +60,7 @@ let copyJSLib = [
     application.nodeSrc + '/vue/dist/vue.js',
     application.nodeSrc + '/vee-validate/dist/vee-validate.min.js',
     application.nodeSrc + '/ramda/dist/ramda.min.js',
-    // application.nodeSrc + '/vue-validator/dist/vue-validator.min.js',
+    application.nodeSrc + '/moment/min/moment.min.js',
     application.nodeSrc + '/axios/dist/axios.js',
 ];
 
@@ -95,9 +95,8 @@ gulp.task('jsSrc', function () {
 
 //build vue components filters
 let vueComponents = [
-    // application.sourceJS + '/vue/components/*.js',
-    application.sourceJS + '/vue/components2/*.js',
-    application.sourceJS + '/vue/components3/*.js'
+    application.sourceJS + '/vue/components/*.js',
+    application.sourceJS + '/vue/componentsSteps/*.js'
 ];
 
 gulp.task('jsVueComponents', function () {

@@ -1,9 +1,12 @@
 Vue.component('v-check', {
-    template: '<div :class="{\'form-group\':single, \'display-inline\':inline, \'has-error\':errors.first(name), \'has-success\':!errors.first(name) && fields[name].touched}">' +
-    '<input v-validate :data-vv-rules="rules" type="checkbox" :name="name" :id="id" :value="value" :checked="checked" v-on:change="updateValue($event.target.checked)">' +
-    '<label :for="id" v-if="label" class="control-label">{{label}}</label>' +
-    '<span class="help-block" v-if="helpText">{{helpText}}</span>' +
-    '<span v-if="errors.has(name)" class="small text-danger"><i class="fa fa-warning"></i>{{ errors.first(name) }}</span>' +
+    template:
+    '<div :class="{\'form-group\':single, \'display-inline\':inline, \'has-error\':errors.first(name), \'has-success\':!errors.first(name) && fields[name].touched}">' +
+    '   <label :for="id" class="control-label">' +
+    '       <input v-validate :data-vv-rules="rules" type="checkbox" :name="name" :id="id" :value="value" :checked="checked" v-on:change="updateValue($event.target.checked)">' +
+    '           <slot></slot>' +
+    '   </label>' +
+    '   <span class="help-block" v-if="helpText">{{helpText}}</span>' +
+    '   <span v-if="errors.has(name)" class="small text-danger"><i class="fa fa-warning"></i>{{ errors.first(name) }}</span>' +
     '</div>',
     props: {
         name: {
@@ -14,10 +17,6 @@ Vue.component('v-check', {
             type: String,
         },
         classes: String,
-        label: {
-            type: String,
-            required: true
-        },
         checked: Boolean,
         value: {},
         rules: {

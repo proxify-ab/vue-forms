@@ -1,81 +1,104 @@
-Vue.component('input-box', {
-    template: '<div class="form-group" :class="{\'has-error\': this.fields[name].touched && this.fields[name].invalid, \'has-success\': this.fields[name].touched && this.fields[name].valid,  \'has-helper\': helper, \'stacked\': stacked }">\n' +
-    '        <div :class="{\'col-sm-4\': !stacked}" v-if="label">\n' +
-    '            <label class="control-label">{{ label }}: <span v-if="required">*</span></label>\n' +
-    '            <p class="help-block" v-text="helper" v-if="helper"></p>\n' +
-    '        </div>\n' +
-    '        <div class="control-container" :class="{\'col-sm-8\': (!stacked && label)}">\n' +
-    '            <div :class="{\'input-group\': usingAddons}">\n' +
-    '                <div class="input-group-addon" v-if="slotExists(\'leftAddon\')">\n' +
-    '                    <slot name="leftAddon"></slot>\n' +
-    '                </div>\n' +
-    '                <div class="input-group-btn" v-if="slotExists(\'leftBtn\')">\n' +
-    '                    <slot name="leftBtn"></slot>\n' +
-    '                </div>\n' +
-    '               <div class="wrap-controller">' +
-    '                   <input :type="type" v-on:input="updateValue($event.target.value)" v-on:blur="blur($event.target.value)" class="form-control" v-on:keyup.enter="enterKeyPressed"\n' +
-    '                       :name="name" :id="id" :readonly="readonly" :value="value" :placeholder="placeholder" v-validate.touched :data-vv-rules="rules" @click.prevent="click">\n' +
-    '                </div>' +
-    '                <div class="input-group-addon" v-if="slotExists(\'rightAddon\')">\n' +
-    '                    <slot name="rightAddon"></slot>\n' +
-    '                </div>\n' +
-    '                <div class="input-group-btn" v-if="slotExists(\'rightBtn\')">\n' +
-    '                    <slot name="rightBtn"></slot>\n' +
-    '                </div>\n' +
-    '            </div>\n' +
-    '            <p class="text-danger" v-if="showError" v-text="errorMessage"></p>\n' +
-    '            <p class="text-danger" v-text="this.errors.first(name)"></p>\n' +
-    '        </div>\n' +
-    '        <div class="clearfix"></div>\n' +
-    '    </div>',
+Vue.component('v-input', {
+    template:
+    '<div class="form-group row" :class="{\'has-error\':errors.first(name), \'has-success\':!errors.first(name) && fields[name].touched}">' +
+    '   <div :class="{\'col-md-12\':!inline}">' +
+    '       <div :class="{\'row\':!inline}">' +
+    '           <div :class="labelCols">' +
+    '               <label v-if="label" class="control-label">{{label}}</label>' +
+    '           </div>' +
+    '       </div>' +
+    '       <div :class="{\'row\':!inline}">' +
+    '           <div :class="inputCols">' +
+    '               <div :class="[ btnAddon || leftAddon || rightAddon ? \'input-group\' : \'\']">' +
+    '                   <div class="input-group-addon" v-if="leftAddon">{{leftAddon}}</div>' +
+    '                   <input v-validate :data-vv-rules="rules" :data-vv-validate-on="validateEvent" :type="type" :id="id" :class="classes" class="form-control" :name="name" :value="value" @change="updateValue($event.target.value)" @input="updateValue($event.target.value)" @blur="blur($event.target.value)" :placeholder="placeholder" :readonly="readonly" :required="required" :max="max" :min="min" :length="length">' +
+    '                   <div class="input-group-addon" v-if="rightAddon">{{rightAddon}}</div>' +
+    '                   <div class="input-group-btn" v-if="btnAddon">' +
+    '                       <button class="btn btn-secondary" type="button" @click="clickAddons">{{btnAddon}}</button>' +
+    '                   </div>' +
+    '               </div>' +
+    '               <span class="help-block" v-if="helpText">{{helpText}}</span>' +
+    '               <span v-if="errors.has(name)" class="small text-danger"><i class="fa fa-warning"></i>{{ errors.first(name) }}</span>' +
+    '           </div>' +
+    '       </div>' +
+    '   </div>' +
+    '</div>',
     props: {
         name: {
             type: String,
             required: true
         },
-        label: String,
-        helper: String,
-        showError: {
-            type: Boolean,
-            default: false
-        },
-        placeholder: String,
-        stacked: {
-            type: Boolean,
-            default: false
-        },
-        value: [String, Number, Boolean],
         type: {
             type: String,
-            default: () => {
-                return 'text';
-            }
+            validator: value => {
+                return ['hidden', 'text', 'number', 'date', 'email', 'tel'].indexOf(value) > -1;
+            },
+            default: 'text'
         },
-        required: {
+        id: {},
+        classes: {
+            type: String
+        },
+        value: {},
+        placeholder: {},
+        label: {
+            type: String
+        },
+        inline: {
             type: Boolean,
             default: false
+        },
+        validation: {
+            type: String
+        },
+        rules: {
+            type: String,
         },
         readonly: {
             type: Boolean,
             default: false
         },
-        id: String,
-        errorMessage: String,
-        rules: String,
-        click: {
-            type: Function,
-            default: function () {if(this.type === 'submit')console.log(this.name + ' click')}
-        }
+        required: {
+            type: Boolean,
+            default: false
+        },
+        labelCols: {
+            type: String,
+            default: 'col-md-12'
+        },
+        inputCols: {
+            type: String,
+            default: 'col-md-12'
+        },
+        helpText: {
+            type: String
+        },
+        validateEvent: {
+            type: String,
+            default: 'input'
+        },
+        btnAddon: {
+            type: String,
+        },
+        leftAddon:{
+            type: String
+        },
+        rightAddon:{
+            type: String
+        },
+        max:{
+            default: 999
+        },
+        min: {
+            default: 0
+        },
+        length:{}
     },
-    watch: {
-        value(value) {
-            this.$validator.validateAll();
-        }
-    },
-    computed: {
-        usingAddons() {
-            return !(Object.keys(this.$slots).length === 0 && this.$slots.constructor === Object)
-        }
+    mounted() {
+        this.$eventHub.$on('validate_' + this.$parent._uid, this.onValidate);
+        this.$watch(() => this.errors.items, (newValue, oldValue) => {
+            this.$eventHub.$emit('errors-changed', newValue, oldValue, this.name);
+        });
     },
     methods: {
         enterKeyPressed() {
@@ -87,9 +110,15 @@ Vue.component('input-box', {
         blur(value) {
             this.$emit('blur', value);
         },
-        slotExists(name) {
-            return (name in this.$slots);
+        onValidate() {
+            this.$validator.validateAll();
+        },
+        clickAddons: function () {
+            this.$emit('on-addons', this.value, this.name);
         }
-    }
-
+    },
+    beforeDestroy() {
+        this.$eventHub.$emit('errors-changed', [], this.errors);
+        this.$eventHub.$off('validate_' + this.$parent._uid, this.onValidate)
+    },
 });

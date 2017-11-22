@@ -49,7 +49,8 @@ $(function () {
                     postalCode: '11111',
                     phoneNumber: '32321231321'
                 },
-                validation: {}
+                date: null,
+                radio: ''
             },
             mounted() {
                 this.contacts = [

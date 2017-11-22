@@ -1,50 +1,64 @@
-Vue.component('textarea-box', {
-    template: ' <div class="form-group" :class="{\'has-error\': this.fields[name].touched && this.fields[name].invalid, \'has-success\': this.fields[name].touched && this.fields[name].valid,  \'has-helper\': helper, \'stacked\': stacked }">\n' +
-    '        <div :class="{\'col-sm-4\': !stacked}" v-if="label">\n' +
-    '            <label class="control-label">{{ label }}: <span v-if="required">*</span></label>\n' +
-    '            <p class="help-block" v-text="helper" v-if="helper"></p>\n' +
-    '        </div>\n' +
-    '        <div class="control-container" :class="{\'col-sm-8\': !stacked}">\n' +
-    '            <textarea v-validate :data-vv-rules="rules" :name="name" id="name" :rows="rows" v-on:input="updateValue($event.target.value)"\n' +
-    '                      :value="value" class="form-control"></textarea>\n' +
-    '            <p class="text-danger" v-if="showError" v-text="errorMessage"></p>\n' +
-    '            <p class="text-danger" v-if="this.errors.has(name)" v-text="this.errors.first(name)"></p>\n' +
-    '        </div>\n' +
-    '        <div class="clearfix"></div>\n' +
-    '    </div>',
+Vue.component('v-textarea', {
+    template: '<div class="form-group row" :class="{\'has-error\':errors.first(name), \'has-success\':!errors.first(name) && fields[name].touched}">' +
+    '<div :class="[inline?\'col-md-3\':\'col-md-12\']">' +
+    '<label v-if="label" class="control-label">{{label}}</label>' +
+    '</div>' +
+    '<div :class="[inline?\'col-md-9\':\'col-md-12\']">' +
+    '<textarea :rows="rows" v-validate :data-vv-rules="rules" :data-vv-value="value" :id="id" :class="classes" class="form-control" :name="name" @input="updateValue($event.target.value)" @blur="blur($event.target.value)" :placeholder="placeholder">{{value}}</textarea>' +
+    '<span class="help-block" v-if="helpText">{{helpText}}</span>' +
+    '<span v-if="errors.has(name)" class="small text-danger"><i class="fa fa-warning"></i>{{ errors.first(name) }}</span>' +
+    '</div>' +
+    '</div>',
     props: {
         name: {
             type: String,
             required: true
         },
+        id: {},
+        classes: {
+            type: String
+        },
+        value: {},
+        placeholder: {},
+        inline: {
+            type: Boolean,
+            default: false
+        },
         label: {
             type: String
         },
-        helper: String,
-        showError: {
-            type: Boolean,
-            default: false
+        rules: {
+            type: String
         },
-        stacked: {
-            type: Boolean,
-            default: false
-        },
-        value: [String],
-        required: {
-            type: Boolean,
-            default: false
-        },
-        id: String,
-        errorMessage: String,
-        rules: String,
-        rows:{
-            type: Number,
+        rows: {
             default: 5
         },
+        helpText: {
+            type: String
+        }
+    },
+    mounted() {
+        this.$eventHub.$on('validate_' + this.$parent._uid, this.onValidate);
+        this.$watch(() => this.errors.items, (newValue, oldValue) => {
+            this.$eventHub.$emit('errors-changed', newValue, oldValue, this.name);
+        });
     },
     methods: {
+        enterKeyPressed() {
+            this.$emit('enter');
+        },
         updateValue(value) {
-            this.$emit('input', value)
-        }
-    }
+            this.$emit('input', value);
+        },
+        blur(value) {
+            this.$emit('blur', value);
+        },
+        onValidate() {
+            this.$validator.validateAll();
+        },
+    },
+    beforeDestroy() {
+        this.$eventHub.$emit('errors-changed', [], this.errors);
+        this.$eventHub.$off('validate_' + this.$parent._uid, this.onValidate)
+    },
 });
