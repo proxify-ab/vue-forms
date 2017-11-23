@@ -2,20 +2,21 @@
 <div id="root">
   <v-date-picker name="date" v-model="date" date-format="D-M-Y" label="label"></v-date-picker>
   <v-radio-group name="radio-gr" hedaer="Radio group">
-    <v-radio value="q1" id="r1" v-model="radio" :id-slots="['r1', 'r3']">radio 1</v-radio>
+    <v-radio value="q1" id="r1" v-model="radio" :id-slots="['r3', 'r1']">radio 1</v-radio>
     <v-radio value="q2" id="r2" v-model="radio" :id-slots="['r2']">radio 2</v-radio>
     <v-radio value="q2" id="r3" v-model="radio" :id-slots="['r2', 'r1']">radio 3</v-radio>
-    <!--transition-group(mode="out-in" enter-active-class="animated fadeIn" leave-active-class="animated fadeOut")-->
     <h1 slot="r1">Slot radio 1</h1>
     <h1 slot="r2">Slot radio 2</h1>
     <h1 slot="r3">Slot radio 3</h1>
   </v-radio-group>
-  <div class="block-slide">
-    <button @click="show.push(i+1)">Add</button><br/>
-    <ul is="transition-group">
-      <li v-for="item in show" v-text="item" :key="item" class="demo"></li>
-    </ul>
-  </div>
+  <!--.block-slide-->
+  <!--    button(@click="show.push(i+1)") Add-->
+  <!--    br-->
+  <!--    ul(is="transition-group" )-->
+  <!--        li(v-for="item in show" class="demo" v-text="item", :key="item")-->
+  
+  
+  
   <!--v-steps(@on-complete="form2")-->
   <!--    h2(slot="header")  Header-->
   <!--    v-step(:validating="true")-->

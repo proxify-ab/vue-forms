@@ -2,8 +2,7 @@ Vue.component('v-check', {
     template:
     '<div :class="{\'form-group\':single, \'display-inline\':inline, \'has-error\':errors.first(name), \'has-success\':!errors.first(name) && fields[name].touched}">' +
     '   <label :for="id" class="control-label">' +
-    '       <input v-validate :data-vv-rules="rules" type="checkbox" :name="name" :id="id" :value="value" :checked="checked" v-on:change="updateValue($event.target.checked)">' +
-    '           <slot></slot>' +
+    '       <input v-validate.touched :data-vv-rules="rules" :data-vv-validate-on="validateEvent" type="checkbox" :name="name" :id="id" :value="value" :checked="checked" v-on:change="updateValue($event.target.checked)"><slot></slot>' +
     '   </label>' +
     '   <span class="help-block" v-if="helpText">{{helpText}}</span>' +
     '   <span v-if="errors.has(name)" class="small text-danger"><i class="fa fa-warning"></i>{{ errors.first(name) }}</span>' +
@@ -24,7 +23,11 @@ Vue.component('v-check', {
         },
         helpText: {
             type: String
-        }
+        },
+        validateEvent: {
+            type: String,
+            default: 'blur'
+        },
     },
     model: {
         prop: 'checked',

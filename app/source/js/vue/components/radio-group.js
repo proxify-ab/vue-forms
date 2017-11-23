@@ -11,9 +11,9 @@ Vue.component('v-radio-group', {
     '   <div class="col-md-12" v-if="errors.has(name)">' +
     '       <span class="small text-danger"><i class="fa fa-warning"></i>{{ errors.first(name) }}</span>' +
     '   </div>' +
-    '   <div class="col-md-12" is="transition-group" mode="fade">' +
-    '       <div v-for="radio in radios" v-if="hasIn(radio)" :key="radio.id" >' +
-    '           <slot :name="radio.id"></slot>' +
+    '   <div class="col-md-12" is="transition-group">' +
+    '       <div v-for="radio in selected.idSlots" :key="radio" >' +
+    '           <slot :name="radio"></slot>' +
     '       </div>' +
     '   </div>' +
     '</div>',
