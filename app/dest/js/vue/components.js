@@ -359,7 +359,7 @@ Vue.component('v-input', {
 'use strict';
 
 Vue.component('v-radio-group', {
-    template: '<div class="form-group row" :class="{\'has-error\':errors.first(name), \'has-success\':!errors.first(name) && fields[name].touched}">' + '   <div :class="[inline ? \'col-md-3\' : \'col-md-12\']" v-if="header">' + '       <label class="control-label">{{header}}</label>' + '   </div>' + '   <div :class="[ inline ? \'col-md-9\' : \'col-md-12\', classes]">' + '       <slot></slot>' + '       <span class="help-block" v-if="helpText">{{helpText}}</span>' + '   </div>' + '   <div class="col-md-12" v-if="errors.has(name)">' + '       <span class="small text-danger"><i class="fa fa-warning"></i>{{ errors.first(name) }}</span>' + '   </div>' + '   <slot v-for="radio in radios" :name="radio.id" v-if="hasIn(radio)"></slot>' + '</div>',
+    template: '<div class="form-group row" :class="{\'has-error\':errors.first(name), \'has-success\':!errors.first(name) && fields[name].touched}">' + '   <div :class="[inline ? \'col-md-3\' : \'col-md-12\']" v-if="header">' + '       <label class="control-label">{{header}}</label>' + '   </div>' + '   <div :class="[ inline ? \'col-md-9\' : \'col-md-12\', classes]">' + '       <slot></slot>' + '       <span class="help-block" v-if="helpText">{{helpText}}</span>' + '   </div>' + '   <div class="col-md-12" v-if="errors.has(name)">' + '       <span class="small text-danger"><i class="fa fa-warning"></i>{{ errors.first(name) }}</span>' + '   </div>' + '   <div class="col-md-12" is="transition-group" mode="fade">' + '       <div v-for="radio in radios" v-if="hasIn(radio)" :key="radio.id" >' + '           <slot :name="radio.id"></slot>' + '       </div>' + '   </div>' + '</div>',
     props: {
         name: {
             type: String,

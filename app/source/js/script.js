@@ -50,7 +50,9 @@ $(function () {
                     phoneNumber: '32321231321'
                 },
                 date: null,
-                radio: ''
+                radio: '',
+                show: [],
+                i : 1
             },
             mounted() {
                 this.contacts = [

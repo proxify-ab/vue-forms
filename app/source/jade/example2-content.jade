@@ -6,9 +6,19 @@
         v-radio(value="q1" id="r1" v-model="radio", :id-slots="['r1', 'r3']") radio 1
         v-radio(value="q2" id="r2" v-model="radio", :id-slots="['r2']") radio 2
         v-radio(value="q2" id="r3" v-model="radio", :id-slots="['r2', 'r1']") radio 3
+        //transition-group(mode="out-in" enter-active-class="animated fadeIn" leave-active-class="animated fadeOut")
         h1(slot="r1") Slot radio 1
         h1(slot="r2") Slot radio 2
         h1(slot="r3") Slot radio 3
+
+
+    .block-slide
+        button(@click="show.push(i+1)") Add
+        br
+        ul(is="transition-group" )
+            li(v-for="item in show" class="demo" v-text="item", :key="item")
+
+
 
 
     //v-steps(@on-complete="form2")

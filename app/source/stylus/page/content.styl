@@ -174,8 +174,12 @@
         height: 30px;
         @media screen and (max-width: 768px)
           position: relative;
-         
-       
-     
-   
- 
+
+.demo
+  transition 0.5s
+
+.v-enter-active, .v-leave-active
+  transition: opacity .5s
+
+.v-enter, .v-leave-to
+  opacity: 0
