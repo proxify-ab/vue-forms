@@ -2,9 +2,15 @@ Vue.component('v-step', {
     template: '<form class="form step" :class="{\'hide\':!active}"><slot></slot></form>',
     props: {
         title: {},
-        beforeChange: {},
-        validating: {}
-
+        validating: {},
+        nextStep: {
+            type: Number,
+            default: null
+        },
+        prevStep: {
+            type: Number,
+            default: null
+        },
     },
     data() {
         return {
@@ -52,11 +58,14 @@ Vue.component('v-step', {
     methods: {
         validate: function () {
             this.$eventHub.$emit('validate_' + this._uid);
-            setTimeout(()=>{
-                if(!this.errors.any()){
+            setTimeout(() => {
+                if (!this.errors.any()) {
                     // this.$parent.nextStep();
                 }
-            },100);
+            }, 100);
+        },
+        beforeChange() {
+            this.$emit('on-before-change');
         }
     },
     destroyed() {

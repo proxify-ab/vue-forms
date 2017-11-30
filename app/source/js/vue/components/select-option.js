@@ -6,7 +6,6 @@ Vue.component('v-select-option', {
         }
     },
     mounted() {
-
     },
     methods: {}
 });

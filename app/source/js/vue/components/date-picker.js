@@ -1,27 +1,27 @@
 Vue.component('v-date-picker', {
     template:
-    '<div class="form-group row" :class="{\'has-error\':errors.first(name), \'has-success\':!errors.first(name) && fields[name].touched}">' +
+    '<div class="form-group row" :class="{\'has-error\':errors.first(name), \'has-success\':!errors.first(name) && fields[name].valid   }">' +
     '   <div :class="{\'col-md-12\':!inline}">' +
     '       <div :class="{\'row\':!inline}">' +
     '           <div :class="labelCols">' +
-    '               <label v-if="label" class="control-label">{{label}}</label>' +
+    '               <label v-if="label" class="control-label">{{label}} <i :class="\'fa fa-\' + popoverIcon" data-toggle="popover" :data-trigger="popoverTrigger" :title="popoverTitle" :data-content="popoverContent" v-if="popoverContent"></i></label>' +
     '           </div>' +
     '       </div>' +
     '       <div :class="{\'row\':!inline}">' +
     '           <div :class="[inputCols , \'form-inline\']">' +
-    '               <select :class="classes" class="day form-control" @change="updateValue" v-model="day">' +
+    '               <select :class="classes" class="d-inline day form-control" @change="updateValue" v-model="day" :name="name" v-validate :data-vv-value="value" :data-vv-rules="rules" :data-vv-validate-on="validateEvent" :required="required">' +
     '                   <option value>{{dayLabel}}</option>' +
     '                   <option v-for="day in days" :value="day">{{day}}</option>' +
     '               </select>' +
-    '               <select :class="classes" class="month form-control" @change="updateValue" v-model="month">' +
+    '               <select :class="classes" class="d-inline month form-control" @change="updateValue" v-model="month" :name="name" v-validate :data-vv-value="value" :data-vv-rules="rules" :data-vv-validate-on="validateEvent" :required="required">' +
     '                   <option value>{{monthLabel}}</option>' +
     '                   <option v-for="(month, index) in months" :value="index +1">{{month}}</option>' +
     '               </select>' +
-    '               <select :class="classes" class="year form-control" @change="updateValue" v-model="year">' +
+    '               <select :class="classes" class="d-inline year form-control" @change="updateValue" v-model="year" :name="name" v-validate :data-vv-value="value" :data-vv-rules="rules" :data-vv-validate-on="validateEvent" :required="required">' +
     '                   <option value>{{yearLabel}}</option>' +
     '                   <option v-for="year in years" :value="year">{{year}}</option>' +
     '               </select>' +
-    '               <input type="hidden" :name="name" :value="value" @change="updateValue($event.target.value)" v-validate :data-vv-rules="rules" :data-vv-validate-on="validateEvent" :required="required" :id="id">' +
+    '               <input type="hidden" :name="name" :value="value" :id="id">' +
     '               <span class="help-block" v-if="helpText">{{helpText}}</span>' +
     '           </div>' +
     '           <div class="col-md-12"><span v-if="errors.has(name)" class="small text-danger"><i class="fa fa-warning"></i>{{ errors.first(name) }}</span></div>' +
@@ -31,7 +31,10 @@ Vue.component('v-date-picker', {
     props: {
         name: {
             type: String,
-            required: true
+            required: true,
+            validator: value => {
+                return value !== '';
+            }
         },
         id: {},
         classes: {
@@ -45,15 +48,8 @@ Vue.component('v-date-picker', {
             type: Boolean,
             default: false
         },
-        validation: {
-            type: String
-        },
         rules: {
             type: String,
-        },
-        readonly: {
-            type: Boolean,
-            default: false
         },
         required: {
             type: Boolean,
@@ -89,6 +85,19 @@ Vue.component('v-date-picker', {
         },
         dateFormat: {
             default: 'DD-MM-YYYY'
+        },
+        popoverIcon: {
+            type: String,
+            default: 'question-circle'
+        },
+        popoverTitle: {
+            type: String
+        },
+        popoverContent: {
+            type: String
+        },
+        popoverTrigger: {
+            default: 'hover'
         }
     },
     computed: {
@@ -125,7 +134,8 @@ Vue.component('v-date-picker', {
     methods: {
         updateValue() {
             if (this.day !== '' && this.month !== '' && this.year !== '') {
-                this.$emit('input', moment(`${this.day}-${this.month}-${this.year}`, 'DD-MM-YYYY').format(this.dateFormat));
+                let date = moment(`${this.day}-${this.month}-${this.year}`, 'DD-MM-YYYY').format(this.dateFormat);
+                this.$emit('input', date);
             }
         },
         onValidate() {

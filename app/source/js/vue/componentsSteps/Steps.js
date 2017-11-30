@@ -1,5 +1,4 @@
 Vue.component('v-steps', {
-    name: 'steps',
     template: '<div class="steps">' +
     '<v-step-nav :width="progress"></v-step-nav>' +
     '<div class="steps-header"><slot name="header"></slot></div>' +
@@ -149,7 +148,6 @@ Vue.component('v-steps', {
             if (index <= this.maxStep) {
                 let cb = () => {
                     if (validate && index - this.activeStepIndex > 1) {
-                        // validate all steps recursively until destination index
                         this.changeStep(this.activeStepIndex, this.activeStepIndex + 1);
                         this.beforeStepChange(this.activeStepIndex, cb)
                     } else {
@@ -166,11 +164,12 @@ Vue.component('v-steps', {
             return index <= this.maxStep
         },
         nextStep() {
+
             let cb = () => {
                 if (this.activeStepIndex < this.stepCount - 1) {
-                    this.changeStep(this.activeStepIndex, this.activeStepIndex + 1)
+                    this.changeStep(this.activeStepIndex, this.activeStep.nextStep ? this.activeStep.nextStep : this.activeStepIndex + 1)
                 } else {
-                    this.$emit('on-complete')
+                    this.$emit('on-complete');
                 }
             };
             this.beforeStepChange(this.activeStepIndex, cb);
@@ -178,8 +177,7 @@ Vue.component('v-steps', {
         prevStep() {
             let cb = () => {
                 if (this.activeStepIndex > 0) {
-                    // this.setValidationError(null);
-                    this.changeStep(this.activeStepIndex, this.activeStepIndex - 1)
+                    this.changeStep(this.activeStepIndex, this.activeStep.prevStep ? this.activeStep.prevStep : this.activeStepIndex - 1)
                 }
             };
             if (this.validateOnBack) {
@@ -213,20 +211,15 @@ Vue.component('v-steps', {
             this.$emit('on-error', error)
         },
         validateBeforeChange(callback) {
-            // this.setValidationError(null);
 
-            if (this.activeStep.validating) {
-                this.activeStep.validate();
-                setTimeout(() => {
-                    if (!this.activeStep.errors.any()) {
-                        callback();
-                        $('html, body').animate({scrollTop: '0px'}, 300);
-                    }
-                }, 100);
-            } else {
-                callback();
-                $('html, body').animate({scrollTop: '0px'}, 300);
-            }
+            this.activeStep.validate();
+            setTimeout(() => {
+                if (!this.activeStep.errors.any()) {
+                    this.steps[this.activeStepIndex].beforeChange();
+                    callback();
+                    $('html, body').animate({scrollTop: '0px'}, 300);
+                }
+            }, 100);
         },
         executeBeforeChange(validationResult, callback) {
             this.$emit('on-validate', validationResult, this.activeStepIndex);
@@ -237,19 +230,21 @@ Vue.component('v-steps', {
             }
         },
         beforeStepChange(index, callback) {
+
             if (this.loading) {
                 return;
             }
             let oldStep = this.steps[index];
-            if (oldStep && oldStep.validating) {
-                // let stepChangeRes = oldStep.beforeChange();
-                this.validateBeforeChange(callback)
-            } else {
+            if (oldStep && (oldStep.validating || oldStep.nextStep)) {
+                if (oldStep.validating)
+                    this.validateBeforeChange(callback);
+            }
+            else {
+                this.steps[index].beforeChange();
                 callback()
             }
         },
         changeStep(oldIndex, newIndex, emitChangeEvent = true) {
-
 
             let oldStep = this.steps[oldIndex];
             let newStep = this.steps[newIndex];

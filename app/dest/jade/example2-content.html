@@ -1,14 +1,63 @@
 
-<div id="root">
-  <v-date-picker name="date" v-model="date" date-format="D-M-Y" label="label"></v-date-picker>
-  <v-radio-group name="radio-gr" hedaer="Radio group">
-    <v-radio value="q1" id="r1" v-model="radio" :id-slots="['r3', 'r1']">radio 1</v-radio>
-    <v-radio value="q2" id="r2" v-model="radio" :id-slots="['r2']">radio 2</v-radio>
-    <v-radio value="q2" id="r3" v-model="radio" :id-slots="['r2', 'r1']">radio 3</v-radio>
-    <h1 slot="r1">Slot radio 1</h1>
-    <h1 slot="r2">Slot radio 2</h1>
-    <h1 slot="r3">Slot radio 3</h1>
-  </v-radio-group>
+<div class="container-fluid">
+  <div class="row">
+    <div class="col-md-12">
+      <div id="root">
+        <v-date-picker name="date" v-model="date" date-format="D-M-Y" label="label" rules="required"></v-date-picker>
+        <v-radio-group name="radio-gr" hedaer="Radio group" rules="required">
+          <v-radio value="q1" id="r1" v-model="radio" :id-slots="['r3', 'r1']">radio 1</v-radio>
+          <v-radio value="q2" id="r2" v-model="radio" :id-slots="['r2']">radio 2</v-radio>
+          <v-radio value="q2" id="r3" v-model="radio" :id-slots="['r2', 'r1']">radio 3</v-radio>
+          <h1 slot="r1">Slot radio 1</h1>
+          <h1 slot="r2">Slot radio 2</h1>
+          <h1 slot="r3">Slot radio 3</h1>
+        </v-radio-group>
+        <select name="effect" v-model="effect" class="form-control">
+          <optgroup label="Bounce">
+            <option value="bounce">bounce</option>
+            <option value="bounceDown">bounceDown</option>
+            <option value="bounceLeft">bounceLeft</option>
+            <option value="bounceRight">bounceRight</option>
+            <option value="bounceUp">bounceUp</option>
+          </optgroup>
+          <optgroup label="Fade">
+            <option value="fade">fade</option>
+            <option value="fadeDown">fadeDown</option>
+            <option value="fadeDownBig">fadeDownBig</option>
+            <option value="fadeLeft">fadeLeft</option>
+            <option value="fadeLeftBig">fadeLeftBig</option>
+            <option value="fadeRight">fadeRight</option>
+            <option value="fadeRightBig">fadeRightBig</option>
+            <option value="fadeUp">fadeUp</option>
+            <option value="fadeUpBig">fadeUpBig</option>
+          </optgroup>
+          <optgroup label="Rotate">
+            <option value="rotate">rotate</option>
+            <option value="rotateDownLeft">rotateDownLeft</option>
+            <option value="rotateDownRight">rotateDownRight</option>
+            <option value="rotateUpLeft">rotateUpLeft</option>
+            <option value="rotateUpRight">rotateUpRight</option>
+          </optgroup>
+          <optgroup label="Slide">
+            <option value="slideDown">slideDown</option>
+            <option value="slideLeft">slideLeft</option>
+            <option value="slideRight">slideRight</option>
+            <option value="slideUp">slideUp</option>
+          </optgroup>
+          <optgroup label="Zoom">
+            <option value="zoom">zoom</option>
+            <option value="zoomDown">zoomDown</option>
+            <option value="zoomLeft">zoomLeft</option>
+            <option value="zoomRight">zoomRight</option>
+            <option value="zoomUp">zoomUp</option>
+          </optgroup>
+        </select>
+        <v-input name="qqq" label="qqq" popover-content="popover" rules="required|email|max:10" validate-event="blur|input" v-model="i"></v-input>
+        <v-date-picker name="date" rules="required" v-model="date"></v-date-picker>
+        <v-button @click="validate">Validate</v-button>
+      </div>
+    </div>
+  </div>
   <!--.block-slide-->
   <!--    button(@click="show.push(i+1)") Add-->
   <!--    br-->

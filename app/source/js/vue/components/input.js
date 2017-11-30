@@ -1,17 +1,19 @@
 Vue.component('v-input', {
     template:
-    '<div class="form-group row" :class="{\'has-error\':errors.first(name), \'has-success\':!errors.first(name) && fields[name].touched}">' +
+    '<div class="form-group row" :class="{\'has-error\':errors.first(name), \'has-success\':!errors.first(name) && fields[name].touched && fields[name].valid}">' +
     '   <div :class="{\'col-md-12\':!inline}">' +
-    '       <div :class="{\'row\':!inline}">' +
+    '       <div :class="{\'row\':!inline}" v-if="isLabel">' +
     '           <div :class="labelCols">' +
-    '               <label v-if="label" class="control-label">{{label}}</label>' +
+    '               <label class="control-label"><slot></slot>' +
+    '                   <i :class="\'fa fa-\' + popoverIcon" data-toggle="popover" :data-trigger="popoverTrigger" :title="popoverTitle" :data-content="popoverContent" v-if="popoverContent"></i>' +
+    '               </label>' +
     '           </div>' +
     '       </div>' +
     '       <div :class="{\'row\':!inline}">' +
     '           <div :class="inputCols">' +
-    '               <div :class="[ btnAddon || leftAddon || rightAddon ? \'input-group\' : \'\']">' +
+    '               <div :class="[ btnAddon || leftAddon || rightAddon ? \'input-group\' : \'\', \'validation\']">' +
     '                   <div class="input-group-addon" v-if="leftAddon">{{leftAddon}}</div>' +
-    '                   <input v-validate :data-vv-rules="rules" :data-vv-validate-on="validateEvent" :type="type" :id="id" :class="classes" class="form-control" :name="name" :value="value" @change="updateValue($event.target.value)" @input="updateValue($event.target.value)" @blur="blur($event.target.value)" :placeholder="placeholder" :readonly="readonly" :required="required" :max="max" :min="min" :length="length">' +
+    '                   <input v-validate :data-vv-rules="rules" :data-vv-validate-on="validateEvent" :type="type" :id="id" :class="classes" class="form-control" :name="name" :value="value" @change="updateValue($event.target.value)" @input="updateValue($event.target.value)" @blur="blur($event.target.value)" :placeholder="placeholder" :readonly="readonly" :disabled="disabled" :required="required" :max="max" :min="min" :length="length">' +
     '                   <div class="input-group-addon" v-if="rightAddon">{{rightAddon}}</div>' +
     '                   <div class="input-group-btn" v-if="btnAddon">' +
     '                       <button class="btn btn-secondary" type="button" @click="clickAddons">{{btnAddon}}</button>' +
@@ -26,7 +28,10 @@ Vue.component('v-input', {
     props: {
         name: {
             type: String,
-            required: true
+            required: true,
+            validator: value => {
+                return value !== '';
+            }
         },
         type: {
             type: String,
@@ -40,8 +45,7 @@ Vue.component('v-input', {
             type: String
         },
         value: {},
-        placeholder: {},
-        label: {
+        placeholder: {
             type: String
         },
         inline: {
@@ -56,6 +60,9 @@ Vue.component('v-input', {
         },
         readonly: {
             type: Boolean,
+            default: false
+        },
+        disabled:{
             default: false
         },
         required: {
@@ -80,19 +87,41 @@ Vue.component('v-input', {
         btnAddon: {
             type: String,
         },
-        leftAddon:{
+        leftAddon: {
             type: String
         },
-        rightAddon:{
+        rightAddon: {
             type: String
         },
-        max:{
+        max: {
+            type: Number,
             default: 999
         },
         min: {
+            type: Number,
             default: 0
         },
-        length:{}
+        length: {
+            type: Number
+        },
+        popoverIcon: {
+            type: String,
+            default: 'question-circle'
+        },
+        popoverTitle: {
+            type: String
+        },
+        popoverContent: {
+            type: String
+        },
+        popoverTrigger: {
+            default: 'hover'
+        }
+    },
+    computed:{
+        isLabel(){
+            return this.$slots.default;
+        }
     },
     mounted() {
         this.$eventHub.$on('validate_' + this.$parent._uid, this.onValidate);

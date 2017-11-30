@@ -1,3 +1,16 @@
+.validation
+  position: relative
+  &::after
+    font: normal normal normal 24px/1 FontAwesome;
+    font-weight: 100;
+    position: absolute;
+    right: 5px;
+    top: 0;
+    bottom: 0;
+    margin: auto;
+    height: 27px;
+    z-index 3
+
 .has-error
   color #a94442
   input, textarea, select
@@ -6,6 +19,10 @@
       border-color: #a94442
   .radio-box
     border-color #a94442
+  .validation
+    &::after
+      content "\f00d"
+      color #a94442
 
 .has-success
   color #3c763d
@@ -15,6 +32,11 @@
       border-color: #3c763d
   .radio-box
     border-color #3c763d
+  .validation
+    &::after
+      color #3c763d
+      content '\f00c'
+
 
 .radio-box
   position relative
@@ -175,8 +197,5 @@
         @media screen and (max-width: 768px)
           position: relative;
 
-.v-enter-active, .v-leave-active
-  transition: opacity .5s
-
-.v-enter, .v-leave-to
-  opacity: 0
+.text-bold
+  font-weight bold !important

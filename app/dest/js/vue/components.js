@@ -29,7 +29,7 @@ Vue.component('v-button', {
 'use strict';
 
 Vue.component('v-check-group', {
-    template: '<div class="form-group row">' + '<div :class="[inline ? \'col-md-12\' : \'col-md-3\']" v-if="header">' + '<label>{{header}}</label>' + '</div>' + '<div :class="[inline ? \'col-md-9\' : \'col-md-9\']">' + '<slot></slot>' + '</div>' + '</div>',
+    template: '<div class="form-group row">' + '<div :class="[inline ? \'col-md-12\' : \'col-md-3\']" v-if="header">' + '<label>{{header}} <i :class="\'fa fa-\' + popoverIcon" data-toggle="popover" :data-trigger="popoverTrigger" :title="popoverTitle" :data-content="popoverContent" v-if="popoverLabel">{{popoverLabel}}</i></label>' + '</div>' + '<div :class="[inline ? \'col-md-9\' : \'col-md-9\']">' + '<slot></slot>' + '</div>' + '</div>',
     props: {
         name: {},
         header: {
@@ -41,6 +41,22 @@ Vue.component('v-check-group', {
         },
         rules: {
             type: String
+        },
+        popoverIcon: {
+            type: String,
+            default: 'question-circle'
+        },
+        popoverTitle: {
+            type: String
+        },
+        popoverContent: {
+            type: String
+        },
+        popoverTrigger: {
+            default: 'hover'
+        },
+        popoverLabel: {
+            type: String
         }
     },
     mounted: function mounted() {},
@@ -50,17 +66,19 @@ Vue.component('v-check-group', {
 'use strict';
 
 Vue.component('v-check', {
-    template: '<div :class="{\'form-group\':single, \'display-inline\':inline, \'has-error\':errors.first(name), \'has-success\':!errors.first(name) && fields[name].touched}">' + '   <label :for="id" class="control-label">' + '       <input v-validate.touched :data-vv-rules="rules" :data-vv-validate-on="validateEvent" type="checkbox" :name="name" :id="id" :value="value" :checked="checked" v-on:change="updateValue($event.target.checked)"><slot></slot>' + '   </label>' + '   <span class="help-block" v-if="helpText">{{helpText}}</span>' + '   <span v-if="errors.has(name)" class="small text-danger"><i class="fa fa-warning"></i>{{ errors.first(name) }}</span>' + '</div>',
+    template: '<div class="checkbox" :class="{\'form-group\':single, \'display-inline\':inline, \'has-error\':errors.first(name), \'has-success\':!errors.first(name) && fields[name].touched && fields[name].valid}">' + '   <label :for="id" class="control-label">' + '       <input v-validate :data-vv-rules="rules" :data-vv-validate-on="validateEvent" type="checkbox" :name="name" :id="id" :value="value" @change="updateValue($event.target.checked)"><slot></slot>' + '       <i :class="\'fa fa-\' + popoverIcon" data-toggle="popover" :data-trigger="popoverTrigger" :title="popoverTitle" :data-content="popoverContent" v-if="popoverContent"></i>' + '   </label>' + '   <span class="help-block" v-if="helpText">{{helpText}}</span>' + '   <span v-if="errors.has(name)" class="small text-danger"><i class="fa fa-warning"></i>{{ errors.first(name) }}</span>' + '</div>',
     props: {
         name: {
             type: String,
-            required: true
+            required: true,
+            validator: function validator(value) {
+                return value !== '';
+            }
         },
         id: {
             type: String
         },
         classes: String,
-        checked: Boolean,
         value: {},
         rules: {
             type: String
@@ -70,7 +88,20 @@ Vue.component('v-check', {
         },
         validateEvent: {
             type: String,
-            default: 'blur'
+            default: 'change'
+        },
+        popoverIcon: {
+            type: String,
+            default: 'question-circle'
+        },
+        popoverTitle: {
+            type: String
+        },
+        popoverContent: {
+            type: String
+        },
+        popoverTrigger: {
+            default: 'hover'
         }
     },
     model: {
@@ -112,11 +143,14 @@ Vue.component('v-check', {
 'use strict';
 
 Vue.component('v-date-picker', {
-    template: '<div class="form-group row" :class="{\'has-error\':errors.first(name), \'has-success\':!errors.first(name) && fields[name].touched}">' + '   <div :class="{\'col-md-12\':!inline}">' + '       <div :class="{\'row\':!inline}">' + '           <div :class="labelCols">' + '               <label v-if="label" class="control-label">{{label}}</label>' + '           </div>' + '       </div>' + '       <div :class="{\'row\':!inline}">' + '           <div :class="[inputCols , \'form-inline\']">' + '               <select :class="classes" class="day form-control" @change="updateValue" v-model="day">' + '                   <option value>{{dayLabel}}</option>' + '                   <option v-for="day in days" :value="day">{{day}}</option>' + '               </select>' + '               <select :class="classes" class="month form-control" @change="updateValue" v-model="month">' + '                   <option value>{{monthLabel}}</option>' + '                   <option v-for="(month, index) in months" :value="index +1">{{month}}</option>' + '               </select>' + '               <select :class="classes" class="year form-control" @change="updateValue" v-model="year">' + '                   <option value>{{yearLabel}}</option>' + '                   <option v-for="year in years" :value="year">{{year}}</option>' + '               </select>' + '               <input type="hidden" :name="name" :value="value" @change="updateValue($event.target.value)" v-validate :data-vv-rules="rules" :data-vv-validate-on="validateEvent" :required="required" :id="id">' + '               <span class="help-block" v-if="helpText">{{helpText}}</span>' + '           </div>' + '           <div class="col-md-12"><span v-if="errors.has(name)" class="small text-danger"><i class="fa fa-warning"></i>{{ errors.first(name) }}</span></div>' + '       </div>' + '   </div>' + '</div>',
+    template: '<div class="form-group row" :class="{\'has-error\':errors.first(name), \'has-success\':!errors.first(name) && fields[name].valid   }">' + '   <div :class="{\'col-md-12\':!inline}">' + '       <div :class="{\'row\':!inline}">' + '           <div :class="labelCols">' + '               <label v-if="label" class="control-label">{{label}} <i :class="\'fa fa-\' + popoverIcon" data-toggle="popover" :data-trigger="popoverTrigger" :title="popoverTitle" :data-content="popoverContent" v-if="popoverContent"></i></label>' + '           </div>' + '       </div>' + '       <div :class="{\'row\':!inline}">' + '           <div :class="[inputCols , \'form-inline\']">' + '               <select :class="classes" class="d-inline day form-control" @change="updateValue" v-model="day" :name="name" v-validate :data-vv-value="value" :data-vv-rules="rules" :data-vv-validate-on="validateEvent" :required="required">' + '                   <option value>{{dayLabel}}</option>' + '                   <option v-for="day in days" :value="day">{{day}}</option>' + '               </select>' + '               <select :class="classes" class="d-inline month form-control" @change="updateValue" v-model="month" :name="name" v-validate :data-vv-value="value" :data-vv-rules="rules" :data-vv-validate-on="validateEvent" :required="required">' + '                   <option value>{{monthLabel}}</option>' + '                   <option v-for="(month, index) in months" :value="index +1">{{month}}</option>' + '               </select>' + '               <select :class="classes" class="d-inline year form-control" @change="updateValue" v-model="year" :name="name" v-validate :data-vv-value="value" :data-vv-rules="rules" :data-vv-validate-on="validateEvent" :required="required">' + '                   <option value>{{yearLabel}}</option>' + '                   <option v-for="year in years" :value="year">{{year}}</option>' + '               </select>' + '               <input type="hidden" :name="name" :value="value" :id="id">' + '               <span class="help-block" v-if="helpText">{{helpText}}</span>' + '           </div>' + '           <div class="col-md-12"><span v-if="errors.has(name)" class="small text-danger"><i class="fa fa-warning"></i>{{ errors.first(name) }}</span></div>' + '       </div>' + '   </div>' + '</div>',
     props: {
         name: {
             type: String,
-            required: true
+            required: true,
+            validator: function validator(value) {
+                return value !== '';
+            }
         },
         id: {},
         classes: {
@@ -130,15 +164,8 @@ Vue.component('v-date-picker', {
             type: Boolean,
             default: false
         },
-        validation: {
-            type: String
-        },
         rules: {
             type: String
-        },
-        readonly: {
-            type: Boolean,
-            default: false
         },
         required: {
             type: Boolean,
@@ -174,6 +201,19 @@ Vue.component('v-date-picker', {
         },
         dateFormat: {
             default: 'DD-MM-YYYY'
+        },
+        popoverIcon: {
+            type: String,
+            default: 'question-circle'
+        },
+        popoverTitle: {
+            type: String
+        },
+        popoverContent: {
+            type: String
+        },
+        popoverTrigger: {
+            default: 'hover'
         }
     },
     computed: {
@@ -215,7 +255,8 @@ Vue.component('v-date-picker', {
     methods: {
         updateValue: function updateValue() {
             if (this.day !== '' && this.month !== '' && this.year !== '') {
-                this.$emit('input', moment(this.day + '-' + this.month + '-' + this.year, 'DD-MM-YYYY').format(this.dateFormat));
+                var date = moment(this.day + '-' + this.month + '-' + this.year, 'DD-MM-YYYY').format(this.dateFormat);
+                this.$emit('input', date);
             }
         },
         onValidate: function onValidate() {
@@ -254,11 +295,14 @@ Vue.component('v-form', {
 'use strict';
 
 Vue.component('v-input', {
-    template: '<div class="form-group row" :class="{\'has-error\':errors.first(name), \'has-success\':!errors.first(name) && fields[name].touched}">' + '   <div :class="{\'col-md-12\':!inline}">' + '       <div :class="{\'row\':!inline}">' + '           <div :class="labelCols">' + '               <label v-if="label" class="control-label">{{label}}</label>' + '           </div>' + '       </div>' + '       <div :class="{\'row\':!inline}">' + '           <div :class="inputCols">' + '               <div :class="[ btnAddon || leftAddon || rightAddon ? \'input-group\' : \'\']">' + '                   <div class="input-group-addon" v-if="leftAddon">{{leftAddon}}</div>' + '                   <input v-validate :data-vv-rules="rules" :data-vv-validate-on="validateEvent" :type="type" :id="id" :class="classes" class="form-control" :name="name" :value="value" @change="updateValue($event.target.value)" @input="updateValue($event.target.value)" @blur="blur($event.target.value)" :placeholder="placeholder" :readonly="readonly" :required="required" :max="max" :min="min" :length="length">' + '                   <div class="input-group-addon" v-if="rightAddon">{{rightAddon}}</div>' + '                   <div class="input-group-btn" v-if="btnAddon">' + '                       <button class="btn btn-secondary" type="button" @click="clickAddons">{{btnAddon}}</button>' + '                   </div>' + '               </div>' + '               <span class="help-block" v-if="helpText">{{helpText}}</span>' + '               <span v-if="errors.has(name)" class="small text-danger"><i class="fa fa-warning"></i>{{ errors.first(name) }}</span>' + '           </div>' + '       </div>' + '   </div>' + '</div>',
+    template: '<div class="form-group row" :class="{\'has-error\':errors.first(name), \'has-success\':!errors.first(name) && fields[name].touched && fields[name].valid}">' + '   <div :class="{\'col-md-12\':!inline}">' + '       <div :class="{\'row\':!inline}" v-if="isLabel">' + '           <div :class="labelCols">' + '               <label class="control-label"><slot></slot>' + '                   <i :class="\'fa fa-\' + popoverIcon" data-toggle="popover" :data-trigger="popoverTrigger" :title="popoverTitle" :data-content="popoverContent" v-if="popoverContent"></i>' + '               </label>' + '           </div>' + '       </div>' + '       <div :class="{\'row\':!inline}">' + '           <div :class="inputCols">' + '               <div :class="[ btnAddon || leftAddon || rightAddon ? \'input-group\' : \'\', \'validation\']">' + '                   <div class="input-group-addon" v-if="leftAddon">{{leftAddon}}</div>' + '                   <input v-validate :data-vv-rules="rules" :data-vv-validate-on="validateEvent" :type="type" :id="id" :class="classes" class="form-control" :name="name" :value="value" @change="updateValue($event.target.value)" @input="updateValue($event.target.value)" @blur="blur($event.target.value)" :placeholder="placeholder" :readonly="readonly" :disabled="disabled" :required="required" :max="max" :min="min" :length="length">' + '                   <div class="input-group-addon" v-if="rightAddon">{{rightAddon}}</div>' + '                   <div class="input-group-btn" v-if="btnAddon">' + '                       <button class="btn btn-secondary" type="button" @click="clickAddons">{{btnAddon}}</button>' + '                   </div>' + '               </div>' + '               <span class="help-block" v-if="helpText">{{helpText}}</span>' + '               <span v-if="errors.has(name)" class="small text-danger"><i class="fa fa-warning"></i>{{ errors.first(name) }}</span>' + '           </div>' + '       </div>' + '   </div>' + '</div>',
     props: {
         name: {
             type: String,
-            required: true
+            required: true,
+            validator: function validator(value) {
+                return value !== '';
+            }
         },
         type: {
             type: String,
@@ -272,8 +316,7 @@ Vue.component('v-input', {
             type: String
         },
         value: {},
-        placeholder: {},
-        label: {
+        placeholder: {
             type: String
         },
         inline: {
@@ -288,6 +331,9 @@ Vue.component('v-input', {
         },
         readonly: {
             type: Boolean,
+            default: false
+        },
+        disabled: {
             default: false
         },
         required: {
@@ -319,12 +365,34 @@ Vue.component('v-input', {
             type: String
         },
         max: {
+            type: Number,
             default: 999
         },
         min: {
+            type: Number,
             default: 0
         },
-        length: {}
+        length: {
+            type: Number
+        },
+        popoverIcon: {
+            type: String,
+            default: 'question-circle'
+        },
+        popoverTitle: {
+            type: String
+        },
+        popoverContent: {
+            type: String
+        },
+        popoverTrigger: {
+            default: 'hover'
+        }
+    },
+    computed: {
+        isLabel: function isLabel() {
+            return this.$slots.default;
+        }
     },
     mounted: function mounted() {
         var _this = this;
@@ -363,11 +431,14 @@ Vue.component('v-input', {
 'use strict';
 
 Vue.component('v-radio-group', {
-    template: '<div class="form-group row" :class="{\'has-error\':errors.first(name), \'has-success\':!errors.first(name) && fields[name].touched}">' + '   <div :class="[inline ? \'col-md-3\' : \'col-md-12\']" v-if="header">' + '       <label class="control-label">{{header}}</label>' + '   </div>' + '   <div :class="[ inline ? \'col-md-9\' : \'col-md-12\', classes]">' + '       <slot></slot>' + '       <span class="help-block" v-if="helpText">{{helpText}}</span>' + '   </div>' + '   <div class="col-md-12" v-if="errors.has(name)">' + '       <span class="small text-danger"><i class="fa fa-warning"></i>{{ errors.first(name) }}</span>' + '   </div>' + '   <div class="col-md-12" is="transition-group">' + '       <div v-for="radio in selected.idSlots" :key="radio" >' + '           <slot :name="radio"></slot>' + '       </div>' + '   </div>' + '</div>',
+    template: '<div class="form-group row" :class="{\'has-error\':errors.first(name), \'has-success\':!errors.first(name) && fields[name].touched && fields[name].valid}">' + '   <div :class="[inline ? \'col-md-3\' : \'col-md-12\']" v-if="header">' + '       <label :class="[\'control-label\', labelBold?\'text-bold\':\'\']">{{header}} <i :class="\'fa fa-\' + popoverIcon" data-toggle="popover" :data-trigger="popoverTrigger" :title="popoverTitle" :data-content="popoverContent" v-if="popoverContent"></i></label>' + '   </div>' + '   <div :class="[ inline ? \'col-md-9\' : \'col-md-12\', classes]">' + '       <slot></slot>' + '       <span class="help-block" v-if="helpText">{{helpText}}</span>' + '   </div>' + '   <div class="col-md-12" v-if="errors.has(name)">' + '       <span class="small text-danger"><i class="fa fa-warning"></i>{{ errors.first(name) }}</span>' + '   </div>' + '   <div class="col-md-12">' + '       <transition-group :name="effect" tag="div" :duration="animateDuration">' + '           <div v-for="id in selected.idAlertSlots" :key="id"><slot :name="id+ \'-info\'"></slot></div>' + '       </transition-group>' + '   </div>' + '   <div class="col-md-12">' + '       <transition-group :name="effect" tag="div" :duration="animateDuration">' + '           <div v-for="id in selected.idSlots" :key="id"><slot :name="id"></slot></div>' + '       </transition-group>' + '   </div>' + '</div>',
     props: {
         name: {
             type: String,
-            required: true
+            required: true,
+            validator: function validator(value) {
+                return value !== '';
+            }
         },
         header: {
             type: String
@@ -388,8 +459,31 @@ Vue.component('v-radio-group', {
         },
         classes: {
             default: 'radio-box-group'
+        },
+        effect: {
+            default: 'fadeInDown'
+        },
+        animateDuration: {
+            type: Number,
+            default: 500
+        },
+        popoverIcon: {
+            type: String,
+            default: 'question-circle'
+        },
+        popoverTitle: {
+            type: String
+        },
+        popoverContent: {
+            type: String
+        },
+        popoverTrigger: {
+            default: 'hover'
+        },
+        labelBold: {
+            type: Boolean,
+            default: false
         }
-
     },
     data: function data() {
         return {
@@ -455,14 +549,38 @@ Vue.component('v-radio-group', {
 'use strict';
 
 Vue.component('v-radio', {
-    template: '<div :class="{\'d-inline\':inline}">' + '<label :for="id" class="radio-box radio-box-inline control-label">' + '<input v-validate :data-vv-rules="rules" type="radio" :name="name" :id="id" :value="value" @change="updateValue($event.target.value)" :class="classes">' + '<slot></slot></label>' + '<span class="help-block" v-if="helpText">{{helpText}}</span>' + '</div>',
+    template: '<div :class="{\'d-inline\':inline}">' + '<label :for="id" class="radio-box radio-box-inline control-label">' + '<input v-validate :data-vv-rules="rules" type="radio" :name="name" :id="id" :value="value" @change="updateValue($event.target.value)" :class="classes">' + '<slot></slot> <i :class="\'fa fa-\' + popoverIcon" data-toggle="popover" :data-trigger="popoverTrigger" :title="popoverTitle" :data-content="popoverContent" v-if="popoverContent"></i></label>' + '<span class="help-block" v-if="helpText">{{helpText}}</span>' + '</div>',
     props: {
-        id: {},
-        idSlots: {},
-        classes: {},
-        value: {},
+        id: {
+            type: String
+        },
+        idSlots: {
+            type: Array
+        },
+        idAlertSlots: {
+            type: Array
+        },
+        classes: {
+            type: String
+        },
+        value: {
+            type: [String, Number, Boolean]
+        },
         helpText: {
             type: String
+        },
+        popoverIcon: {
+            type: String,
+            default: 'question-circle'
+        },
+        popoverTitle: {
+            type: String
+        },
+        popoverContent: {
+            type: String
+        },
+        popoverTrigger: {
+            default: 'hover'
         }
     },
     model: {
@@ -518,11 +636,14 @@ Vue.component('v-select-option', {
 'use strict';
 
 Vue.component('v-select', {
-    template: '<div class="form-group row" :class="{\'has-error\':errors.first(name), \'has-success\':!errors.first(name) && fields[name].touched}">' + '<div :class="[inline ? \'col-md-3\' : \'col-md-12\']" v-if="label"><label class="control-label">{{label}}</label></div>' + '<div :class="[inline ? \'col-md-9\' : selectCols ]">' + '<select v-validate :data-vv-rules="rules" :name="name" :id="id" :class="classes" class="form-control" @change="updateValue($event.target.value)"><slot></slot></select>' + '<span class="help-block" v-if="helpText">{{helpText}}</span>' + '<span v-if="errors.has(name)" class="small text-danger"><i class="fa fa-warning"></i>{{ errors.first(name) }}</span>' + '</div>' + '</div>',
+    template: '<div class="form-group row" :class="{\'has-error\':errors.first(name), \'has-success\':!errors.first(name) && fields[name].touched && fields[name].valid}">' + '   <div :class="[inline ? \'col-md-3\' : \'col-md-12\']" v-if="label"><label class="control-label">{{label}} <i :class="\'fa fa-\' + popoverIcon" data-toggle="popover" :data-trigger="popoverTrigger" :title="popoverTitle" :data-content="popoverContent" v-if="popoverContent"></i></label></div>' + '       <div :class="[inline ? \'col-md-9\' : selectCols ]">' + '           <select v-validate :data-vv-rules="rules" :name="name" :id="id" :class="classes" class="form-control" @change="updateValue($event.target.value)"><slot></slot></select>' + '           <span class="help-block" v-if="helpText">{{helpText}}</span>' + '           <span v-if="errors.has(name)" class="small text-danger"><i class="fa fa-warning"></i>{{ errors.first(name) }}</span>' + '       </div>' + '   </div>' + '</div>',
     props: {
         name: {
             type: String,
-            required: true
+            required: true,
+            validator: function validator(value) {
+                return value !== '';
+            }
         },
         id: {},
         classes: {},
@@ -541,6 +662,19 @@ Vue.component('v-select', {
         },
         selectCols: {
             default: 'col-md-12'
+        },
+        popoverIcon: {
+            type: String,
+            default: 'question-circle'
+        },
+        popoverTitle: {
+            type: String
+        },
+        popoverContent: {
+            type: String
+        },
+        popoverTrigger: {
+            default: 'hover'
         }
     },
     mounted: function mounted() {
@@ -570,11 +704,14 @@ Vue.component('v-select', {
 'use strict';
 
 Vue.component('v-textarea', {
-    template: '<div class="form-group row" :class="{\'has-error\':errors.first(name), \'has-success\':!errors.first(name) && fields[name].touched}">' + '<div :class="[inline?\'col-md-3\':\'col-md-12\']">' + '<label v-if="label" class="control-label">{{label}}</label>' + '</div>' + '<div :class="[inline?\'col-md-9\':\'col-md-12\']">' + '<textarea :rows="rows" v-validate :data-vv-rules="rules" :data-vv-value="value" :id="id" :class="classes" class="form-control" :name="name" @input="updateValue($event.target.value)" @blur="blur($event.target.value)" :placeholder="placeholder">{{value}}</textarea>' + '<span class="help-block" v-if="helpText">{{helpText}}</span>' + '<span v-if="errors.has(name)" class="small text-danger"><i class="fa fa-warning"></i>{{ errors.first(name) }}</span>' + '</div>' + '</div>',
+    template: '<div class="form-group row" :class="{\'has-error\':errors.first(name), \'has-success\':!errors.first(name) && fields[name].touched && fields[name].valid}">' + '<div :class="[inline?\'col-md-3\':\'col-md-12\']">' + '<label class="control-label"><slot></slot> <i :class="\'fa fa-\' + popoverIcon" data-toggle="popover" :data-trigger="popoverTrigger" :title="popoverTitle" :data-content="popoverContent" v-if="popoverContent"></i></label>' + '</div>' + '<div :class="[inline?\'col-md-9\':\'col-md-12\']">' + '<textarea :rows="rows" v-validate :data-vv-rules="rules" :data-vv-value="value" :id="id" :class="classes" class="form-control" :name="name" @input="updateValue($event.target.value)" @blur="blur($event.target.value)" :placeholder="placeholder">{{value}}</textarea>' + '<span class="help-block" v-if="helpText">{{helpText}}</span>' + '<span v-if="errors.has(name)" class="small text-danger"><i class="fa fa-warning"></i>{{ errors.first(name) }}</span>' + '</div>' + '</div>',
     props: {
         name: {
             type: String,
-            required: true
+            required: true,
+            validator: function validator(value) {
+                return value !== '';
+            }
         },
         id: {},
         classes: {
@@ -586,9 +723,6 @@ Vue.component('v-textarea', {
             type: Boolean,
             default: false
         },
-        label: {
-            type: String
-        },
         rules: {
             type: String
         },
@@ -597,6 +731,19 @@ Vue.component('v-textarea', {
         },
         helpText: {
             type: String
+        },
+        popoverIcon: {
+            type: String,
+            default: 'question-circle'
+        },
+        popoverTitle: {
+            type: String
+        },
+        popoverContent: {
+            type: String
+        },
+        popoverTrigger: {
+            default: 'hover'
         }
     },
     mounted: function mounted() {
@@ -635,9 +782,15 @@ Vue.component('v-step', {
     template: '<form class="form step" :class="{\'hide\':!active}"><slot></slot></form>',
     props: {
         title: {},
-        beforeChange: {},
-        validating: {}
-
+        validating: {},
+        nextStep: {
+            type: Number,
+            default: null
+        },
+        prevStep: {
+            type: Number,
+            default: null
+        }
     },
     data: function data() {
         return {
@@ -695,6 +848,9 @@ Vue.component('v-step', {
                     // this.$parent.nextStep();
                 }
             }, 100);
+        },
+        beforeChange: function beforeChange() {
+            this.$emit('on-before-change');
         }
     },
     destroyed: function destroyed() {
@@ -707,7 +863,6 @@ Vue.component('v-step', {
 'use strict';
 
 Vue.component('v-steps', {
-    name: 'steps',
     template: '<div class="steps">' + '<v-step-nav :width="progress"></v-step-nav>' + '<div class="steps-header"><slot name="header"></slot></div>' + '<div class="steps-content"><slot></slot></div>' + '<div class="steps-btn v-row" v-if="showNavBtn">' + '<v-button @clicked="prevStep" v-if="!isFirstStep" :in-form="false" classes="v-col d-inline" classes-btn="btn btn-default"><slot name="prevBtn">{{prevLabel}}</slot></v-button>' + '<v-button @clicked="nextStep" v-if="!isLastStep" :in-form="false" classes="v-col d-inline" classes-btn="btn btn-success"><slot name="nextBtn">{{nextLabel}}</slot></v-button>' + '<v-button @clicked="nextStep" v-if="isLastStep" :in-form="false" classes="v-col d-inline" classes-btn="btn btn-success"><slot name="finishBtn">{{finishLabel}}</slot></v-button>' + '</div>' + '<div class="steps-footer "><slot name="footer"></slot></div>' + '</div>',
     props: {
         prevButton: {
@@ -852,7 +1007,6 @@ Vue.component('v-steps', {
             if (index <= this.maxStep) {
                 var cb = function cb() {
                     if (validate && index - _this.activeStepIndex > 1) {
-                        // validate all steps recursively until destination index
                         _this.changeStep(_this.activeStepIndex, _this.activeStepIndex + 1);
                         _this.beforeStepChange(_this.activeStepIndex, cb);
                     } else {
@@ -873,7 +1027,7 @@ Vue.component('v-steps', {
 
             var cb = function cb() {
                 if (_this2.activeStepIndex < _this2.stepCount - 1) {
-                    _this2.changeStep(_this2.activeStepIndex, _this2.activeStepIndex + 1);
+                    _this2.changeStep(_this2.activeStepIndex, _this2.activeStep.nextStep ? _this2.activeStep.nextStep : _this2.activeStepIndex + 1);
                 } else {
                     _this2.$emit('on-complete');
                 }
@@ -885,8 +1039,7 @@ Vue.component('v-steps', {
 
             var cb = function cb() {
                 if (_this3.activeStepIndex > 0) {
-                    // this.setValidationError(null);
-                    _this3.changeStep(_this3.activeStepIndex, _this3.activeStepIndex - 1);
+                    _this3.changeStep(_this3.activeStepIndex, _this3.activeStep.prevStep ? _this3.activeStep.prevStep : _this3.activeStepIndex - 1);
                 }
             };
             if (this.validateOnBack) {
@@ -922,20 +1075,14 @@ Vue.component('v-steps', {
         validateBeforeChange: function validateBeforeChange(callback) {
             var _this4 = this;
 
-            // this.setValidationError(null);
-
-            if (this.activeStep.validating) {
-                this.activeStep.validate();
-                setTimeout(function () {
-                    if (!_this4.activeStep.errors.any()) {
-                        callback();
-                        $('html, body').animate({ scrollTop: '0px' }, 300);
-                    }
-                }, 100);
-            } else {
-                callback();
-                $('html, body').animate({ scrollTop: '0px' }, 300);
-            }
+            this.activeStep.validate();
+            setTimeout(function () {
+                if (!_this4.activeStep.errors.any()) {
+                    _this4.steps[_this4.activeStepIndex].beforeChange();
+                    callback();
+                    $('html, body').animate({ scrollTop: '0px' }, 300);
+                }
+            }, 100);
         },
         executeBeforeChange: function executeBeforeChange(validationResult, callback) {
             this.$emit('on-validate', validationResult, this.activeStepIndex);
@@ -946,14 +1093,15 @@ Vue.component('v-steps', {
             }
         },
         beforeStepChange: function beforeStepChange(index, callback) {
+
             if (this.loading) {
                 return;
             }
             var oldStep = this.steps[index];
-            if (oldStep && oldStep.validating) {
-                // let stepChangeRes = oldStep.beforeChange();
-                this.validateBeforeChange(callback);
+            if (oldStep && (oldStep.validating || oldStep.nextStep)) {
+                if (oldStep.validating) this.validateBeforeChange(callback);
             } else {
+                this.steps[index].beforeChange();
                 callback();
             }
         },

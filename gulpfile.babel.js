@@ -57,6 +57,7 @@ gulp.task('stylus', function () {
 
 let copyJSLib = [
     application.bowerSrc + '/jquery/dist/jquery.min.js',
+    application.bowerSrc + '/bootstrap/dist/js/bootstrap.min.js',
     application.nodeSrc + '/vue/dist/vue.js',
     application.nodeSrc + '/vee-validate/dist/vee-validate.min.js',
     application.nodeSrc + '/ramda/dist/ramda.min.js',

@@ -1,7 +1,7 @@
 Vue.component('v-textarea', {
-    template: '<div class="form-group row" :class="{\'has-error\':errors.first(name), \'has-success\':!errors.first(name) && fields[name].touched}">' +
+    template: '<div class="form-group row" :class="{\'has-error\':errors.first(name), \'has-success\':!errors.first(name) && fields[name].touched && fields[name].valid}">' +
     '<div :class="[inline?\'col-md-3\':\'col-md-12\']">' +
-    '<label v-if="label" class="control-label">{{label}}</label>' +
+    '<label class="control-label"><slot></slot> <i :class="\'fa fa-\' + popoverIcon" data-toggle="popover" :data-trigger="popoverTrigger" :title="popoverTitle" :data-content="popoverContent" v-if="popoverContent"></i></label>' +
     '</div>' +
     '<div :class="[inline?\'col-md-9\':\'col-md-12\']">' +
     '<textarea :rows="rows" v-validate :data-vv-rules="rules" :data-vv-value="value" :id="id" :class="classes" class="form-control" :name="name" @input="updateValue($event.target.value)" @blur="blur($event.target.value)" :placeholder="placeholder">{{value}}</textarea>' +
@@ -12,7 +12,10 @@ Vue.component('v-textarea', {
     props: {
         name: {
             type: String,
-            required: true
+            required: true,
+            validator: value => {
+                return value !== '';
+            }
         },
         id: {},
         classes: {
@@ -24,9 +27,6 @@ Vue.component('v-textarea', {
             type: Boolean,
             default: false
         },
-        label: {
-            type: String
-        },
         rules: {
             type: String
         },
@@ -35,6 +35,19 @@ Vue.component('v-textarea', {
         },
         helpText: {
             type: String
+        },
+        popoverIcon: {
+            type: String,
+            default: 'question-circle'
+        },
+        popoverTitle: {
+            type: String
+        },
+        popoverContent: {
+            type: String
+        },
+        popoverTrigger: {
+            default: 'hover'
         }
     },
     mounted() {

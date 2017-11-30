@@ -1,8 +1,9 @@
 Vue.component('v-check', {
     template:
-    '<div :class="{\'form-group\':single, \'display-inline\':inline, \'has-error\':errors.first(name), \'has-success\':!errors.first(name) && fields[name].touched}">' +
+    '<div class="checkbox" :class="{\'form-group\':single, \'display-inline\':inline, \'has-error\':errors.first(name), \'has-success\':!errors.first(name) && fields[name].touched && fields[name].valid}">' +
     '   <label :for="id" class="control-label">' +
-    '       <input v-validate.touched :data-vv-rules="rules" :data-vv-validate-on="validateEvent" type="checkbox" :name="name" :id="id" :value="value" :checked="checked" v-on:change="updateValue($event.target.checked)"><slot></slot>' +
+    '       <input v-validate :data-vv-rules="rules" :data-vv-validate-on="validateEvent" type="checkbox" :name="name" :id="id" :value="value" @change="updateValue($event.target.checked)"><slot></slot>' +
+    '       <i :class="\'fa fa-\' + popoverIcon" data-toggle="popover" :data-trigger="popoverTrigger" :title="popoverTitle" :data-content="popoverContent" v-if="popoverContent"></i>' +
     '   </label>' +
     '   <span class="help-block" v-if="helpText">{{helpText}}</span>' +
     '   <span v-if="errors.has(name)" class="small text-danger"><i class="fa fa-warning"></i>{{ errors.first(name) }}</span>' +
@@ -10,13 +11,15 @@ Vue.component('v-check', {
     props: {
         name: {
             type: String,
-            required: true
+            required: true,
+            validator: value => {
+                return value !== '';
+            }
         },
         id: {
             type: String,
         },
         classes: String,
-        checked: Boolean,
         value: {},
         rules: {
             type: String
@@ -26,8 +29,21 @@ Vue.component('v-check', {
         },
         validateEvent: {
             type: String,
-            default: 'blur'
+            default: 'change'
         },
+        popoverIcon: {
+            type: String,
+            default: 'question-circle'
+        },
+        popoverTitle: {
+            type: String
+        },
+        popoverContent: {
+            type: String
+        },
+        popoverTrigger: {
+            default: 'hover'
+        }
     },
     model: {
         prop: 'checked',

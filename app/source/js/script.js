@@ -52,7 +52,8 @@ $(function () {
                 date: null,
                 radio: '',
                 show: [],
-                i : 1
+                i: 1,
+                effect: ''
             },
             mounted() {
                 this.contacts = [
@@ -94,14 +95,19 @@ $(function () {
                 //     });
                 // },
                 // submit: function(form) {
-                    // this.$refs[form].validate();
+                // this.$refs[form].validate();
                 // },
-                form2(){
+                form2() {
                     alert('complete');
                 },
-                change(value){
+                change(value) {
                     alert(value);
                 },
+                validate() {
+                    this.$children.map(function (child) {
+                        child.$validator.validateAll();
+                    });
+                }
                 // val2(){
                 //     return new Promise(function (resolve, reject) {
                 //     });
