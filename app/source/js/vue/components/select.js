@@ -47,13 +47,30 @@ Vue.component('v-select', {
         },
         popoverTrigger: {
             default: 'hover'
-        }
+        },
+        value: {}
+    },
+    data() {
+        return {
+            options: []
+        };
     },
     mounted() {
         this.$eventHub.$on('validate_' + this.$parent._uid, this.onValidate);
         this.$watch(() => this.errors.items, (newValue, oldValue) => {
             this.$eventHub.$emit('errors-changed', newValue, oldValue, this.name);
-        })
+        });
+
+        if (this.value) {
+            this.findByValue(this.value).select();
+        }
+    },
+    watch: {
+        value: function (newValue, oldValue) {
+            console.log(oldValue, newValue);
+            this.findByValue(oldValue).unSelect();
+            this.findByValue(newValue).select();
+        }
     },
     methods: {
         updateValue(value) {
@@ -62,6 +79,16 @@ Vue.component('v-select', {
         onValidate() {
             this.$validator.validateAll();
         },
+        addOption(option) {
+            if (option) {
+                this.options.push(option);
+            }
+        },
+        findByValue(value) {
+            return this.options.find(function (option) {
+                return option.value === value;
+            });
+        }
     },
     beforeDestroy() {
         this.$eventHub.$emit('errors-changed', [], this.errors);

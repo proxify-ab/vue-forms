@@ -11,7 +11,7 @@ Vue.component('v-input', {
     '       </div>' +
     '       <div :class="{\'row\':!inline}">' +
     '           <div :class="inputCols">' +
-    '               <div :class="[ btnAddon || leftAddon || rightAddon ? \'input-group\' : \'\', \'validation\']">' +
+    '               <div :class="[ btnAddon || leftAddon || rightAddon ? \'input-group\' : \'\', \'validation\', \'validation-\'+type]">' +
     '                   <div class="input-group-addon" v-if="leftAddon">{{leftAddon}}</div>' +
     '                   <input v-validate :data-vv-rules="rules" :data-vv-validate-on="validateEvent" :type="type" :id="id" :class="classes" class="form-control" :name="name" :value="value" @change="updateValue($event.target.value)" @input="updateValue($event.target.value)" @blur="blur($event.target.value)" :placeholder="placeholder" :readonly="readonly" :disabled="disabled" :required="required" :max="max" :min="min" :length="length">' +
     '                   <div class="input-group-addon" v-if="rightAddon">{{rightAddon}}</div>' +
@@ -36,7 +36,7 @@ Vue.component('v-input', {
         type: {
             type: String,
             validator: value => {
-                return ['hidden', 'text', 'number', 'date', 'email', 'tel'].indexOf(value) > -1;
+                return ['hidden', 'text', 'number', 'email', 'tel'].indexOf(value) > -1;
             },
             default: 'text'
         },

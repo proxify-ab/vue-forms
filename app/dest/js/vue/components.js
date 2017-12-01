@@ -295,7 +295,7 @@ Vue.component('v-form', {
 'use strict';
 
 Vue.component('v-input', {
-    template: '<div class="form-group row" :class="{\'has-error\':errors.first(name), \'has-success\':!errors.first(name) && fields[name].touched && fields[name].valid}">' + '   <div :class="{\'col-md-12\':!inline}">' + '       <div :class="{\'row\':!inline}" v-if="isLabel">' + '           <div :class="labelCols">' + '               <label class="control-label"><slot></slot>' + '                   <i :class="\'fa fa-\' + popoverIcon" data-toggle="popover" :data-trigger="popoverTrigger" :title="popoverTitle" :data-content="popoverContent" v-if="popoverContent"></i>' + '               </label>' + '           </div>' + '       </div>' + '       <div :class="{\'row\':!inline}">' + '           <div :class="inputCols">' + '               <div :class="[ btnAddon || leftAddon || rightAddon ? \'input-group\' : \'\', \'validation\']">' + '                   <div class="input-group-addon" v-if="leftAddon">{{leftAddon}}</div>' + '                   <input v-validate :data-vv-rules="rules" :data-vv-validate-on="validateEvent" :type="type" :id="id" :class="classes" class="form-control" :name="name" :value="value" @change="updateValue($event.target.value)" @input="updateValue($event.target.value)" @blur="blur($event.target.value)" :placeholder="placeholder" :readonly="readonly" :disabled="disabled" :required="required" :max="max" :min="min" :length="length">' + '                   <div class="input-group-addon" v-if="rightAddon">{{rightAddon}}</div>' + '                   <div class="input-group-btn" v-if="btnAddon">' + '                       <button class="btn btn-secondary" type="button" @click="clickAddons">{{btnAddon}}</button>' + '                   </div>' + '               </div>' + '               <span class="help-block" v-if="helpText">{{helpText}}</span>' + '               <span v-if="errors.has(name)" class="small text-danger"><i class="fa fa-warning"></i>{{ errors.first(name) }}</span>' + '           </div>' + '       </div>' + '   </div>' + '</div>',
+    template: '<div class="form-group row" :class="{\'has-error\':errors.first(name), \'has-success\':!errors.first(name) && fields[name].touched && fields[name].valid}">' + '   <div :class="{\'col-md-12\':!inline}">' + '       <div :class="{\'row\':!inline}" v-if="isLabel">' + '           <div :class="labelCols">' + '               <label class="control-label"><slot></slot>' + '                   <i :class="\'fa fa-\' + popoverIcon" data-toggle="popover" :data-trigger="popoverTrigger" :title="popoverTitle" :data-content="popoverContent" v-if="popoverContent"></i>' + '               </label>' + '           </div>' + '       </div>' + '       <div :class="{\'row\':!inline}">' + '           <div :class="inputCols">' + '               <div :class="[ btnAddon || leftAddon || rightAddon ? \'input-group\' : \'\', \'validation\', \'validation-\'+type]">' + '                   <div class="input-group-addon" v-if="leftAddon">{{leftAddon}}</div>' + '                   <input v-validate :data-vv-rules="rules" :data-vv-validate-on="validateEvent" :type="type" :id="id" :class="classes" class="form-control" :name="name" :value="value" @change="updateValue($event.target.value)" @input="updateValue($event.target.value)" @blur="blur($event.target.value)" :placeholder="placeholder" :readonly="readonly" :disabled="disabled" :required="required" :max="max" :min="min" :length="length">' + '                   <div class="input-group-addon" v-if="rightAddon">{{rightAddon}}</div>' + '                   <div class="input-group-btn" v-if="btnAddon">' + '                       <button class="btn btn-secondary" type="button" @click="clickAddons">{{btnAddon}}</button>' + '                   </div>' + '               </div>' + '               <span class="help-block" v-if="helpText">{{helpText}}</span>' + '               <span v-if="errors.has(name)" class="small text-danger"><i class="fa fa-warning"></i>{{ errors.first(name) }}</span>' + '           </div>' + '       </div>' + '   </div>' + '</div>',
     props: {
         name: {
             type: String,
@@ -307,7 +307,7 @@ Vue.component('v-input', {
         type: {
             type: String,
             validator: function validator(value) {
-                return ['hidden', 'text', 'number', 'date', 'email', 'tel'].indexOf(value) > -1;
+                return ['hidden', 'text', 'number', 'email', 'tel'].indexOf(value) > -1;
             },
             default: 'text'
         },
@@ -623,15 +623,29 @@ Vue.component('v-radio', {
 'use strict';
 
 Vue.component('v-select-option', {
-    template: '<option :value="value"><slot></slot></option>',
+    template: '<option :value="value" :selected="selected"><slot></slot></option>',
     props: {
         value: {
             required: true
         }
     },
-    mounted: function mounted() {},
+    data: function data() {
+        return {
+            selected: false
+        };
+    },
+    mounted: function mounted() {
+        this.$parent.addOption(this);
+    },
 
-    methods: {}
+    methods: {
+        select: function select() {
+            this.selected = true;
+        },
+        unSelect: function unSelect() {
+            this.selected = false;
+        }
+    }
 });
 'use strict';
 
@@ -675,7 +689,13 @@ Vue.component('v-select', {
         },
         popoverTrigger: {
             default: 'hover'
-        }
+        },
+        value: {}
+    },
+    data: function data() {
+        return {
+            options: []
+        };
     },
     mounted: function mounted() {
         var _this = this;
@@ -686,14 +706,35 @@ Vue.component('v-select', {
         }, function (newValue, oldValue) {
             _this.$eventHub.$emit('errors-changed', newValue, oldValue, _this.name);
         });
+
+        if (this.value) {
+            this.findByValue(this.value).select();
+        }
     },
 
+    watch: {
+        value: function value(newValue, oldValue) {
+            console.log(oldValue, newValue);
+            this.findByValue(oldValue).unSelect();
+            this.findByValue(newValue).select();
+        }
+    },
     methods: {
         updateValue: function updateValue(value) {
             this.$emit('input', value);
         },
         onValidate: function onValidate() {
             this.$validator.validateAll();
+        },
+        addOption: function addOption(option) {
+            if (option) {
+                this.options.push(option);
+            }
+        },
+        findByValue: function findByValue(value) {
+            return this.options.find(function (option) {
+                return option.value === value;
+            });
         }
     },
     beforeDestroy: function beforeDestroy() {

@@ -1,11 +1,24 @@
 Vue.component('v-select-option', {
-    template: '<option :value="value"><slot></slot></option>',
+    template: '<option :value="value" :selected="selected"><slot></slot></option>',
     props: {
         value: {
             required: true
         }
     },
-    mounted() {
+    data() {
+        return {
+            selected: false
+        }
     },
-    methods: {}
+    mounted() {
+        this.$parent.addOption(this);
+    },
+    methods: {
+        select() {
+            this.selected = true;
+        },
+        unSelect(){
+            this.selected = false;
+        }
+    }
 });
