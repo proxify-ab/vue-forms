@@ -16,7 +16,8 @@ Vue.component('v-step', {
         return {
             active: false,
             validationError: null,
-            checked: false
+            checked: false,
+            elements: []
         }
     },
     computed: {
@@ -61,11 +62,23 @@ Vue.component('v-step', {
             setTimeout(() => {
                 if (!this.errors.any()) {
                     // this.$parent.nextStep();
+                } else {
+                    // console.log(this.errors.items[0]);
                 }
             }, 100);
         },
         beforeChange() {
             this.$emit('on-before-change');
+        },
+        addElement(element) {
+            this.elements.push(element);
+        },
+        removeElement(element) {
+            const elements = this.elements;
+            const index = elements.indexOf(element);
+            if (index > -1) {
+                elements.splice(index, 1)
+            }
         }
     },
     destroyed() {

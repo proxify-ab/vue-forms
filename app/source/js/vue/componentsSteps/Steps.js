@@ -1,5 +1,5 @@
 Vue.component('v-steps', {
-    template: '<div class="steps">' +
+    template: '<div class="steps" :data-index="activeStepIndex">' +
     '<v-step-nav :width="progress"></v-step-nav>' +
     '<div class="steps-header"><slot name="header"></slot></div>' +
     '<div class="steps-content"><slot></slot></div>' +
@@ -31,7 +31,10 @@ Vue.component('v-steps', {
             type: Boolean,
             default: false
         },
-        validateOnBack: Boolean,
+        validateOnBack: {
+            type: Boolean,
+            default: false
+        },
         stepsClasses: {
             type: [String, Array],
             default: ''
@@ -118,9 +121,7 @@ Vue.component('v-steps', {
         },
         addStep(item) {
             const index = this.$slots.default.indexOf(item.$vnode);
-            // item.stepId = `t-${item.title.replace(/ /g, '')}${index}`;
             this.steps.splice(index, 0, item);
-            // if a step is added before the current one, go to it
             if (index < this.activeStepIndex + 1) {
                 this.maxStep = index;
                 this.changeStep(this.activeStepIndex + 1, index)

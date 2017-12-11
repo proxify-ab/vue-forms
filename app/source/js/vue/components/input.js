@@ -1,6 +1,6 @@
 Vue.component('v-input', {
     template:
-    '<div class="form-group row" :class="{\'has-error\':errors.first(name), \'has-success\':!errors.first(name) && fields[name].touched && fields[name].valid}">' +
+    '<div class="form-group row" :class="{\'has-error\':errors.first(name), \'has-success\':!errors.first(name) && (fields[name].touched || validateOnCreate) && fields[name].valid}">' +
     '   <div :class="{\'col-md-12\':!inline}">' +
     '       <div :class="{\'row\':!inline}" v-if="isLabel">' +
     '           <div :class="labelCols">' +
@@ -11,9 +11,11 @@ Vue.component('v-input', {
     '       </div>' +
     '       <div :class="{\'row\':!inline}">' +
     '           <div :class="inputCols">' +
-    '               <div :class="[ btnAddon || leftAddon || rightAddon ? \'input-group\' : \'\', \'validation\', \'validation-\'+type]">' +
+    '               <div :class="[ btnAddon || leftAddon || rightAddon ? \'input-group\' : \'\']">' +
     '                   <div class="input-group-addon" v-if="leftAddon">{{leftAddon}}</div>' +
-    '                   <input v-validate :data-vv-rules="rules" :data-vv-validate-on="validateEvent" :type="type" :id="id" :class="classes" class="form-control" :name="name" :value="value" @change="updateValue($event.target.value)" @input="updateValue($event.target.value)" @blur="blur($event.target.value)" :placeholder="placeholder" :readonly="readonly" :disabled="disabled" :required="required" :max="max" :min="min" :length="length">' +
+    '                   <div :class="[\'validation\', \'validation-\'+type]">' +
+    '                       <input v-validate :data-vv-rules="rules" :data-vv-validate-on="validateEvent" :type="type" :id="id" :class="classes" class="form-control" :name="name" :value="value" @change="updateValue($event.target.value)" @input="updateValue($event.target.value)" @blur="blur($event.target.value)" :placeholder="placeholder" :readonly="readonly" :disabled="disabled" :required="required" :max="max" :min="min" :length="length">' +
+    '                   </div>' +
     '                   <div class="input-group-addon" v-if="rightAddon">{{rightAddon}}</div>' +
     '                   <div class="input-group-btn" v-if="btnAddon">' +
     '                       <button class="btn btn-secondary" type="button" @click="clickAddons">{{btnAddon}}</button>' +
@@ -44,7 +46,9 @@ Vue.component('v-input', {
         classes: {
             type: String
         },
-        value: {},
+        value: {
+            default: null
+        },
         placeholder: {
             type: String
         },
@@ -62,7 +66,7 @@ Vue.component('v-input', {
             type: Boolean,
             default: false
         },
-        disabled:{
+        disabled: {
             default: false
         },
         required: {
@@ -116,18 +120,28 @@ Vue.component('v-input', {
         },
         popoverTrigger: {
             default: 'hover'
+        },
+        validateOnCreate: {
+            type: Boolean,
+            default: false
         }
     },
-    computed:{
-        isLabel(){
+    computed: {
+        isLabel() {
             return this.$slots.default;
         }
     },
     mounted() {
+        this.$parent.addElement(this);
         this.$eventHub.$on('validate_' + this.$parent._uid, this.onValidate);
         this.$watch(() => this.errors.items, (newValue, oldValue) => {
             this.$eventHub.$emit('errors-changed', newValue, oldValue, this.name);
         });
+    },
+    created() {
+        if (this.value !== null) {
+            this.$validator.validateAll();
+        }
     },
     methods: {
         enterKeyPressed() {
@@ -149,5 +163,11 @@ Vue.component('v-input', {
     beforeDestroy() {
         this.$eventHub.$emit('errors-changed', [], this.errors);
         this.$eventHub.$off('validate_' + this.$parent._uid, this.onValidate)
+    },
+    destroyed() {
+        if (this.$el && this.$el.parentNode) {
+            this.$el.parentNode.removeChild(this.$el)
+        }
+        this.$parent.removeElement(this);
     },
 });

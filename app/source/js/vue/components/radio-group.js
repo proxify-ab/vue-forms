@@ -82,6 +82,7 @@ Vue.component('v-radio-group', {
         }
     },
     mounted() {
+        this.$parent.addElement(this);
         this.selected = {};
         this.$eventHub.$on('validate_' + this.$parent._uid, this.onValidate);
         this.$watch(() => this.errors.items, (newValue, oldValue) => {
@@ -127,5 +128,11 @@ Vue.component('v-radio-group', {
     beforeDestroy() {
         this.$eventHub.$emit('errors-changed', [], this.errors);
         this.$eventHub.$off('validate', this.onValidate)
+    },
+    destroyed() {
+        if (this.$el && this.$el.parentNode) {
+            this.$el.parentNode.removeChild(this.$el)
+        }
+        this.$parent.removeElement(this);
     },
 });

@@ -59,9 +59,17 @@ Vue.component('v-check-group', {
             type: String
         }
     },
-    mounted: function mounted() {},
+    mounted: function mounted() {
+        this.$parent.addElement(this);
+    },
 
-    methods: {}
+    methods: {},
+    destroyed: function destroyed() {
+        if (this.$el && this.$el.parentNode) {
+            this.$el.parentNode.removeChild(this.$el);
+        }
+        this.$parent.removeElement(this);
+    }
 });
 'use strict';
 
@@ -111,6 +119,7 @@ Vue.component('v-check', {
     mounted: function mounted() {
         var _this = this;
 
+        if (typeof this.$parent.addElement === 'function') this.$parent.addElement(this);
         this.$eventHub.$on('validate_' + this.$parent._uid, this.onValidate);
         this.$watch(function () {
             return _this.errors.items;
@@ -138,6 +147,14 @@ Vue.component('v-check', {
     beforeDestroy: function beforeDestroy() {
         this.$eventHub.$emit('errors-changed', [], this.errors);
         this.$eventHub.$off('validate', this.onValidate);
+    },
+    destroyed: function destroyed() {
+        if (typeof this.$parent.removeElement === 'function') {
+            if (this.$el && this.$el.parentNode) {
+                this.$el.parentNode.removeChild(this.$el);
+            }
+            this.$parent.removeElement(this);
+        }
     }
 });
 'use strict';
@@ -244,6 +261,7 @@ Vue.component('v-date-picker', {
     mounted: function mounted() {
         var _this = this;
 
+        this.$parent.addElement(this);
         this.$eventHub.$on('validate_' + this.$parent._uid, this.onValidate);
         this.$watch(function () {
             return _this.errors.items;
@@ -262,6 +280,12 @@ Vue.component('v-date-picker', {
         onValidate: function onValidate() {
             this.$validator.validateAll();
         }
+    },
+    destroyed: function destroyed() {
+        if (this.$el && this.$el.parentNode) {
+            this.$el.parentNode.removeChild(this.$el);
+        }
+        this.$parent.removeElement(this);
     }
 });
 'use strict';
@@ -295,7 +319,7 @@ Vue.component('v-form', {
 'use strict';
 
 Vue.component('v-input', {
-    template: '<div class="form-group row" :class="{\'has-error\':errors.first(name), \'has-success\':!errors.first(name) && fields[name].touched && fields[name].valid}">' + '   <div :class="{\'col-md-12\':!inline}">' + '       <div :class="{\'row\':!inline}" v-if="isLabel">' + '           <div :class="labelCols">' + '               <label class="control-label"><slot></slot>' + '                   <i :class="\'fa fa-\' + popoverIcon" data-toggle="popover" :data-trigger="popoverTrigger" :title="popoverTitle" :data-content="popoverContent" v-if="popoverContent"></i>' + '               </label>' + '           </div>' + '       </div>' + '       <div :class="{\'row\':!inline}">' + '           <div :class="inputCols">' + '               <div :class="[ btnAddon || leftAddon || rightAddon ? \'input-group\' : \'\', \'validation\', \'validation-\'+type]">' + '                   <div class="input-group-addon" v-if="leftAddon">{{leftAddon}}</div>' + '                   <input v-validate :data-vv-rules="rules" :data-vv-validate-on="validateEvent" :type="type" :id="id" :class="classes" class="form-control" :name="name" :value="value" @change="updateValue($event.target.value)" @input="updateValue($event.target.value)" @blur="blur($event.target.value)" :placeholder="placeholder" :readonly="readonly" :disabled="disabled" :required="required" :max="max" :min="min" :length="length">' + '                   <div class="input-group-addon" v-if="rightAddon">{{rightAddon}}</div>' + '                   <div class="input-group-btn" v-if="btnAddon">' + '                       <button class="btn btn-secondary" type="button" @click="clickAddons">{{btnAddon}}</button>' + '                   </div>' + '               </div>' + '               <span class="help-block" v-if="helpText">{{helpText}}</span>' + '               <span v-if="errors.has(name)" class="small text-danger"><i class="fa fa-warning"></i>{{ errors.first(name) }}</span>' + '           </div>' + '       </div>' + '   </div>' + '</div>',
+    template: '<div class="form-group row" :class="{\'has-error\':errors.first(name), \'has-success\':!errors.first(name) && (fields[name].touched || validateOnCreate) && fields[name].valid}">' + '   <div :class="{\'col-md-12\':!inline}">' + '       <div :class="{\'row\':!inline}" v-if="isLabel">' + '           <div :class="labelCols">' + '               <label class="control-label"><slot></slot>' + '                   <i :class="\'fa fa-\' + popoverIcon" data-toggle="popover" :data-trigger="popoverTrigger" :title="popoverTitle" :data-content="popoverContent" v-if="popoverContent"></i>' + '               </label>' + '           </div>' + '       </div>' + '       <div :class="{\'row\':!inline}">' + '           <div :class="inputCols">' + '               <div :class="[ btnAddon || leftAddon || rightAddon ? \'input-group\' : \'\']">' + '                   <div class="input-group-addon" v-if="leftAddon">{{leftAddon}}</div>' + '                   <div :class="[\'validation\', \'validation-\'+type]">' + '                       <input v-validate :data-vv-rules="rules" :data-vv-validate-on="validateEvent" :type="type" :id="id" :class="classes" class="form-control" :name="name" :value="value" @change="updateValue($event.target.value)" @input="updateValue($event.target.value)" @blur="blur($event.target.value)" :placeholder="placeholder" :readonly="readonly" :disabled="disabled" :required="required" :max="max" :min="min" :length="length">' + '                   </div>' + '                   <div class="input-group-addon" v-if="rightAddon">{{rightAddon}}</div>' + '                   <div class="input-group-btn" v-if="btnAddon">' + '                       <button class="btn btn-secondary" type="button" @click="clickAddons">{{btnAddon}}</button>' + '                   </div>' + '               </div>' + '               <span class="help-block" v-if="helpText">{{helpText}}</span>' + '               <span v-if="errors.has(name)" class="small text-danger"><i class="fa fa-warning"></i>{{ errors.first(name) }}</span>' + '           </div>' + '       </div>' + '   </div>' + '</div>',
     props: {
         name: {
             type: String,
@@ -315,7 +339,9 @@ Vue.component('v-input', {
         classes: {
             type: String
         },
-        value: {},
+        value: {
+            default: null
+        },
         placeholder: {
             type: String
         },
@@ -387,6 +413,10 @@ Vue.component('v-input', {
         },
         popoverTrigger: {
             default: 'hover'
+        },
+        validateOnCreate: {
+            type: Boolean,
+            default: false
         }
     },
     computed: {
@@ -397,12 +427,18 @@ Vue.component('v-input', {
     mounted: function mounted() {
         var _this = this;
 
+        this.$parent.addElement(this);
         this.$eventHub.$on('validate_' + this.$parent._uid, this.onValidate);
         this.$watch(function () {
             return _this.errors.items;
         }, function (newValue, oldValue) {
             _this.$eventHub.$emit('errors-changed', newValue, oldValue, _this.name);
         });
+    },
+    created: function created() {
+        if (this.value !== null) {
+            this.$validator.validateAll();
+        }
     },
 
     methods: {
@@ -426,6 +462,12 @@ Vue.component('v-input', {
     beforeDestroy: function beforeDestroy() {
         this.$eventHub.$emit('errors-changed', [], this.errors);
         this.$eventHub.$off('validate_' + this.$parent._uid, this.onValidate);
+    },
+    destroyed: function destroyed() {
+        if (this.$el && this.$el.parentNode) {
+            this.$el.parentNode.removeChild(this.$el);
+        }
+        this.$parent.removeElement(this);
     }
 });
 'use strict';
@@ -494,6 +536,7 @@ Vue.component('v-radio-group', {
     mounted: function mounted() {
         var _this = this;
 
+        this.$parent.addElement(this);
         this.selected = {};
         this.$eventHub.$on('validate_' + this.$parent._uid, this.onValidate);
         this.$watch(function () {
@@ -544,6 +587,12 @@ Vue.component('v-radio-group', {
     beforeDestroy: function beforeDestroy() {
         this.$eventHub.$emit('errors-changed', [], this.errors);
         this.$eventHub.$off('validate', this.onValidate);
+    },
+    destroyed: function destroyed() {
+        if (this.$el && this.$el.parentNode) {
+            this.$el.parentNode.removeChild(this.$el);
+        }
+        this.$parent.removeElement(this);
     }
 });
 'use strict';
@@ -650,7 +699,7 @@ Vue.component('v-select-option', {
 'use strict';
 
 Vue.component('v-select', {
-    template: '<div class="form-group row" :class="{\'has-error\':errors.first(name), \'has-success\':!errors.first(name) && fields[name].touched && fields[name].valid}">' + '   <div :class="[inline ? \'col-md-3\' : \'col-md-12\']" v-if="label"><label class="control-label">{{label}} <i :class="\'fa fa-\' + popoverIcon" data-toggle="popover" :data-trigger="popoverTrigger" :title="popoverTitle" :data-content="popoverContent" v-if="popoverContent"></i></label></div>' + '       <div :class="[inline ? \'col-md-9\' : selectCols ]">' + '           <select v-validate :data-vv-rules="rules" :name="name" :id="id" :class="classes" class="form-control" @change="updateValue($event.target.value)"><slot></slot></select>' + '           <span class="help-block" v-if="helpText">{{helpText}}</span>' + '           <span v-if="errors.has(name)" class="small text-danger"><i class="fa fa-warning"></i>{{ errors.first(name) }}</span>' + '       </div>' + '   </div>' + '</div>',
+    template: '<div class="form-group row" :class="{\'has-error\':errors.first(name), \'has-success\':!errors.first(name) && ( fields[name].touched || validateOnCreate) && fields[name].valid}">' + '   <div :class="[inline ? \'col-md-3\' : \'col-md-12\']" v-if="label"><label class="control-label">{{label}} <i :class="\'fa fa-\' + popoverIcon" data-toggle="popover" :data-trigger="popoverTrigger" :title="popoverTitle" :data-content="popoverContent" v-if="popoverContent"></i></label></div>' + '       <div :class="[inline ? \'col-md-9\' : selectCols ]">' + '           <select v-validate :data-vv-rules="rules" :name="name" :id="id" :class="classes" class="form-control" @change="updateValue($event.target.value)"><slot></slot></select>' + '           <span class="help-block" v-if="helpText">{{helpText}}</span>' + '           <span v-if="errors.has(name)" class="small text-danger"><i class="fa fa-warning"></i>{{ errors.first(name) }}</span>' + '       </div>' + '   </div>' + '</div>',
     props: {
         name: {
             type: String,
@@ -690,16 +739,22 @@ Vue.component('v-select', {
         popoverTrigger: {
             default: 'hover'
         },
-        value: {}
+        value: {},
+        validateOnCreate: {
+            type: Boolean,
+            default: false
+        }
     },
     data: function data() {
         return {
-            options: []
+            options: [],
+            selected: {}
         };
     },
     mounted: function mounted() {
         var _this = this;
 
+        this.$parent.addElement(this);
         this.$eventHub.$on('validate_' + this.$parent._uid, this.onValidate);
         this.$watch(function () {
             return _this.errors.items;
@@ -707,16 +762,19 @@ Vue.component('v-select', {
             _this.$eventHub.$emit('errors-changed', newValue, oldValue, _this.name);
         });
 
-        if (this.value) {
+        if (this.value !== null && this.value !== '') {
             this.findByValue(this.value).select();
         }
+        // if (this.value !== '') {
+        // this.$validator.validateAll();
+        // }
     },
+    created: function created() {},
 
     watch: {
         value: function value(newValue, oldValue) {
-            console.log(oldValue, newValue);
-            this.findByValue(oldValue).unSelect();
-            this.findByValue(newValue).select();
+            if (oldValue) this.findByValue(oldValue).unSelect();
+            if (newValue) this.findByValue(newValue).select();
         }
     },
     methods: {
@@ -740,6 +798,12 @@ Vue.component('v-select', {
     beforeDestroy: function beforeDestroy() {
         this.$eventHub.$emit('errors-changed', [], this.errors);
         this.$eventHub.$off('validate', this.onValidate);
+    },
+    destroyed: function destroyed() {
+        if (this.$el && this.$el.parentNode) {
+            this.$el.parentNode.removeChild(this.$el);
+        }
+        this.$parent.removeElement(this);
     }
 });
 'use strict';
@@ -790,6 +854,7 @@ Vue.component('v-textarea', {
     mounted: function mounted() {
         var _this = this;
 
+        this.$parent.addElement(this);
         this.$eventHub.$on('validate_' + this.$parent._uid, this.onValidate);
         this.$watch(function () {
             return _this.errors.items;
@@ -815,6 +880,12 @@ Vue.component('v-textarea', {
     beforeDestroy: function beforeDestroy() {
         this.$eventHub.$emit('errors-changed', [], this.errors);
         this.$eventHub.$off('validate_' + this.$parent._uid, this.onValidate);
+    },
+    destroyed: function destroyed() {
+        if (this.$el && this.$el.parentNode) {
+            this.$el.parentNode.removeChild(this.$el);
+        }
+        this.$parent.removeElement(this);
     }
 });
 'use strict';
@@ -837,7 +908,8 @@ Vue.component('v-step', {
         return {
             active: false,
             validationError: null,
-            checked: false
+            checked: false,
+            elements: []
         };
     },
 
@@ -887,11 +959,23 @@ Vue.component('v-step', {
             setTimeout(function () {
                 if (!_this2.errors.any()) {
                     // this.$parent.nextStep();
-                }
+                } else {
+                        // console.log(this.errors.items[0]);
+                    }
             }, 100);
         },
         beforeChange: function beforeChange() {
             this.$emit('on-before-change');
+        },
+        addElement: function addElement(element) {
+            this.elements.push(element);
+        },
+        removeElement: function removeElement(element) {
+            var elements = this.elements;
+            var index = elements.indexOf(element);
+            if (index > -1) {
+                elements.splice(index, 1);
+            }
         }
     },
     destroyed: function destroyed() {
@@ -904,7 +988,7 @@ Vue.component('v-step', {
 'use strict';
 
 Vue.component('v-steps', {
-    template: '<div class="steps">' + '<v-step-nav :width="progress"></v-step-nav>' + '<div class="steps-header"><slot name="header"></slot></div>' + '<div class="steps-content"><slot></slot></div>' + '<div class="steps-btn v-row" v-if="showNavBtn">' + '<v-button @clicked="prevStep" v-if="!isFirstStep" :in-form="false" classes="v-col d-inline" classes-btn="btn btn-default"><slot name="prevBtn">{{prevLabel}}</slot></v-button>' + '<v-button @clicked="nextStep" v-if="!isLastStep" :in-form="false" classes="v-col d-inline" classes-btn="btn btn-success"><slot name="nextBtn">{{nextLabel}}</slot></v-button>' + '<v-button @clicked="nextStep" v-if="isLastStep" :in-form="false" classes="v-col d-inline" classes-btn="btn btn-success"><slot name="finishBtn">{{finishLabel}}</slot></v-button>' + '</div>' + '<div class="steps-footer "><slot name="footer"></slot></div>' + '</div>',
+    template: '<div class="steps" :data-index="activeStepIndex">' + '<v-step-nav :width="progress"></v-step-nav>' + '<div class="steps-header"><slot name="header"></slot></div>' + '<div class="steps-content"><slot></slot></div>' + '<div class="steps-btn v-row" v-if="showNavBtn">' + '<v-button @clicked="prevStep" v-if="!isFirstStep" :in-form="false" classes="v-col d-inline" classes-btn="btn btn-default"><slot name="prevBtn">{{prevLabel}}</slot></v-button>' + '<v-button @clicked="nextStep" v-if="!isLastStep" :in-form="false" classes="v-col d-inline" classes-btn="btn btn-success"><slot name="nextBtn">{{nextLabel}}</slot></v-button>' + '<v-button @clicked="nextStep" v-if="isLastStep" :in-form="false" classes="v-col d-inline" classes-btn="btn btn-success"><slot name="finishBtn">{{finishLabel}}</slot></v-button>' + '</div>' + '<div class="steps-footer "><slot name="footer"></slot></div>' + '</div>',
     props: {
         prevButton: {
             type: Boolean,
@@ -926,7 +1010,10 @@ Vue.component('v-steps', {
             type: Boolean,
             default: false
         },
-        validateOnBack: Boolean,
+        validateOnBack: {
+            type: Boolean,
+            default: false
+        },
         stepsClasses: {
             type: [String, Array],
             default: ''
@@ -1016,9 +1103,7 @@ Vue.component('v-steps', {
         },
         addStep: function addStep(item) {
             var index = this.$slots.default.indexOf(item.$vnode);
-            // item.stepId = `t-${item.title.replace(/ /g, '')}${index}`;
             this.steps.splice(index, 0, item);
-            // if a step is added before the current one, go to it
             if (index < this.activeStepIndex + 1) {
                 this.maxStep = index;
                 this.changeStep(this.activeStepIndex + 1, index);
