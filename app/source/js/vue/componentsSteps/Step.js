@@ -1,75 +1,95 @@
 Vue.component('v-step', {
-    template: '<form class="form step" :class="{\'hide\':!active}"><slot></slot></form>',
+    template: '<div class="step" v-if="active"><slot></slot></div>',
     props: {
         title: {},
         validating: {},
-        nextStep: {
-            type: Number,
-            default: null
-        },
-        prevStep: {
-            type: Number,
-            default: null
-        },
+        // nextStep: {
+        //     type: Number,
+        //     default: null
+        // },
+        // prevStep: {
+        //     type: Number,
+        //     default: null
+        // },
+        skip: {
+            type: Boolean,
+            default: false
+        }
     },
     data() {
         return {
             active: false,
-            validationError: null,
-            checked: false,
-            elements: []
+            elements: [],
+            checkedElements: []
         }
     },
     computed: {
-        shape() {
-            return this.$parent.shape
-        },
-        color() {
-            return this.$parent.color
-        },
-        errorColor() {
-            return this.$parent.errorColor
+        progress() {
+            return 100 / this.elements.length * this.checkedElements.length;
         }
     },
     mounted() {
         this.$parent.addStep(this);
 
-        this.$eventHub.$on('errors-changed', (newErrors, oldErrors, name) => {
-            if (oldErrors !== undefined && Array.isArray(oldErrors)) {
-                if (oldErrors.length === 0) {
-                } else {
-                    oldErrors.forEach(error => {
-                        this.errors.remove(error.field)
-                    })
-                }
-            }
-            if (newErrors !== undefined && Array.isArray(newErrors)) {
-                if (newErrors.length === 0) {
-                    this.errors.remove(name);
-                } else {
-                    newErrors.forEach(error => {
-                        if (!this.errors.has(error.field)) {
-                            this.errors.add(error.field, error.msg, error.rule)
-                        }
-                    })
-                }
-            }
-        })
+        this.init();
+
+        // this.$eventHub.$on('errors-changed', (newErrors, oldErrors, name) => {
+        //     if (oldErrors !== undefined && Array.isArray(oldErrors)) {
+        //         if (oldErrors.length === 0) {
+        //         } else {
+        //             oldErrors.forEach(error => {
+        //                 this.errors.remove(error.field)
+        //             })
+        //         }
+        //     }
+        //     if (newErrors !== undefined && Array.isArray(newErrors)) {
+        //         if (newErrors.length === 0) {
+        //             this.errors.remove(name);
+        //         } else {
+        //             newErrors.forEach(error => {
+        //                 if (!this.errors.has(error.field)) {
+        //                     this.errors.add(error.field, error.msg, error.rule)
+        //                 }
+        //             })
+        //         }
+        //     }
+        // })
+    },
+    watch: {
+        progress: function (newValue, oldValue) {
+            this.$parent.changeProgress(newValue);
+        }
     },
     methods: {
-        validate: function () {
-            this.$eventHub.$emit('validate_' + this._uid);
-            setTimeout(() => {
-                if (!this.errors.any()) {
-                    // this.$parent.nextStep();
-                } else {
-                    // console.log(this.errors.items[0]);
+        init() {
+
+        },
+        checkElement(element, valid) {
+            if (valid) {
+                if (this.checkedElements.indexOf(element) === -1) {
+                    this.checkedElements.push(element);
                 }
-            }, 100);
+            } else {
+                if (this.checkedElements.indexOf(element) !== -1) {
+                    this.checkedElements.splice(this.checkedElements.indexOf(element), 1);
+                }
+            }
         },
-        beforeChange() {
-            this.$emit('on-before-change');
+        validate() {
+            this.elements.some(function (item) {
+                item.$validator.validateAll();
+                if (item.errors.any()) {
+                    $('html, body').animate({
+                        scrollTop: $(item.$el).offset().top - 20
+                    }, 500);
+                    $(item.$el).find('[name]')[0].focus();
+                    return true;
+                }
+            });
         },
+        // beforeChange() {
+        //     this.$emit('on-before-change');
+        // },
         addElement(element) {
             this.elements.push(element);
         },
@@ -79,9 +99,15 @@ Vue.component('v-step', {
             if (index > -1) {
                 elements.splice(index, 1)
             }
+        },
+        activate() {
+            this.active = true;
+        },
+        deactivate() {
+            this.active = false;
         }
     },
-    destroyed() {
+    beforeDestroyed() {
         if (this.$el && this.$el.parentNode) {
             this.$el.parentNode.removeChild(this.$el)
         }

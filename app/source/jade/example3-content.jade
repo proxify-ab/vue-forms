@@ -1,0 +1,17 @@
+#root
+    v-steps(:start-index="0")
+        v-step
+            v-t-input(name="t1" rules="required|alpha" v-model="t1") text 1
+            v-t-input(name="t2" rules="required|email" v-model="t2") text 1
+            v-t-input(name="t3" rules="required|numeric" v-model="t3") text 1
+            v-date-picker(name="d1" rules="required")
+            v-select(name="ssss1" rules="required")
+                v-select-option( value="qwdwq") qwdqwd
+
+        v-step
+            v-input(name="t2" rules="required|email") text 2
+        v-step
+            v-input(name="t3" rules="required|numeric") text 3
+        v-step
+            v-input(name="t4" rules="required") text 4
+

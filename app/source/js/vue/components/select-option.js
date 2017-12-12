@@ -17,8 +17,11 @@ Vue.component('v-select-option', {
         select() {
             this.selected = true;
         },
-        unSelect(){
+        unSelect() {
             this.selected = false;
         }
+    },
+    beforeDestroyed() {
+        this.$parent.removeOption(this);
     }
 });

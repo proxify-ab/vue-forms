@@ -93,9 +93,10 @@ Vue.component('v-select', {
             this.$validator.validateAll();
         },
         addOption(option) {
-            if (option) {
-                this.options.push(option);
-            }
+            this.options.push(option);
+        },
+        removeOption(option) {
+            this.options.push(option);
         },
         findByValue(value) {
             return this.options.find(function (option) {
