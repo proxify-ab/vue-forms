@@ -57,6 +57,20 @@ Vue.component('v-textarea', {
             this.$eventHub.$emit('errors-changed', newValue, oldValue, this.name);
         });
     },
+    computed: {
+        valid() {
+            return this.fields[this.name].valid;
+        }
+    },
+    watch: {
+        // valid: function (newValue, oldValue) {
+        //     if (newValue) {
+        //         this.$parent.addCheckElement();
+        //     } else {
+        //         this.$parent.removeCheckElement();
+        //     }
+        // }
+    },
     methods: {
         enterKeyPressed() {
             this.$emit('enter');
@@ -67,7 +81,7 @@ Vue.component('v-textarea', {
         blur(value) {
             this.$emit('blur', value);
         },
-        onValidate() {
+        validate() {
             this.$validator.validateAll();
         },
     },

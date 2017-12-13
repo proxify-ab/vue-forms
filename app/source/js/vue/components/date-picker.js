@@ -117,6 +117,9 @@ Vue.component('v-date-picker', {
                 return moment().get('years') - i;
             });
         },
+        valid() {
+            return this.fields[this.name].valid;
+        }
     },
     data() {
         return {
@@ -132,6 +135,15 @@ Vue.component('v-date-picker', {
             this.$eventHub.$emit('errors-changed', newValue, oldValue, this.name);
         });
     },
+    watch: {
+        // valid: function (newValue, oldValue) {
+        //     if (newValue) {
+        //         this.$parent.addCheckElement();
+        //     } else {
+        //         this.$parent.removeCheckElement();
+        //     }
+        // }
+    },
     methods: {
         updateValue() {
             if (this.day !== '' && this.month !== '' && this.year !== '') {
@@ -139,7 +151,7 @@ Vue.component('v-date-picker', {
                 this.$emit('input', date);
             }
         },
-        onValidate() {
+        validate() {
             this.$validator.validateAll();
         },
     },

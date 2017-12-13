@@ -1,6 +1,6 @@
 Vue.component('v-select', {
     template:
-    '<div class="form-group row" :class="{\'has-error\':errors.first(name), \'has-success\':!errors.first(name) && ( fields[name].touched || validateOnCreate) && fields[name].valid}">' +
+    '<div class="form-group row" :class="{\'has-error\':errors.first(name), \'has-success\':!errors.first(name) && valid}">' +
     '   <div :class="[inline ? \'col-md-3\' : \'col-md-12\']" v-if="label"><label class="control-label">{{label}} <i :class="\'fa fa-\' + popoverIcon" data-toggle="popover" :data-trigger="popoverTrigger" :title="popoverTitle" :data-content="popoverContent" v-if="popoverContent"></i></label></div>' +
     '       <div :class="[inline ? \'col-md-9\' : selectCols ]">' +
     '           <select v-validate :data-vv-rules="rules" :name="name" :id="id" :class="classes" class="form-control" @change="updateValue($event.target.value)"><slot></slot></select>' +
@@ -62,17 +62,17 @@ Vue.component('v-select', {
     },
     mounted() {
         this.$parent.addElement(this);
-        this.$eventHub.$on('validate_' + this.$parent._uid, this.onValidate);
-        this.$watch(() => this.errors.items, (newValue, oldValue) => {
-            this.$eventHub.$emit('errors-changed', newValue, oldValue, this.name);
-        });
 
         if (this.value !== null && this.value !== '') {
             this.findByValue(this.value).select();
+            this.updateValue(this.value);
+            this.$validator.validateAll();
         }
-        // if (this.value !== '') {
-        // this.$validator.validateAll();
-        // }
+    },
+    computed: {
+        valid() {
+            return this.fields[this.name].valid;
+        }
     },
     created() {
 
@@ -83,13 +83,20 @@ Vue.component('v-select', {
                 this.findByValue(oldValue).unSelect();
             if (newValue)
                 this.findByValue(newValue).select();
-        }
+        },
+        // valid: function (newValue, oldValue) {
+        //     if (newValue) {
+        //         this.$parent.addCheckElement();
+        //     } else {
+        //         this.$parent.removeCheckElement();
+        //     }
+        // }
     },
     methods: {
         updateValue(value) {
             this.$emit('input', value)
         },
-        onValidate() {
+        validate() {
             this.$validator.validateAll();
         },
         addOption(option) {

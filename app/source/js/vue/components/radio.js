@@ -44,10 +44,10 @@ Vue.component('v-radio', {
     },
     mounted() {
         this.$parent.addRadio(this);
-        this.$eventHub.$on(this.name + '_validate', this.onValidate);
-        this.$watch(() => this.errors.items, (newValue, oldValue) => {
-            this.$eventHub.$emit(this.name + '_return_validate', newValue, oldValue);
-        })
+        // this.$eventHub.$on(this.name + '_validate', this.onValidate);
+        // this.$watch(() => this.errors.items, (newValue, oldValue) => {
+            // this.$eventHub.$emit(this.name + '_return_validate', newValue, oldValue);
+        // })
     },
     computed: {
         name: function () {
@@ -57,9 +57,13 @@ Vue.component('v-radio', {
             return this.$parent.$options.propsData !== undefined ? this.$parent.$props.rules : '';
         },
         inline: function () {
-            return this.$parent.$options.propsData !== undefined ? this.$parent.$props.inlineItems: false;
+            return this.$parent.$options.propsData !== undefined ? this.$parent.$props.inlineItems : false;
         },
+        valid() {
+            return this.fields[this.name].valid;
+        }
     },
+
     methods: {
         updateValue(value) {
             this.$parent.setSelected(this);

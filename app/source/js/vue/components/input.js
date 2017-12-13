@@ -1,6 +1,6 @@
 Vue.component('v-input', {
     template:
-    '<div class="form-group row" :class="{\'has-error\':errors.first(name), \'has-success\':!errors.first(name) && (fields[name].touched || validateOnCreate) && fields[name].valid}">' +
+    '<div class="form-group row" :class="{\'has-error\':errors.first(name), \'has-success\':!errors.first(name) && valid}">' +
     '   <div :class="{\'col-md-12\':!inline}">' +
     '       <div :class="{\'row\':!inline}" v-if="isLabel">' +
     '           <div :class="labelCols">' +
@@ -129,19 +129,28 @@ Vue.component('v-input', {
     computed: {
         isLabel() {
             return this.$slots.default;
+        },
+        valid() {
+            return this.fields[this.name].valid;
         }
     },
     mounted() {
         this.$parent.addElement(this);
-        this.$eventHub.$on('validate_' + this.$parent._uid, this.onValidate);
-        this.$watch(() => this.errors.items, (newValue, oldValue) => {
-            this.$eventHub.$emit('errors-changed', newValue, oldValue, this.name);
-        });
-    },
-    created() {
-        if (this.value !== null) {
+
+        if (this.value !== null && this.value !== '') {
             this.$validator.validateAll();
         }
+    },
+    created() {
+    },
+    watch: {
+        // valid: function (newValue, oldValue) {
+        //     if (newValue) {
+        //         this.$parent.addCheckElement();
+        //     } else {
+        //         this.$parent.removeCheckElement();
+        //     }
+        // }
     },
     methods: {
         enterKeyPressed() {
@@ -153,16 +162,15 @@ Vue.component('v-input', {
         blur(value) {
             this.$emit('blur', value);
         },
-        onValidate() {
-            this.$validator.validateAll();
-        },
         clickAddons: function () {
             this.$emit('on-addons', this.value, this.name);
+        },
+        validate() {
+            this.$validator.validateAll();
         }
     },
     beforeDestroy() {
         this.$eventHub.$emit('errors-changed', [], this.errors);
-        this.$eventHub.$off('validate_' + this.$parent._uid, this.onValidate)
     },
     destroyed() {
         if (this.$el && this.$el.parentNode) {

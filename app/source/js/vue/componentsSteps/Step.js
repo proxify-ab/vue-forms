@@ -1,16 +1,8 @@
 Vue.component('v-step', {
-    template: '<div class="step" v-if="active"><slot></slot></div>',
+    template: '<div class="step" v-show="active"><slot></slot></div>',
     props: {
         title: {},
         validating: {},
-        // nextStep: {
-        //     type: Number,
-        //     default: null
-        // },
-        // prevStep: {
-        //     type: Number,
-        //     default: null
-        // },
         skip: {
             type: Boolean,
             default: false
@@ -20,76 +12,44 @@ Vue.component('v-step', {
         return {
             active: false,
             elements: [],
-            checkedElements: []
         }
     },
     computed: {
         progress() {
-            return 100 / this.elements.length * this.checkedElements.length;
+            return 100 / this.elements.length * this.validElementsLength;
+        },
+        validElementsLength() {
+            return this.elements.filter(function (item) {
+                return item.valid;
+            }).length
         }
     },
     mounted() {
         this.$parent.addStep(this);
 
         this.init();
-
-        // this.$eventHub.$on('errors-changed', (newErrors, oldErrors, name) => {
-        //     if (oldErrors !== undefined && Array.isArray(oldErrors)) {
-        //         if (oldErrors.length === 0) {
-        //         } else {
-        //             oldErrors.forEach(error => {
-        //                 this.errors.remove(error.field)
-        //             })
-        //         }
-        //     }
-        //     if (newErrors !== undefined && Array.isArray(newErrors)) {
-        //         if (newErrors.length === 0) {
-        //             this.errors.remove(name);
-        //         } else {
-        //             newErrors.forEach(error => {
-        //                 if (!this.errors.has(error.field)) {
-        //                     this.errors.add(error.field, error.msg, error.rule)
-        //                 }
-        //             })
-        //         }
-        //     }
-        // })
     },
-    watch: {
-        progress: function (newValue, oldValue) {
-            this.$parent.changeProgress(newValue);
-        }
-    },
+    watch: {},
     methods: {
         init() {
 
         },
-        checkElement(element, valid) {
-            if (valid) {
-                if (this.checkedElements.indexOf(element) === -1) {
-                    this.checkedElements.push(element);
-                }
-            } else {
-                if (this.checkedElements.indexOf(element) !== -1) {
-                    this.checkedElements.splice(this.checkedElements.indexOf(element), 1);
-                }
-            }
-        },
         validate() {
-            this.elements.some(function (item) {
-                item.$validator.validateAll();
-                if (item.errors.any()) {
+            return !this.elements.some(function (item) {
+                item.validate();
+                if (!item.valid) {
                     $('html, body').animate({
-                        scrollTop: $(item.$el).offset().top - 20
+                        scrollTop: $(item.$el).offset().top - ($(window).height() / 2 - 40)
                     }, 500);
                     $(item.$el).find('[name]')[0].focus();
                     return true;
                 }
+                return false;
             });
         },
-        // beforeChange() {
-        //     this.$emit('on-before-change');
-        // },
+        beforeChange() {
+            this.$emit('on-before');
+        },
         addElement(element) {
             this.elements.push(element);
         },

@@ -61,7 +61,7 @@ Vue.component('v-check', {
         updateValue(value) {
             this.$emit('change', value)
         },
-        onValidate() {
+        validate() {
             this.$validator.validateAll();
         },
     },
@@ -71,7 +71,19 @@ Vue.component('v-check', {
         },
         single: function () {
             return this.$parent.$options.name !== 'v-check-group';
+        },
+        valid() {
+            return this.fields[this.name].valid;
         }
+    },
+    watch: {
+        // valid: function (newValue, oldValue) {
+        //     if (newValue) {
+        //         this.$parent.addCheckElement();
+        //     } else {
+        //         this.$parent.removeCheckElement();
+        //     }
+        // }
     },
     beforeDestroy() {
         this.$eventHub.$emit('errors-changed', [], this.errors);

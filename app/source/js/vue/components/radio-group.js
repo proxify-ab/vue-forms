@@ -1,6 +1,6 @@
 Vue.component('v-radio-group', {
     template:
-    '<div class="form-group row" :class="{\'has-error\':errors.first(name), \'has-success\':!errors.first(name) && fields[name].touched && fields[name].valid}">' +
+    '<div class="form-group row" :class="{\'has-error\':!valid && touched, \'has-success\':valid }">' +
     '   <div :class="[inline ? \'col-md-3\' : \'col-md-12\']" v-if="header">' +
     '       <label :class="[\'control-label\', labelBold?\'text-bold\':\'\']">{{header}} <i :class="\'fa fa-\' + popoverIcon" data-toggle="popover" :data-trigger="popoverTrigger" :title="popoverTitle" :data-content="popoverContent" v-if="popoverContent"></i></label>' +
     '   </div>' +
@@ -90,31 +90,49 @@ Vue.component('v-radio-group', {
         });
         this.$eventHub.$on(this.name + '_return_validate', this.onReturnValidate);
     },
+    computed: {
+        valid() {
+            return this.radios.some(function (radio) {
+                return radio.valid;
+            })
+        },
+        touched() {
+            return this.radios.some(function (radio) {
+                return radio.fields[radio.name].touched;
+            })
+        },
+        errors() {
+            return this.radios[0].errors;
+        }
+    },
     methods: {
-        onValidate() {
-            this.$eventHub.$emit(this.name + '_validate', this.name);
+        validate() {
+            return this.radios.map(function (radio) {
+                radio.$validator.validateAll();
+            });
+            // this.$eventHub.$emit(this.name + '_validate', this.name);
         },
-        onReturnValidate: function (newErrors, oldErrors) {
-            if (oldErrors !== undefined && Array.isArray(oldErrors)) {
-                if (oldErrors.length === 0) {
-                } else {
-                    oldErrors.forEach(error => {
-                        this.errors.remove(error.field)
-                    })
-                }
-            }
-            if (newErrors !== undefined && Array.isArray(newErrors)) {
-                if (newErrors.length === 0) {
-                    this.errors.remove(this.name);
-                } else {
-                    newErrors.forEach(error => {
-                        if (!this.errors.has(error.field)) {
-                            this.errors.add(error.field, error.msg, error.rule)
-                        }
-                    })
-                }
-            }
-        },
+        // onReturnValidate: function (newErrors, oldErrors) {
+        //     if (oldErrors !== undefined && Array.isArray(oldErrors)) {
+        //         if (oldErrors.length === 0) {
+        //         } else {
+        //             oldErrors.forEach(error => {
+        //                 this.errors.remove(error.field)
+        //             })
+        //         }
+        //     }
+        //     if (newErrors !== undefined && Array.isArray(newErrors)) {
+        //         if (newErrors.length === 0) {
+        //             this.errors.remove(this.name);
+        //         } else {
+        //             newErrors.forEach(error => {
+        //                 if (!this.errors.has(error.field)) {
+        //                     this.errors.add(error.field, error.msg, error.rule)
+        //                 }
+        //             })
+        //         }
+        //     }
+        // },
         addRadio(radio) {
             this.radios.push(radio);
         },
