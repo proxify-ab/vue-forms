@@ -9,14 +9,9 @@ $(function () {
             el: '#root',
             data: {
                 t1: 'qwdwqd',
-                t2: '',
+                t2: 'qw@qwd.dd',
                 t3: '123123',
-                t4: '',
-                t5: '',
-                t6: '',
-                t7: '',
-                s1: '',
-                r1: ''
+                t4: 'qwd',
             },
             mounted() {
 

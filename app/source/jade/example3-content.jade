@@ -2,22 +2,13 @@
     v-steps(:start-index="0", @on-complete="complete")
         v-step
             v-input(name="t1" rules="required" v-model="t1" validate-event="blur") text 1
-            //v-input(name="t2" rules="required|email" v-model="t2" validate-event="blur") text 1
-            //v-input(name="t3" rules="required|numeric" v-model="t3" validate-event="blur") text 1
-            //v-date-picker(name="d1" rules="required" v-model="t7" validate-event="blur") Date
-            //v-select(name="s1" v-model="s1" rules="required" validate-event="blur")
-            //    v-select-option(value="") Empty
-            //    v-select-option(value="test1") OP 1
-            //    v-select-option(value="test2") OP 2
-            //    v-select-option(value="test3") OP 3
-            //v-radio-group(name="qwe" rules="required")
-            //    v-radio(value="q" v-model="r1") q dqwd
-            //    v-radio(value="q1" v-model="r1") qdqwd
-            //    v-radio(value="q2" v-model="r1") qwd qwdqwd
+
         v-step(:skip="true")
-            v-input(name="t2" rules="required|email" v-model="t4") text 2
+            v-input(name="t2" rules="required|email" v-model="t2") text 2
+
         v-step(:skip="true")
-            v-input(name="t3" rules="required|numeric" v-model="t5") text 3
-        v-step(:skip="true")
-            v-input(name="t4" rules="required" v-model="t6") text 4
+            v-input(name="t3" rules="required|numeric" v-model="t3") text 3
+
+        v-step()
+            v-input(name="t4" rules="required" v-model="t4") text 4
 

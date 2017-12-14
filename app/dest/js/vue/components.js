@@ -1052,11 +1052,15 @@ Vue.component('v-steps', {
         },
         finishBtnLabel: {
             default: 'Finish'
+        },
+        validateOnFront: {
+            type: Boolean,
+            default: true
+        },
+        validateOnBack: {
+            type: Boolean,
+            default: false
         }
-        // validateOnBack: {
-        //     type: Boolean,
-        //     default: false
-        // }
     },
     data: function data() {
         return {
@@ -1069,13 +1073,25 @@ Vue.component('v-steps', {
 
     computed: {
         stepLength: function stepLength() {
-            return this.steps.length;
+            return this.steps.filter(function (step) {
+                return !step.skip;
+            }).length;
+        },
+        skipSteps: function skipSteps() {
+            return this.steps.filter(function (step) {
+                return step.skip;
+            });
+        },
+        skipInvertSteps: function skipInvertSteps() {
+            return this.steps.filter(function (step) {
+                return !step.skip;
+            });
         },
         isLastStep: function isLastStep() {
-            return this.index === this.stepLength - 1;
+            return this.skipInvertSteps.indexOf(this.currentStep) === this.skipInvertSteps.length - 1;
         },
         isFirstStep: function isFirstStep() {
-            return this.index === 0;
+            return this.skipInvertSteps.indexOf(this.currentStep) === 0;
         },
         stepPercentage: function stepPercentage() {
             return 100 / this.stepLength;
@@ -1090,19 +1106,25 @@ Vue.component('v-steps', {
 
     watch: {
         index: function index(newValue, oldValue) {
-            this.steps[oldValue].deactivate();
-            this.steps[newValue].activate();
-            this.currentStep = this.steps[newValue];
+            if (this.steps[oldValue]) {
+                this.deactivateStep(oldValue);
+            }
+            if (this.steps[newValue]) {
+                this.activateStep(newValue);
+            }
             newValue > oldValue ? this.checkedStepsLength++ : this.checkedStepsLength--;
         }
     },
     methods: {
         init: function init() {
             if (this.steps.length > 0) {
-                if (this.startIndex !== 0) {
-                    this.activateStep(this.startIndex);
-                } else {
+
+                this.index = this.startIndex;
+
+                if (!this.steps[this.index].skip) {
                     this.activateStep(this.index);
+                } else {
+                    this.skipStep(this.index);
                 }
             } else {
                 console.warn('Prop startIndex set to ' + this.startIndex + ' is greater than the number of steps - ' + this.steps.length + '. Make sure that the starting index is less than the number of steps registered');
@@ -1118,53 +1140,38 @@ Vue.component('v-steps', {
             }
         },
         nextStep: function nextStep() {
-            if (this.currentStep.validate()) {
-                // this.index + 1 < this.steps.length ? this.index++ : this.$emit('on-complete');
-                if (this.index + 1 !== this.steps.length) {
-                    if (this.steps[this.index + 1].skip) {
-                        this.skipStep(this.index);
-                    } else {
-                        this.index++;
-                    }
-                }
+            if (this.validateOnFront) {
+                if (!this.currentStep.validate()) return false;
             }
+
+            // if (this.currentStep.validate()) {
+            if (this.index + 1 < this.steps.length) {
+                if (this.steps[this.index + 1].skip) {
+                    this.skipStep(this.index);
+                } else {
+                    this.index++;
+                }
+            } else {
+                this.$emit('on-complete');
+            }
+            // }
         },
         skipStep: function skipStep(index) {
             var direction = arguments.length > 1 && arguments[1] !== undefined ? arguments[1] : true;
 
-            console.log('skip');
             if (index + 1 < this.steps.length) {
-                console.log(this.steps[index + 1].skip);
                 if (this.steps[index + 1].skip) {
-                    index += 1;
-                    this.skipStep(index, direction);
+                    this.skipStep(++index, direction);
                 } else {
-                    console.log('1', index);
-                    this.index += index;
+                    this.index += ++index;
                 }
             } else {
-                console.log('2', index);
-                this.index += index;
+                this.$emit('on-complete');
             }
         },
-        pow: function (_pow) {
-            function pow(_x2, _x3) {
-                return _pow.apply(this, arguments);
-            }
-
-            pow.toString = function () {
-                return _pow.toString();
-            };
-
-            return pow;
-        }(function (x, n) {
-            if (n !== 1) {
-                // пока n != 1, сводить вычисление pow(x,n) к pow(x,n-1)
-                return x * pow(x, n - 1);
-            } else {
-                return x;
-            }
-        }),
+        changeIndex: function changeIndex(index, direction) {
+            return direction ? index++ : index--;
+        },
         prevStep: function prevStep() {
             if (this.index - 1 >= 0) this.index--;
         },
@@ -1175,6 +1182,9 @@ Vue.component('v-steps', {
             var step = this.steps[index];
             this.currentStep = step;
             step.activate();
+        },
+        deactivateStep: function deactivateStep(index) {
+            this.steps[index].deactivate();
         }
     }
 });
