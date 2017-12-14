@@ -746,7 +746,7 @@ Vue.component('v-select-option', {
 'use strict';
 
 Vue.component('v-select', {
-    template: '<div class="form-group row" :class="{\'has-error\':errors.first(name), \'has-success\':!errors.first(name) && valid}">' + '   <div :class="[inline ? \'col-md-3\' : \'col-md-12\']" v-if="label"><label class="control-label">{{label}} <i :class="\'fa fa-\' + popoverIcon" data-toggle="popover" :data-trigger="popoverTrigger" :title="popoverTitle" :data-content="popoverContent" v-if="popoverContent"></i></label></div>' + '       <div :class="[inline ? \'col-md-9\' : selectCols ]">' + '           <select v-validate :data-vv-rules="rules" :name="name" :id="id" :class="classes" class="form-control" @change="updateValue($event.target.value)"><slot></slot></select>' + '           <span class="help-block" v-if="helpText">{{helpText}}</span>' + '           <span v-if="errors.has(name)" class="small text-danger"><i class="fa fa-warning"></i>{{ errors.first(name) }}</span>' + '       </div>' + '   </div>' + '</div>',
+    template: '<div class="form-group row" :class="{\'has-error\':errors.first(name), \'has-success\':!errors.first(name) && ( fields[name].touched || validateOnCreate) && valid}">' + '   <div :class="[inline ? \'col-md-3\' : \'col-md-12\']" v-if="label"><label class="control-label">{{label}} <i :class="\'fa fa-\' + popoverIcon" data-toggle="popover" :data-trigger="popoverTrigger" :title="popoverTitle" :data-content="popoverContent" v-if="popoverContent"></i></label></div>' + '       <div :class="[inline ? \'col-md-9\' : selectCols ]">' + '           <select v-validate :data-vv-rules="rules" :name="name" :id="id" :class="classes" class="form-control" @change="updateValue($event.target.value)"><slot></slot></select>' + '           <span class="help-block" v-if="helpText">{{helpText}}</span>' + '           <span v-if="errors.has(name)" class="small text-danger"><i class="fa fa-warning"></i>{{ errors.first(name) }}</span>' + '       </div>' + '   </div>' + '</div>',
     props: {
         name: {
             type: String,
@@ -799,18 +799,19 @@ Vue.component('v-select', {
         };
     },
     mounted: function mounted() {
-        this.$parent.addElement(this);
+        var _this = this;
 
-        if (this.value !== null && this.value !== '') {
+        this.$parent.addElement(this);
+        this.$eventHub.$on('validate_' + this.$parent._uid, this.onValidate);
+        this.$watch(function () {
+            return _this.errors.items;
+        }, function (newValue, oldValue) {
+            _this.$eventHub.$emit('errors-changed', newValue, oldValue, _this.name);
+        });
+
+        if (this.value !== null && this.value !== "") {
             this.findByValue(this.value).select();
             this.updateValue(this.value);
-            this.$validator.validateAll();
-        }
-    },
-
-    computed: {
-        valid: function valid() {
-            return this.fields[this.name].valid;
         }
     },
     created: function created() {},
@@ -819,27 +820,25 @@ Vue.component('v-select', {
         value: function value(newValue, oldValue) {
             if (oldValue) this.findByValue(oldValue).unSelect();
             if (newValue) this.findByValue(newValue).select();
+            this.$validator.validateAll();
         }
-        // valid: function (newValue, oldValue) {
-        //     if (newValue) {
-        //         this.$parent.addCheckElement();
-        //     } else {
-        //         this.$parent.removeCheckElement();
-        //     }
-        // }
+    },
+    computed: {
+        valid: function valid() {
+            return !this.errors.any();
+        }
     },
     methods: {
         updateValue: function updateValue(value) {
             this.$emit('input', value);
         },
-        validate: function validate() {
+        onValidate: function onValidate() {
             this.$validator.validateAll();
         },
         addOption: function addOption(option) {
-            this.options.push(option);
-        },
-        removeOption: function removeOption(option) {
-            this.options.push(option);
+            if (option) {
+                this.options.push(option);
+            }
         },
         findByValue: function findByValue(value) {
             return this.options.find(function (option) {
@@ -975,7 +974,7 @@ Vue.component('v-step', {
 
     computed: {
         progress: function progress() {
-            return 100 / this.elements.length * this.validElementsLength;
+            if (this.elements.length === 0) return 100;else return 100 / this.elements.length * this.validElementsLength;
         },
         validElementsLength: function validElementsLength() {
             return this.elements.filter(function (item) {
@@ -985,7 +984,6 @@ Vue.component('v-step', {
     },
     mounted: function mounted() {
         this.$parent.addStep(this);
-
         this.init();
     },
 
@@ -1110,9 +1108,9 @@ Vue.component('v-steps', {
                 this.deactivateStep(oldValue);
             }
             if (this.steps[newValue]) {
+                this.steps[newValue].beforeChange();
                 this.activateStep(newValue);
             }
-            newValue > oldValue ? this.checkedStepsLength++ : this.checkedStepsLength--;
         }
     },
     methods: {
@@ -1144,36 +1142,47 @@ Vue.component('v-steps', {
                 if (!this.currentStep.validate()) return false;
             }
 
-            // if (this.currentStep.validate()) {
             if (this.index + 1 < this.steps.length) {
                 if (this.steps[this.index + 1].skip) {
                     this.skipStep(this.index);
                 } else {
                     this.index++;
                 }
+                this.checkedStepsLength++;
             } else {
                 this.$emit('on-complete');
             }
-            // }
+        },
+        prevStep: function prevStep() {
+            if (this.validateOnBack) {
+                if (!this.currentStep.validate()) return false;
+            }
+
+            if (this.index - 1 >= 0) {
+                if (this.steps[this.index - 1].skip) {
+                    this.skipStep(this.index, false);
+                } else {
+                    this.index--;
+                }
+                this.checkedStepsLength--;
+            }
         },
         skipStep: function skipStep(index) {
             var direction = arguments.length > 1 && arguments[1] !== undefined ? arguments[1] : true;
 
-            if (index + 1 < this.steps.length) {
-                if (this.steps[index + 1].skip) {
-                    this.skipStep(++index, direction);
+            if (this.changeIndex(index, direction) < this.steps.length && this.changeIndex(index, direction) >= 0) {
+                if (this.steps[this.changeIndex(index, direction)].skip) {
+                    index = this.changeIndex(index, direction);
+                    this.skipStep(index, direction);
                 } else {
-                    this.index += ++index;
+                    this.index = this.changeIndex(index, direction);
                 }
             } else {
                 this.$emit('on-complete');
             }
         },
         changeIndex: function changeIndex(index, direction) {
-            return direction ? index++ : index--;
-        },
-        prevStep: function prevStep() {
-            if (this.index - 1 >= 0) this.index--;
+            return direction ? index + 1 : index - 1;
         },
         finishStep: function finishStep() {
             this.$emit('on-finish');

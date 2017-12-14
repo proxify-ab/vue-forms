@@ -103,9 +103,9 @@ Vue.component('v-steps', {
                 this.deactivateStep(oldValue);
             }
             if (this.steps[newValue]) {
+                this.steps[newValue].beforeChange();
                 this.activateStep(newValue);
             }
-            newValue > oldValue ? this.checkedStepsLength++ : this.checkedStepsLength--;
         },
     },
     methods: {
@@ -138,36 +138,47 @@ Vue.component('v-steps', {
                     return false;
             }
 
-            // if (this.currentStep.validate()) {
             if (this.index + 1 < this.steps.length) {
                 if (this.steps[this.index + 1].skip) {
                     this.skipStep(this.index);
                 } else {
                     this.index++;
                 }
+                this.checkedStepsLength++;
             } else {
                 this.$emit('on-complete');
             }
-            // }
+        },
+        prevStep() {
+            if (this.validateOnBack) {
+                if (!this.currentStep.validate())
+                    return false;
+            }
+
+            if (this.index - 1 >= 0) {
+                if (this.steps[this.index - 1].skip) {
+                    this.skipStep(this.index, false);
+                } else {
+                    this.index--;
+                }
+                this.checkedStepsLength--;
+            }
         },
         skipStep(index, direction = true) {
-            if (index + 1 < this.steps.length) {
-                if (this.steps[index + 1].skip) {
-                    this.skipStep(++index, direction);
+            if (this.changeIndex(index, direction) < this.steps.length && this.changeIndex(index, direction) >= 0) {
+                if (this.steps[this.changeIndex(index, direction)].skip) {
+                    index = this.changeIndex(index, direction);
+                    this.skipStep(index, direction);
                 }
                 else {
-                    this.index += ++index;
+                    this.index = this.changeIndex(index, direction);
                 }
             } else {
                 this.$emit('on-complete');
             }
         },
         changeIndex(index, direction) {
-            return direction ? index++ : index--;
-        },
-        prevStep() {
-            if (this.index - 1 >= 0)
-                this.index--;
+            return direction ? index + 1 : index - 1;
         },
         finishStep() {
             this.$emit('on-finish');
@@ -180,178 +191,5 @@ Vue.component('v-steps', {
         deactivateStep(index) {
             this.steps[index].deactivate();
         },
-        // emitStepChange(prevIndex, nextIndex) {
-        //     this.$emit('on-change', prevIndex, nextIndex);
-        //     this.$emit('update:startIndex', nextIndex);
-        // },
-        // addStep(item) {
-        //     const index = this.$slots.default.indexOf(item.$vnode);
-        //     this.steps.splice(index, 0, item);
-        //     if (index < this.index + 1) {
-        //         this.maxStep = index;
-        //         this.changeStep(this.index + 1, index)
-        //     }
-        // },
-        // removeStep(item) {
-        //     const steps = this.steps;
-        //     const index = steps.indexOf(item);
-        //     if (index > -1) {
-        //         // Go one step back if the current step is removed
-        //         if (index === this.index) {
-        //             this.maxStep = this.index - 1;
-        //             this.changeStep(this.index, this.index - 1)
-        //         }
-        //         if (index < this.index) {
-        //             this.maxStep = this.index - 1;
-        //             this.index = this.index - 1;
-        //             this.emitStepChange(this.index + 1, this.index)
-        //         }
-        //         steps.splice(index, 1)
-        //     }
-        // },
-        // navigateToStep(index) {
-        //     let validate = index > this.index;
-        //     if (index <= this.maxStep) {
-        //         let cb = () => {
-        //             if (validate && index - this.index > 1) {
-        //                 this.changeStep(this.index, this.index + 1);
-        //                 this.beforeStepChange(this.index, cb)
-        //             } else {
-        //                 this.changeStep(this.index, index)
-        //             }
-        //         };
-        //         if (validate) {
-        //             this.beforeStepChange(this.index, cb);
-        //         } else {
-        //             this.setValidationError(null);
-        //             cb();
-        //         }
-        //     }
-        //     return index <= this.maxStep
-        // },
-        // nextStep() {
-        //
-        //     let cb = () => {
-        //         if (this.index < this.stepCount - 1) {
-        //             this.changeStep(this.index, this.activeStep.nextStep ? this.activeStep.nextStep : this.index + 1)
-        //         } else {
-        //             this.$emit('on-complete');
-        //         }
-        //     };
-        //     this.beforeStepChange(this.index, cb);
-        // },
-        // prevStep() {
-        //     let cb = () => {
-        //         if (this.index > 0) {
-        //             this.changeStep(this.index, this.activeStep.prevStep ? this.activeStep.prevStep : this.index - 1)
-        //         }
-        //     };
-        //     if (this.validateOnBack) {
-        //         this.beforeStepChange(this.index, cb);
-        //     } else {
-        //         cb()
-        //     }
-        // },
-        // focusNextStep() {
-        //     let stepIndex = getFocusedStepIndex(this.steps);
-        //     if (stepIndex !== -1 && stepIndex < this.steps.length - 1) {
-        //         let stepToFocus = this.steps[stepIndex + 1];
-        //         if (stepToFocus.checked) {
-        //             findElementAndFocus(stepToFocus.stepId);
-        //         }
-        //     }
-        // },
-        // focusPrevStep() {
-        //     let stepIndex = getFocusedStepIndex(this.steps);
-        //     if (stepIndex !== -1 && stepIndex > 0) {
-        //         let toFocusId = this.steps[stepIndex - 1].stepId;
-        //         findElementAndFocus(toFocusId);
-        //     }
-        // },
-        // setValidationError(error) {
-        //     this.activeStep.validationError = error;
-        //     this.$emit('on-error', error)
-        // },
-        // validateBeforeChange(callback) {
-        //
-        //     this.activeStep.validate();
-        //     setTimeout(() => {
-        //         if (!this.activeStep.errors.any()) {
-        //             this.steps[this.index].beforeChange();
-        //             callback();
-        //             $('html, body').animate({scrollTop: '0px'}, 300);
-        //         }
-        //     }, 100);
-        // },
-        // executeBeforeChange(validationResult, callback) {
-        //     this.$emit('on-validate', validationResult, this.index);
-        //     if (validationResult) {
-        //         callback()
-        //     } else {
-        //         this.steps[this.index].validationError = 'error'
-        //     }
-        // },
-        // beforeStepChange(index, callback) {
-        //
-        //     if (this.loading) {
-        //         return;
-        //     }
-        //     let oldStep = this.steps[index];
-        //     if (oldStep && (oldStep.validating || oldStep.nextStep)) {
-        //         if (oldStep.validating)
-        //             this.validateBeforeChange(callback);
-        //     }
-        //     else {
-        //         this.steps[index].beforeChange();
-        //         callback()
-        //     }
-        // },
-        // changeStep(oldIndex, newIndex, emitChangeEvent = true) {
-        //
-        //     let oldStep = this.steps[oldIndex];
-        //     let newStep = this.steps[newIndex];
-        //     if (oldStep) {
-        //         oldStep.active = false
-        //     }
-        //     if (newStep) {
-        //         newStep.active = true
-        //     }
-        //     if (emitChangeEvent && this.index !== newIndex) {
-        //         this.emitStepChange(oldIndex, newIndex)
-        //     }
-        //     this.index = newIndex;
-        //     this.activateStepAndCheckStep(this.index);
-        //     return true
-        // },
-        // deactivateSteps() {
-        //     this.steps.forEach(step => {
-        //         step.active = false
-        //     })
-        // },
-        // activateStep(index) {
-        //     this.deactivateSteps();
-        //     let step = this.steps[index];
-        //     if (step) {
-        //         step.active = true;
-        //         step.checked = true;
-        //     }
-        // },
-        // activateStepAndCheckStep(index) {
-        //     this.activateStep(index);
-        //     if (index > this.maxStep) {
-        //         this.maxStep = index
-        //     }
-        //     this.index = index
-        // },
-        // initializeSteps() {
-        //     if (this.steps.length > 0 && this.startIndex === 0) {
-        //         this.activateStep(this.index)
-        //     }
-        //     if (this.startIndex < this.steps.length) {
-        //         this.activateStepAndCheckStep(this.startIndex)
-        //     } else {
-        //         window.console.warn(`Prop startIndex set to ${this.startIndex} is greater than the number of steps - ${this.steps.length}. Make sure that the starting index is less than the number of steps registered`)
-        //     }
-        // }
     }
 });

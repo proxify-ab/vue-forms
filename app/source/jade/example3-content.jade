@@ -1,14 +1,17 @@
 #root
     v-steps(:start-index="0", @on-complete="complete")
-        v-step
+        v-step()
+            v-input(name="t1" rules="required" v-model="t1" validate-event="blur") text 1
+            v-input(name="t1" rules="required" v-model="t1" validate-event="blur") text 1
+            v-input(name="t1" rules="required" v-model="t1" validate-event="blur") text 1
             v-input(name="t1" rules="required" v-model="t1" validate-event="blur") text 1
 
         v-step(:skip="true")
             v-input(name="t2" rules="required|email" v-model="t2") text 2
 
-        v-step(:skip="true")
+        v-step()
             v-input(name="t3" rules="required|numeric" v-model="t3") text 3
 
         v-step()
-            v-input(name="t4" rules="required" v-model="t4") text 4
+            h1 uihwefuygwe
 

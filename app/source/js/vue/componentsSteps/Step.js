@@ -16,23 +16,24 @@ Vue.component('v-step', {
     },
     computed: {
         progress() {
-            return 100 / this.elements.length * this.validElementsLength;
+            if (this.elements.length === 0)
+                return 100;
+            else
+                return 100 / this.elements.length * this.validElementsLength;
         },
         validElementsLength() {
             return this.elements.filter(function (item) {
                 return item.valid;
-            }).length
+            }).length;
         }
     },
     mounted() {
         this.$parent.addStep(this);
-
         this.init();
     },
     watch: {},
     methods: {
         init() {
-
         },
         validate() {
             return !this.elements.some(function (item) {
