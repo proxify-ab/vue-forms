@@ -1,5 +1,19 @@
 Vue.component('v-select', {
-    template: '<div class="form-group row" :class="{\'has-error\':errors.first(name), \'has-success\':!errors.first(name) && ( fields[name].touched || validateOnCreate) && valid}">' + '   <div :class="[inline ? \'col-md-3\' : \'col-md-12\']" v-if="label"><label class="control-label">{{label}} <i :class="\'fa fa-\' + popoverIcon" data-toggle="popover" :data-trigger="popoverTrigger" :title="popoverTitle" :data-content="popoverContent" v-if="popoverContent"></i></label></div>' + '       <div :class="[inline ? \'col-md-9\' : selectCols ]">' + '           <select v-validate :data-vv-rules="rules" :name="name" :id="id" :class="classes" class="form-control" @change="updateValue($event.target.value)"><slot></slot></select>' + '           <span class="help-block" v-if="helpText">{{helpText}}</span>' + '           <span v-if="errors.has(name)" class="small text-danger"><i class="fa fa-warning"></i>{{ errors.first(name) }}</span>' + '       </div>' + '   </div>' + '</div>',
+    template:
+    '<div class="form-group row" :class="{\'has-error\':errors.first(name), \'has-success\':!errors.first(name) && ( fields[name].touched || validateOnCreate) && valid}">' +
+    '   <div :class="[inline ? \'col-md-3\' : \'col-md-12\']" v-if="label"><label class="control-label">{{label}} <i :class="\'fa fa-\' + popoverIcon" data-toggle="popover" :data-trigger="popoverTrigger" :title="popoverTitle" :data-content="popoverContent" v-if="popoverContent"></i></label></div>' +
+    '       <div :class="[inline ? \'col-md-9\' : selectCols ]">' +
+    '           <div :class="{\'validation validation-select\' : rules}">' +
+    '               <select v-validate :data-vv-rules="rules" :name="name" :id="id" :class="classes" class="form-control" @change="updateValue($event.target.value)" :multiple="multiple">' +
+    '                   <option v-if="emptyOption" v-text="emptyLabel" value=""></option>' +
+    '                   <option v-for="option in options" :value="option.value" v-text="option.label" :selected="option.value == value"></option>' +
+    '               </select>' +
+    '           </div>' +
+    '           <span class="help-block" v-if="helpText">{{helpText}}</span>' +
+    '           <span v-if="errors.has(name)" class="small text-danger"><i class="fa fa-warning"></i>{{ errors.first(name) }}</span>' +
+    '       </div>' +
+    '   </div>' +
+    '</div>',
     props: {
         name: {
             type: String,
@@ -10,6 +24,10 @@ Vue.component('v-select', {
         },
         id: {},
         classes: {},
+        multiple: {
+            type: Boolean,
+            default: false
+        },
         label: {
             type: String
         },
@@ -43,39 +61,35 @@ Vue.component('v-select', {
         validateOnCreate: {
             type: Boolean,
             default: false
+        },
+        options: {
+            type: Array
+        },
+        emptyOption: {
+            type: Boolean,
+            default: false
+        },
+        emptyLabel: {
+            type: String,
+            default: 'Empty'
         }
     },
-    data: function data() {
-        return {
-            options: [],
-            selected: {}
-        };
-    },
-    mounted: function mounted() {
-        var _this = this;
-
+    mounted() {
         this.$parent.addElement(this);
-        this.$eventHub.$on('validate_' + this.$parent._uid, this.onValidate);
-        this.$watch(function () {
-            return _this.errors.items;
-        }, function (newValue, oldValue) {
-            _this.$eventHub.$emit('errors-changed', newValue, oldValue, _this.name);
-        });
-
+        // if (this.value !== null && this.value !== "") {
+        //     this.updateValue(this.value);
+        // }
+    },
+    created() {
         if (this.value !== null && this.value !== "") {
-            this.findByValue(this.value).select();
             this.updateValue(this.value);
         }
     },
-    created: function created() {
-    },
 
     watch: {
-        value: function value(newValue, oldValue) {
-            if (oldValue) this.findByValue(oldValue).unSelect();
-            if (newValue) this.findByValue(newValue).select();
-            this.$validator.validateAll();
-        }
+        // value: function value(newValue, oldValue) {
+        //     this.$validator.validateAll();
+        // }
     },
     computed: {
         valid: function () {
@@ -83,28 +97,14 @@ Vue.component('v-select', {
         }
     },
     methods: {
-        updateValue: function updateValue(value) {
+        updateValue(value) {
             this.$emit('input', value);
         },
-        onValidate: function onValidate() {
+        validate() {
             this.$validator.validateAll();
-        },
-        addOption: function addOption(option) {
-            if (option) {
-                this.options.push(option);
-            }
-        },
-        findByValue: function findByValue(value) {
-            return this.options.find(function (option) {
-                return option.value === value;
-            });
         }
     },
-    beforeDestroy: function beforeDestroy() {
-        this.$eventHub.$emit('errors-changed', [], this.errors);
-        this.$eventHub.$off('validate', this.onValidate);
-    },
-    destroyed: function destroyed() {
+    destroyed() {
         if (this.$el && this.$el.parentNode) {
             this.$el.parentNode.removeChild(this.$el);
         }

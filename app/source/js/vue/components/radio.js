@@ -69,8 +69,8 @@ Vue.component('v-radio', {
             this.$parent.setSelected(this);
             this.$emit('change', value);
         },
-        onValidate() {
-            this.$validator.validateAll();
-        },
+        // onValidate() {
+        //     this.$validator.validateAll();
+        // },
     },
 });

@@ -1,9 +1,9 @@
 Vue.component('v-button', {
-    template: '<div :class="[inForm?\'form-group\':\'\', classes]"><button @click.prevent="clicked" :type="type" :class="classesBtn" :id="id"><slot></slot></button></div>',
+    template: '<div :class="[inForm?\'form-group\':\'\', classes]"><button @click="clicked" :type="type" :class="classesBtn" :id="id"><slot></slot></button></div>',
     props: {
         type: {
             type: String,
-            validate: value => {
+            validator: value => {
                 return ['button', 'submit'].indexOf(value) > -1;
             },
             default: 'button'
@@ -20,7 +20,7 @@ Vue.component('v-button', {
     },
     methods: {
         clicked(){
-            this.$emit('clicked');
+            this.$emit('on-click');
         }
     }
 });

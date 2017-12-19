@@ -52,10 +52,6 @@ Vue.component('v-check', {
     mounted() {
         if (typeof this.$parent.addElement === 'function')
             this.$parent.addElement(this);
-        this.$eventHub.$on('validate_' + this.$parent._uid, this.onValidate);
-        this.$watch(() => this.errors.items, (newValue, oldValue) => {
-            this.$eventHub.$emit('errors-changed', newValue, oldValue, this.name);
-        })
     },
     methods: {
         updateValue(value) {
@@ -77,17 +73,6 @@ Vue.component('v-check', {
         }
     },
     watch: {
-        // valid: function (newValue, oldValue) {
-        //     if (newValue) {
-        //         this.$parent.addCheckElement();
-        //     } else {
-        //         this.$parent.removeCheckElement();
-        //     }
-        // }
-    },
-    beforeDestroy() {
-        this.$eventHub.$emit('errors-changed', [], this.errors);
-        this.$eventHub.$off('validate', this.onValidate)
     },
     destroyed() {
         if (typeof this.$parent.removeElement === 'function') {

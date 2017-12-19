@@ -29,21 +29,28 @@ Vue.component('v-step', {
     },
     mounted() {
         this.$parent.addStep(this);
-        this.init();
     },
-    watch: {},
     methods: {
-        init() {
+        postActivate() {
+            let firstElement = this.elements[0];
+            if (firstElement !== undefined) {
+                $('html, body').animate({
+                    scrollTop: 0
+                }, 500);
+                $(firstElement.$el).find('[name]').focus();
+            }
         },
         validate() {
             return !this.elements.some(function (item) {
-                item.validate();
-                if (!item.valid) {
-                    $('html, body').animate({
-                        scrollTop: $(item.$el).offset().top - ($(window).height() / 2 - 40)
-                    }, 500);
-                    $(item.$el).find('[name]')[0].focus();
-                    return true;
+                if (item) {
+                    item.validate();
+                    if (!item.valid) {
+                        $('html, body').animate({
+                            scrollTop: $(item.$el).offset().top - ($(window).height() / 2 - 40)
+                        }, 500);
+                        $(item.$el).find('[name]')[0].focus();
+                        return true;
+                    }
                 }
                 return false;
             });
@@ -63,6 +70,7 @@ Vue.component('v-step', {
         },
         activate() {
             this.active = true;
+            this.postActivate();
         },
         deactivate() {
             this.active = false;

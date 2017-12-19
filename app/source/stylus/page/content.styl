@@ -2,8 +2,9 @@
   position relative
   height: 36px
   font-size 50px
-  input
+  input, select
     padding-right 30px
+    background-color transparent
   &::after
     position absolute
     right 5px
@@ -17,6 +18,10 @@
     background-position center center
     background-repeat no-repeat
     background-size: 12px;
+    z-index -5
+  &-select
+    &::after
+      right 15px
 
 .has-error
   color #a94442

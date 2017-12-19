@@ -130,10 +130,10 @@ Vue.component('v-date-picker', {
     },
     mounted() {
         this.$parent.addElement(this);
-        this.$eventHub.$on('validate_' + this.$parent._uid, this.onValidate);
-        this.$watch(() => this.errors.items, (newValue, oldValue) => {
-            this.$eventHub.$emit('errors-changed', newValue, oldValue, this.name);
-        });
+        // this.$eventHub.$on('validate_' + this.$parent._uid, this.onValidate);
+        // this.$watch(() => this.errors.items, (newValue, oldValue) => {
+        //     this.$eventHub.$emit('errors-changed', newValue, oldValue, this.name);
+        // });
     },
     watch: {
         // valid: function (newValue, oldValue) {

@@ -6,6 +6,7 @@
       <v-input name="t1" rules="required" v-model="t1" validate-event="blur">text 1</v-input>
       <v-input name="t1" rules="required" v-model="t1" validate-event="blur">text 1</v-input>
       <v-input name="t1" rules="required" v-model="t1" validate-event="blur">text 1</v-input>
+      <v-select name="q" :options="[{value: 'q', label: 'Q'}]" :empty-option="true"></v-select>
     </v-step>
     <v-step :skip="true">
       <v-input name="t2" rules="required|email" v-model="t2">text 2</v-input>

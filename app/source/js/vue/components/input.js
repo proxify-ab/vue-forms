@@ -1,6 +1,6 @@
 Vue.component('v-input', {
     template:
-    '<div class="form-group row" :class="{\'has-error\':errors.first(name), \'has-success\':!errors.first(name) && valid}">' +
+    '<div class="form-group row" :class="{\'has-error\':errors.first(name) && isValidating, \'has-success\':!errors.first(name) && ( fields[name].touched || validateOnCreate) && valid && isValidating}">' +
     '   <div :class="{\'col-md-12\':!inline}">' +
     '       <div :class="{\'row\':!inline}" v-if="isLabel">' +
     '           <div :class="labelCols">' +
@@ -22,7 +22,7 @@ Vue.component('v-input', {
     '                   </div>' +
     '               </div>' +
     '               <span class="help-block" v-if="helpText">{{helpText}}</span>' +
-    '               <span v-if="errors.has(name)" class="small text-danger"><i class="fa fa-warning"></i>{{ errors.first(name) }}</span>' +
+    '               <span v-if="errors.has(name) && isValidating" class="small text-danger"><i class="fa fa-warning"></i>{{ errors.first(name) }}</span>' +
     '           </div>' +
     '       </div>' +
     '   </div>' +
@@ -126,6 +126,11 @@ Vue.component('v-input', {
             default: false
         }
     },
+    data() {
+        return {
+            isValidating: this.validateOnCreate
+        }
+    },
     computed: {
         isLabel() {
             return this.$slots.default;
@@ -144,13 +149,14 @@ Vue.component('v-input', {
     created() {
     },
     watch: {
-        // valid: function (newValue, oldValue) {
-        //     if (newValue) {
-        //         this.$parent.addCheckElement();
-        //     } else {
-        //         this.$parent.removeCheckElement();
-        //     }
-        // }
+        value: function (newValue, oldValue) {
+            if (oldValue && (oldValue.length !== newValue.length)) {
+                this.isValidating = true;
+            }
+            if (!newValue.length) {
+                this.isValidating = false;
+            }
+        }
     },
     methods: {
         enterKeyPressed() {
@@ -170,7 +176,6 @@ Vue.component('v-input', {
         }
     },
     beforeDestroy() {
-        this.$eventHub.$emit('errors-changed', [], this.errors);
     },
     destroyed() {
         if (this.$el && this.$el.parentNode) {
