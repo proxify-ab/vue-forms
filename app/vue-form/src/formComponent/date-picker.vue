@@ -151,9 +151,16 @@
         year: "",
       };
     },
+    watch: {
+      value: function (newValue, oldValue) {
+        if (!oldValue && newValue) {
+          this.init();
+        }
+      }
+    },
     mounted() {
       this.$parent.addElement(this);
-      if (this.value !== '' && this.value !== null) {
+      if (this.value !== '' && this.value !== null && this.value !== undefined) {
         this.init()
         this.$validator.validateAll()
       }

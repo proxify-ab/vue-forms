@@ -218,6 +218,13 @@
       deactivateStep(index) {
         this.steps[index].deactivate();
       },
+      validateForce() {
+        this.steps.forEach(function (step) {
+          step.elements.forEach(function (element) {
+            element.validate()
+          })
+        })
+      }
     }
   }
 </script>

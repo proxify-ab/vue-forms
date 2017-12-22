@@ -1,12 +1,11 @@
 <template>
   <div class="form-group row"
        :class="{'has-error':!valid && validated, 'has-success':valid && validated}">
-    <div :class="[inline ? 'col-md-3' : 'col-md-12']" v-if="label">
+    <div :class="[inline ? 'col-md-3' : 'col-md-12']">
       <label class="control-label">
         <slot></slot>
-        <i
-          :class="'fa fa-' + popoverIcon" data-toggle="popover" :data-trigger="popoverTrigger" :title="popoverTitle"
-          :data-content="popoverContent" v-if="popoverContent"></i>
+        <i :class="'fa fa-' + popoverIcon" data-toggle="popover" :data-trigger="popoverTrigger" :title="popoverTitle"
+           :data-content="popoverContent" v-if="popoverContent"></i>
       </label>
     </div>
     <div :class="[inline ? 'col-md-9' : selectCols ]">
@@ -68,16 +67,11 @@
         default: 'hover'
       },
       value: {},
-      validateOnCreate: {
-        type: Boolean,
-        default: false
-      },
       options: {
         type: Array
       },
       emptyLabel: {
-        type: String,
-        default: 'Empty'
+        type: String
       }
     },
     mounted() {

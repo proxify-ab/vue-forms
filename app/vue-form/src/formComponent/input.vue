@@ -17,7 +17,7 @@
             <div :class="['validation', 'validation-'+type]">
               <input v-validate :data-vv-rules="rules" :data-vv-validate-on="validateEvent" :type="type" :id="id"
                      :class="classes" class="form-control" :name="name" :value="value"
-                     @input="updateValue($event.target.value)" @onfocusout="onFocusOut" :placeholder="placeholder"
+                     @input="onInput" :placeholder="placeholder" @blur="onBlur"
                      :readonly="readonly"
                      :disabled="disabled" :required="required" :max="max" :min="min" :length="length">
             </div>
@@ -155,24 +155,27 @@
       this.$parent.addElement(this);
 
       if (this.value !== null && this.value !== '') {
-        this.$validator.validateAll()
+        this.validate()
       }
+      this.loaded = true
     },
     created() {
     },
     watch: {
       value: function (newValue, oldValue) {
-        if (newValue.length !== oldValue.length) {
-          this.validated = false
+        if (newValue && oldValue) {
+          if (newValue.length !== oldValue.length) {
+            this.validated = false
+          }
         }
       }
     },
     methods: {
-      updateValue(value) {
-        this.$emit('input', value)
+      onBlur() {
+        this.$emit('blur')
       },
-      onFocusOut(e) {
-        this.editable = false
+      onInput(e) {
+        this.$emit('input', e.target.value)
       },
       clickAddons: function () {
         this.$emit('on-addons', this.value, this.name)

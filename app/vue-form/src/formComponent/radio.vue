@@ -1,6 +1,6 @@
 <template>
   <div :class="{'d-inline':inline}">
-    <label :for="id" class="radio-box radio-box-inline control-label" :class="{'active':choice === value}">
+    <label :for="id" class="radio-box radio-box-inline control-label">
       <input v-validate :data-vv-rules="rules" type="radio" :name="name" :id="id" :value="choice"
              @change="updateValue" :class="classes" :checked="choice === value">
       <slot></slot>
@@ -49,7 +49,7 @@
     },
     mounted() {
       this.$parent.addRadio(this);
-      if (this.value !== null && this.value !== '') {
+      if (this.value !== "" && this.value) {
         this.$validator.validateAll()
       }
     },
