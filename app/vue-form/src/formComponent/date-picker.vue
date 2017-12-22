@@ -1,14 +1,16 @@
 <template>
   <div class="form-group row"
-       :class="{'has-error':errors.first(name), 'has-success':!errors.first(name) && fields[name].valid   }">
+       :class="{'has-error': !valid && validated, 'has-success':valid && validated   }">
     <div :class="{'col-md-12':!inline}">
       <div :class="{'row':!inline}">
         <div :class="labelCols">
-          <label class="control-label"><slot></slot> <i :class="'fa fa-' + popoverIcon"
-                                                                 data-toggle="popover"
-                                                                 :data-trigger="popoverTrigger" :title="popoverTitle"
-                                                                 :data-content="popoverContent"
-                                                                 v-if="popoverContent"></i>
+          <label class="control-label">
+            <slot></slot>
+            <i :class="'fa fa-' + popoverIcon"
+               data-toggle="popover"
+               :data-trigger="popoverTrigger" :title="popoverTitle"
+               :data-content="popoverContent"
+               v-if="popoverContent"></i>
           </label>
         </div>
       </div>
@@ -130,8 +132,16 @@
           return moment().get('years') - i;
         });
       },
+      validated: {
+        set: function (value) {
+          this.fields[this.name].validated = value
+        },
+        get: function () {
+          return this.fields[this.name].validated
+        }
+      },
       valid() {
-        return this.fields[this.name].valid;
+        return this.fields[this.name].valid
       }
     },
     data() {
@@ -143,9 +153,18 @@
     },
     mounted() {
       this.$parent.addElement(this);
+      if (this.value !== '' && this.value !== null) {
+        this.init()
+        this.$validator.validateAll()
+      }
     },
-    watch: {},
     methods: {
+      init() {
+        let date = moment(this.value, this.dateFormat).local(false);
+        this.day = date.date()
+        this.month = date.month() + 1
+        this.year = date.year()
+      },
       updateValue() {
         if (this.day !== '' && this.month !== '' && this.year !== '') {
           let date = moment(`${this.day}-${this.month}-${this.year}`, 'DD-MM-YYYY').format(this.dateFormat);

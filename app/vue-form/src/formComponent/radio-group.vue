@@ -1,5 +1,5 @@
 <template>
-  <div class="form-group row" :class="{'has-error':!valid && touched, 'has-success':valid }">
+  <div class="form-group row" :class="{'has-error':!valid && validated, 'has-success':valid && validated}">
     <div :class="[inline ? 'col-md-3' : 'col-md-12']" v-if="header">
       <label :class="['control-label', labelBold?'text-bold':'']">{{header}} <i
         :class="'fa fa-' + popoverIcon" data-toggle="popover" :data-trigger="popoverTrigger" :title="popoverTitle"
@@ -13,7 +13,7 @@
       <span class="small text-danger"><i class="fa fa-warning"></i>{{ errors.first(name) }}</span>
     </div>
     <div class="col-md-12">
-      <transition-group :name="effect" tag="div" :duration="animateDuration">
+      <transition-group :name="effect" tag="div" :duration="animateDuration" >
         <div v-for="id in selected.idAlertSlots" :key="id">
           <slot :name="id+ '-info'"></slot>
         </div>
@@ -99,9 +99,9 @@
           return radio.valid;
         })
       },
-      touched() {
+      validated() {
         return this.radios.some(function (radio) {
-          return radio.fields[radio.name].touched;
+          return radio.validated;
         })
       },
       errors() {

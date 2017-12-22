@@ -1,6 +1,5 @@
 <template>
-  <div class="form-group row"
-       :class="{'has-error':errors.first(name) && isValidating, 'has-success':!errors.first(name) && ( fields[name].touched || validateOnCreate) && valid && isValidating}">
+  <div class="form-group row" :class="{'has-error':!valid && validated, 'has-success':valid && validated}">
     <div :class="{'col-md-12':!inline}">
       <div :class="{'row':!inline}" v-if="isLabel">
         <div :class="labelCols">
@@ -18,8 +17,8 @@
             <div :class="['validation', 'validation-'+type]">
               <input v-validate :data-vv-rules="rules" :data-vv-validate-on="validateEvent" :type="type" :id="id"
                      :class="classes" class="form-control" :name="name" :value="value"
-                     @change="updateValue($event.target.value)" @input="updateValue($event.target.value)"
-                     @blur="blur($event.target.value)" :placeholder="placeholder" :readonly="readonly"
+                     @input="updateValue($event.target.value)" @onfocusout="onFocusOut" :placeholder="placeholder"
+                     :readonly="readonly"
                      :disabled="disabled" :required="required" :max="max" :min="min" :length="length">
             </div>
             <div class="input-group-addon" v-if="rightAddon">{{rightAddon}}</div>
@@ -28,7 +27,7 @@
             </div>
           </div>
           <span class="help-block" v-if="helpText">{{helpText}}</span>
-          <span v-if="errors.has(name) && isValidating" class="small text-danger"><i class="fa fa-warning"></i>{{ errors.first(name) }}</span>
+          <span v-if="errors.any() && validated" class="small text-danger"><i class="fa fa-warning"></i>{{ errors.first(name) }}</span>
         </div>
       </div>
     </div>
@@ -136,62 +135,57 @@
         default: false
       }
     },
-    data() {
-      return {
-        isValidating: this.validateOnCreate
-      }
-    },
     computed: {
       isLabel() {
         return this.$slots.default;
       },
+      validated: {
+        set: function (value) {
+          this.fields[this.name].validated = value
+        },
+        get: function () {
+          return this.fields[this.name].validated
+        }
+      },
       valid() {
-        return this.fields[this.name].valid;
+        return this.fields[this.name].valid
       }
     },
     mounted() {
       this.$parent.addElement(this);
 
       if (this.value !== null && this.value !== '') {
-        this.$validator.validateAll();
+        this.$validator.validateAll()
       }
     },
     created() {
     },
     watch: {
       value: function (newValue, oldValue) {
-        if (oldValue && (oldValue.length !== newValue.length)) {
-          this.isValidating = true;
-        }
-        if (!newValue.length) {
-          this.isValidating = false;
+        if (newValue.length !== oldValue.length) {
+          this.validated = false
         }
       }
     },
     methods: {
-      enterKeyPressed() {
-        this.$emit('enter');
-      },
       updateValue(value) {
-        this.$emit('input', value);
+        this.$emit('input', value)
       },
-      blur(value) {
-        this.$emit('blur', value);
+      onFocusOut(e) {
+        this.editable = false
       },
       clickAddons: function () {
-        this.$emit('on-addons', this.value, this.name);
+        this.$emit('on-addons', this.value, this.name)
       },
       validate() {
-        this.$validator.validateAll();
+        this.$validator.validateAll()
       }
-    },
-    beforeDestroy() {
     },
     destroyed() {
       if (this.$el && this.$el.parentNode) {
         this.$el.parentNode.removeChild(this.$el)
       }
-      this.$parent.removeElement(this);
+      this.$parent.removeElement(this)
     }
   }
 </script>
