@@ -38,7 +38,7 @@
           <input type="hidden" :name="name" :value="value" :id="id">
           <span class="help-block" v-if="helpText">{{helpText}}</span>
         </div>
-        <div class="col-md-12"><span v-if="errors.has(name)" class="small text-danger"><i class="fa fa-warning"></i>{{ errors.first(name) }}</span>
+        <div class="col-md-12"><span v-if="errors.has(name)" class="small text-danger"><i class="fa fa-warning"></i> {{ errors.first(name) }}</span>
         </div>
       </div>
     </div>

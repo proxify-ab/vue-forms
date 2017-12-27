@@ -1,6 +1,6 @@
 <template>
   <div :class="{'d-inline':inline}">
-    <label :for="id" class="radio-box radio-box-inline control-label">
+    <label :for="id" class="radio-box radio-box-inline control-label" :class="{ 'active': choice === value }">
       <input v-validate :data-vv-rules="rules" type="radio" :name="name" :id="id" :value="choice"
              @change="updateValue" :class="classes" :checked="choice === value">
       <slot></slot>

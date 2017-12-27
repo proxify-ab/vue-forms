@@ -10,7 +10,7 @@
       <span class="help-block" v-if="helpText">{{helpText}}</span>
     </div>
     <div class="col-md-12" v-if="errors.has(name)">
-      <span class="small text-danger"><i class="fa fa-warning"></i>{{ errors.first(name) }}</span>
+      <span class="small text-danger"><i class="fa fa-warning"></i> {{ errors.first(name) }}</span>
     </div>
     <div class="col-md-12">
       <transition-group :name="effect" tag="div" :duration="animateDuration" >

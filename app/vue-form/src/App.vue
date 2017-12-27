@@ -1,7 +1,7 @@
 <template>
   <div>
     <v-steps @on-complete="complete">
-      <v-step>
+      <v-step @on-before="before" @on-after="after" >
         <v-input rules="required|alpha" validate-event="blur" name="firstName" v-model="firstName">First name</v-input>
         <v-input rules="required" validate-event="blur" name="lastName" v-model="lastName">Last name</v-input>
         <v-date-picker rules="required" name="birthDay" v-model="birthDay">Birthday
@@ -11,7 +11,7 @@
           <v-radio choice="f" v-model="gender">Female</v-radio>
         </v-radio-group>
       </v-step>
-      <v-step>
+      <v-step @on-before="before" @on-after="after">
         <v-input rules="required|numeric" validate-event="blur" name="phone" v-model="phone">Phone</v-input>
         <v-input name="email" validate-event="blur" type="email" v-model="email" rules="email|required">Email</v-input>
         <v-select rules="required" name="workPlace" v-model="workPlace" :options="['home', 'other']" empty-label="Empty"></v-select>
@@ -47,12 +47,19 @@
       }
     },
     components: {
-      VButton, VTextArea, VInput, VRadioGroup, VRadio, VCheck, VCheckGroup, VStep, VSteps, VDatePicker,VSelect
+      VButton, VTextArea, VInput, VRadioGroup, VRadio, VCheck, VCheckGroup, VStep, VSteps, VDatePicker, VSelect
     },
     methods: {
       complete() {
         alert('complete')
-      }
+      },
+      after(index) {
+        console.warn('after change step index: ' + index)
+      },
+
+      before(index) {
+        console.warn('before change step index: ' + index)
+      },
     }
   }
 </script>

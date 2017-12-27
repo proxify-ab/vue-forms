@@ -35,15 +35,18 @@
     mounted() {
       this.$parent.addStep(this);
     },
+    watch: {
+      active: function (newValue, oldValue) {
+        if (newValue) {
+          this.postActivate();
+        }
+      }
+    },
     methods: {
       postActivate() {
-        let firstElement = this.elements[0];
-        if (firstElement !== undefined) {
-          $('html, body').animate({
-            scrollTop: 0
-          }, 500);
-          $(firstElement.$el).find('[name]').focus();
-        }
+        $('html, body').animate({
+          scrollTop: 0
+        }, 500);
       },
       validate() {
         return !this.elements.some(function (item) {
@@ -60,8 +63,11 @@
           return false;
         });
       },
-      beforeChange() {
-        this.$emit('on-before');
+      beforeChange(index) {
+        this.$emit('on-before', index);
+      },
+      afterChange(index) {
+        this.$emit('on-after', index);
       },
       addElement(element) {
         this.elements.push(element);
@@ -75,7 +81,7 @@
       },
       activate() {
         this.active = true;
-        this.postActivate();
+
       },
       deactivate() {
         this.active = false;

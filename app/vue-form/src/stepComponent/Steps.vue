@@ -86,7 +86,7 @@
     },
     data() {
       return {
-        index: 0,
+        index: null,
         steps: [],
         currentStep: {},
         checkedStepsLength: 0,
@@ -97,11 +97,6 @@
         return this.steps.filter(function (step) {
           return !step.skip;
         }).length;
-      },
-      skipSteps() {
-        return this.steps.filter(function (step) {
-          return step.skip;
-        })
       },
       skipInvertSteps() {
         return this.steps.filter(function (step) {
@@ -128,9 +123,10 @@
       index: function (newValue, oldValue) {
         if (this.steps[oldValue]) {
           this.deactivateStep(oldValue);
+          this.steps[oldValue].afterChange(oldValue);
         }
         if (this.steps[newValue]) {
-          this.steps[newValue].beforeChange();
+          this.steps[newValue].beforeChange(newValue);
           this.activateStep(newValue);
         }
       },

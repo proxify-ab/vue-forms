@@ -19,7 +19,7 @@
       </div>
       <span class="help-block" v-if="helpText">{{helpText}}</span>
       <span v-if="errors.has(name)" class="small text-danger">
-        <i class="fa fa-warning"></i>{{errors.first(name)}}
+        <i class="fa fa-warning"></i> {{errors.first(name)}}
       </span>
     </div>
   </div>
