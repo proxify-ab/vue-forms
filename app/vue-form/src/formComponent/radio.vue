@@ -82,3 +82,31 @@
     },
   }
 </script>
+
+<style scoped lang="scss">
+
+  .radio-box {
+    position: relative;
+    padding: 10px 15px 10px 40px;
+    border: 1px solid #eee;
+    border-radius: 3px;
+  }
+
+  .radio-box input {
+    position: absolute;
+    top: 0;
+    bottom: 0;
+    left: 15px;
+    width: 15px;
+    margin: auto
+  }
+
+  .has-error .radio-box {
+    border-color: #a94442
+  }
+
+  .has-success .radio-box {
+    border-color: #3c763d
+  }
+
+</style>

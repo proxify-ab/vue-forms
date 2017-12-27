@@ -40,7 +40,7 @@
         firstName: 'Test',
         lastName: 'Test2',
         birthDay: '15-12-2017',
-        gender: 'm',
+        gender: '',
         phone: '2312131',
         email: 'test@wd.dd',
         workPlace: 'home',
