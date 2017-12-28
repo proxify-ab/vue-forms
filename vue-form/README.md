@@ -67,3 +67,4 @@ import {
     ...(any count step)
 </v-steps>  
 ``` 
+> For example you can sees App.vue component with worked code [App.vue](src/App.vue)

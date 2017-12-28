@@ -1,7 +1,7 @@
 <template>
   <div>
     <v-steps @on-complete="complete">
-      <v-step @on-before="before" @on-after="after" >
+      <v-step @on-before="before" @on-after="after">
         <v-input rules="required|alpha" validate-event="blur" name="firstName" v-model="firstName">First name</v-input>
         <v-input rules="required" validate-event="blur" name="lastName" v-model="lastName">Last name</v-input>
         <v-date-picker rules="required" name="birthDay" v-model="birthDay">Birthday
@@ -14,7 +14,8 @@
       <v-step @on-before="before" @on-after="after">
         <v-input rules="required|numeric" validate-event="blur" name="phone" v-model="phone">Phone</v-input>
         <v-input name="email" validate-event="blur" type="email" v-model="email" rules="email|required">Email</v-input>
-        <v-select rules="required" name="workPlace" v-model="workPlace" :options="['home', 'other']" empty-label="Empty"></v-select>
+        <v-select rules="required" name="workPlace" v-model="workPlace" :options="['home', 'other']"
+                  empty-label="Empty"></v-select>
       </v-step>
     </v-steps>
   </div>
@@ -56,7 +57,6 @@
       after(index) {
         console.warn('after change step index: ' + index)
       },
-
       before(index) {
         console.warn('before change step index: ' + index)
       },
