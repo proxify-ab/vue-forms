@@ -15,6 +15,13 @@ npm run dev
 npm run build
 ```
 
+# For correct work validation need:
+
+```bash
+# npm i --save-dev vee-validate
+
+```
+
 # Form and steps components
 
 > for using the components you have to copy 'src/formComponent'  and 'src/stepComponent' in the necessary directory and connect the necessary components

@@ -1,6 +1,5 @@
 <template>
-  <div class="form-group row"
-       :class="{'has-error': !valid && validated, 'has-success':valid && validated   }">
+  <div class="form-group row" :class="{'has-error': !valid && validated, 'has-success':valid && validated }">
     <div :class="{'col-md-12':!inline}">
       <div :class="{'row':!inline}">
         <div :class="labelCols">
@@ -16,8 +15,10 @@
       </div>
       <div :class="{'row':!inline}">
         <div :class="[inputCols , 'form-inline']">
-          <select :class="classes" class="d-inline day form-control" @change="updateValue" v-model="day" :name="name"
-                  v-validate :data-vv-value="value" :data-vv-rules="rules" :data-vv-validate-on="validateEvent"
+          <select :class="classes" class="d-inline day form-control" @change="updateValue" v-model="day"
+                  :name="name"
+                  v-validate :data-vv-value="value" :data-vv-rules="rules"
+                  :data-vv-validate-on="validateEvent"
                   :required="required">
             <option value>{{dayLabel}}</option>
             <option v-for="day in days" :value="day">{{day}}</option>
@@ -30,7 +31,8 @@
           </select>
           <select :class="classes" class="d-inline year form-control" @change="updateValue" v-model="year"
                   :name="name"
-                  v-validate :data-vv-value="value" :data-vv-rules="rules" :data-vv-validate-on="validateEvent"
+                  v-validate :data-vv-value="value" :data-vv-rules="rules"
+                  :data-vv-validate-on="validateEvent"
                   :required="required">
             <option value>{{yearLabel}}</option>
             <option v-for="year in years" :value="year">{{year}}</option>
@@ -38,7 +40,8 @@
           <input type="hidden" :name="name" :value="value" :id="id">
           <span class="help-block" v-if="helpText">{{helpText}}</span>
         </div>
-        <div class="col-md-12"><span v-if="errors.has(name)" class="small text-danger"><i class="fa fa-warning"></i> {{ errors.first(name) }}</span>
+        <div class="col-md-12" v-if="!valid && validated"><span class="small text-danger"><i
+          class="fa fa-warning"></i> {{ errors.first(name) }}</span>
         </div>
       </div>
     </div>
@@ -141,7 +144,7 @@
         }
       },
       valid() {
-        return this.fields[this.name].valid
+        return this.fields[this.name].valid && !this.errors.any()
       }
     },
     data() {

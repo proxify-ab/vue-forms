@@ -2,18 +2,18 @@
   <div class="form-group row" :class="{'has-error':!valid && validated, 'has-success':valid && validated}">
     <div :class="[inline ? 'col-md-3' : 'col-md-12']" v-if="header">
       <label :class="['control-label', labelBold?'text-bold':'']">{{header}} <i
-        :class="'fa fa-' + popoverIcon" data-toggle="popover" :data-trigger="popoverTrigger" :title="popoverTitle"
+        :class="'fa fa-' + popoverIcon" data-toggle="popover" :data-trigger="popoverTrigger"
+        :title="popoverTitle"
         :data-content="popoverContent" v-if="popoverContent"></i></label>
     </div>
     <div :class="[ inline ? 'col-md-9' : 'col-md-12', classes]">
       <slot></slot>
-      <span class="help-block" v-if="helpText">{{helpText}}</span>
     </div>
-    <div class="col-md-12" v-if="errors.has(name)">
-      <span class="small text-danger"><i class="fa fa-warning"></i> {{ errors.first(name) }}</span>
+    <div class="col-md-12" v-if="!valid && validated">
+      <span class="small text-danger"><i class="fa fa-warning"></i> {{ errorsOfRadio }}</span>
     </div>
     <div class="col-md-12">
-      <transition-group :name="effect" tag="div" :duration="animateDuration" >
+      <transition-group :name="effect" tag="div" :duration="animateDuration">
         <div v-for="id in selected.idAlertSlots" :key="id">
           <slot :name="id+ '-info'"></slot>
         </div>
@@ -35,7 +35,7 @@
         type: String,
         required: true,
         validator: value => {
-          return value !== '';
+          return value !== ''
         }
       },
       header: {
@@ -91,37 +91,37 @@
     },
     mounted() {
       this.$parent.addElement(this);
-      this.selected = {};
+      this.selected = {}
     },
     computed: {
       valid() {
         return this.radios.some(function (radio) {
-          return radio.valid;
+          return radio.valid
         })
       },
       validated() {
         return this.radios.some(function (radio) {
-          return radio.validated;
+          return radio.validated
         })
       },
-      errors() {
-        return this.radios[0].errors;
-      }
+      errorsOfRadio() {
+        return this.radios[0].errors.any() ? this.radios[0].errors.first(this.name) : ""
+      },
     },
     methods: {
       validate() {
         return this.radios.map(function (radio) {
-          radio.$validator.validateAll();
+          radio.$validator.validateAll()
         });
       },
       addRadio(radio) {
-        this.radios.push(radio);
+        this.radios.push(radio)
       },
       setSelected(radio) {
-        this.selected = radio;
+        this.selected = radio
       },
       hasIn(radio) {
-        return this.selected.idSlots && this.selected.idSlots.indexOf(radio.id) > -1;
+        return this.selected.idSlots && this.selected.idSlots.indexOf(radio.id) > -1
       }
     },
     beforeDestroy() {
@@ -130,7 +130,7 @@
       if (this.$el && this.$el.parentNode) {
         this.$el.parentNode.removeChild(this.$el)
       }
-      this.$parent.removeElement(this);
+      this.$parent.removeElement(this)
     },
   }
 </script>

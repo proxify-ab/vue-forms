@@ -4,7 +4,7 @@
       <v-step @on-before="before" @on-after="after">
         <v-input rules="required|alpha" validate-event="blur" name="firstName" v-model="firstName">First name</v-input>
         <v-input rules="required" validate-event="blur" name="lastName" v-model="lastName">Last name</v-input>
-        <v-date-picker rules="required" name="birthDay" v-model="birthDay">Birthday
+        <v-date-picker rules="required" name="birthDay" v-model="birthDay" validate-event="blur">Birthday
         </v-date-picker>
         <v-radio-group name="gender" header="Header" rules="required">
           <v-radio choice="m" v-model="gender">Male</v-radio>

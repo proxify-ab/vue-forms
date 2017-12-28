@@ -77,13 +77,13 @@
     mounted() {
       this.$parent.addElement(this);
       if (this.value !== null && this.value !== '') {
-        this.$validator.validateAll()
+        this.validate()
       }
     },
     created() {
-      if (this.value !== null && this.value !== "") {
-        this.updateValue(this.value);
-      }
+      // if (this.value !== null && this.value !== "") {
+      //   this.updateValue(this.value);
+      // }
     },
     computed: {
       validated: {
