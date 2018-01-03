@@ -4,8 +4,7 @@
       <div :class="{'row':!inline}">
         <div :class="labelCols">
           <label class="control-label">
-            <slot></slot>
-            <i :class="'fa fa-' + popoverIcon"
+            <slot></slot> <i :class="'fa fa-' + popoverIcon"
                data-toggle="popover"
                :data-trigger="popoverTrigger" :title="popoverTitle"
                :data-content="popoverContent"
