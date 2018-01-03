@@ -79,11 +79,9 @@
       if (this.value !== null && this.value !== '') {
         this.validate()
       }
+      this.$emit('after-mounted', this)
     },
     created() {
-      // if (this.value !== null && this.value !== "") {
-      //   this.updateValue(this.value);
-      // }
     },
     computed: {
       validated: {

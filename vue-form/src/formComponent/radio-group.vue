@@ -1,9 +1,8 @@
 <template>
   <div class="form-group row" :class="{'has-error':!valid && validated, 'has-success':valid && validated}">
     <div :class="[inline ? 'col-md-3' : 'col-md-12']" v-if="header">
-      <label :class="['control-label', labelBold?'text-bold':'']">{{header}} <i
-        :class="'fa fa-' + popoverIcon" data-toggle="popover" :data-trigger="popoverTrigger"
-        :title="popoverTitle"
+      <label :class="['control-label', labelBold?'text-bold':'']"> {{header}}
+        <i :class="`fa fa-${popoverIcon}`" data-toggle="popover" :data-trigger="popoverTrigger" :title="popoverTitle"
         :data-content="popoverContent" v-if="popoverContent"></i></label>
     </div>
     <div :class="[ inline ? 'col-md-9' : 'col-md-12', classes]">
@@ -92,6 +91,7 @@
     mounted() {
       this.$parent.addElement(this);
       this.selected = {}
+      this.$emit('after-mounted', this)
     },
     computed: {
       valid() {

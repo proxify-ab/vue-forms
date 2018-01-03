@@ -166,6 +166,7 @@
         this.init()
         this.$validator.validateAll()
       }
+      this.$emit('after-mounted')
     },
     methods: {
       init() {

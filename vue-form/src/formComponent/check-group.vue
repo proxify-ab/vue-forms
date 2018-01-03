@@ -43,6 +43,7 @@
     },
     mounted() {
       this.$parent.addElement(this);
+      this.$emit('after-mounted')
     },
     computed: {
       valid: function () {

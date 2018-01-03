@@ -6,10 +6,16 @@
         <v-input rules="required" validate-event="blur" name="lastName" v-model="lastName">Last name</v-input>
         <v-date-picker rules="required" name="birthDay" v-model="birthDay" validate-event="blur">Birthday
         </v-date-picker>
-        <v-radio-group name="gender" header="Header" rules="required">
+        <v-radio-group name="gender" header="Header" rules="required" popover-content="123">
           <v-radio choice="m" v-model="gender">Male</v-radio>
           <v-radio choice="f" v-model="gender">Female</v-radio>
         </v-radio-group>
+        <transition name="fade" v-if="gender === 'f'">
+          <v-radio-group name="gender" header="Header" rules="required" popover-content="123" @after-mounted="afterMount">
+            <v-radio choice="m" v-model="gender">Male</v-radio>
+            <v-radio choice="f" v-model="gender">Female</v-radio>
+          </v-radio-group>
+        </transition>
       </v-step>
       <v-step @on-before="before" @on-after="after">
         <v-input rules="required|numeric" validate-event="blur" name="phone" v-model="phone">Phone</v-input>
@@ -50,6 +56,9 @@
     components: {
       VButton, VTextArea, VInput, VRadioGroup, VRadio, VCheck, VCheckGroup, VStep, VSteps, VDatePicker, VSelect
     },
+    mounted() {
+      this.afterMount()
+    },
     methods: {
       complete() {
         alert('complete')
@@ -60,6 +69,9 @@
       before(index) {
         console.warn('before change step index: ' + index)
       },
+      afterMount() {
+        $('[data-toggle="popover"]').popover()
+      }
     }
   }
 </script>

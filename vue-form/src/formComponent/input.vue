@@ -158,6 +158,7 @@
         this.validate()
       }
       this.loaded = true
+      this.$emit('after-mounted')
     },
     created() {
     },

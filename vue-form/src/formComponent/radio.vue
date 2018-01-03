@@ -52,6 +52,7 @@
       if (this.value !== "" && this.value) {
         this.$validator.validateAll()
       }
+      this.$emit('after-mounted', this)
     },
     computed: {
       name: function () {
