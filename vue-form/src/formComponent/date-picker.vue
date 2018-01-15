@@ -116,17 +116,34 @@
             },
             popoverTrigger: {
                 default: 'hover'
+            },
+            maxDateIsNow: {
+                default: false
+            },
+            currentDefault: {
+                default: false
             }
         },
         computed: {
             days: function () {
                 let count = moment(`${this.month}-${this.year}`, "MM-YYYY").daysInMonth();
+
+                if(this.maxDateIsNow && this.year === moment().year() && this.month === moment().month() + 1){
+                  count = parseInt(moment().format("DD"))
+                }
+
                 return Array.apply(0, Array(isNaN(count) ? 31 : count)).map(function (_, i) {
                     return ++i;
                 });
             },
             months: function () {
-                return Array.apply(0, Array(12)).map(function (_, i) {
+                let count = 12
+
+                if(this.maxDateIsNow && this.year === moment().year()){
+                  count = moment().month() + 1
+                }
+
+                return Array.apply(0, Array(count)).map(function (_, i) {
                     return moment().month(i).format('MMMM');
                 });
             },
@@ -164,14 +181,16 @@
         mounted() {
             this.$parent.addElement(this);
             if (this.value !== '' && this.value !== null && this.value !== undefined) {
-                this.init()
+                this.init(this.value)
                 this.$validator.validateAll()
+            }else if(this.currentDefault) {
+                this.init(moment().format(this.dateFormat))
             }
             this.$emit('after-mounted')
         },
         methods: {
-            init() {
-                let date = moment(this.value, this.dateFormat).local(false);
+            init(value) {
+                let date = moment(value, this.dateFormat).local(false);
                 this.day = date.date()
                 this.month = date.month() + 1
                 this.year = date.year()
