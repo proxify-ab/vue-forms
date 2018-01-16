@@ -4,7 +4,7 @@
       <v-step @on-before="before" @on-after="after">
         <v-input rules="required|alpha" validate-event="blur" name="firstName" v-model="firstName">First name</v-input>
         <v-input rules="required" validate-event="blur" name="lastName" v-model="lastName">Last name</v-input>
-        <v-date-picker rules="required" name="birthDay" v-model="birthDay" validate-event="blur">Birthday
+        <v-date-picker rules="required|maxDateNow:DD-MM-YYYY" name="birthDay" v-model="birthDay" validate-event="blur">Birthday
         </v-date-picker>
         <v-radio-group name="gender" header="Header" rules="required" popover-content="123">
           <v-radio choice="m" v-model="gender">Male</v-radio>
@@ -46,7 +46,7 @@
       return {
         firstName: 'Test',
         lastName: 'Test2',
-        birthDay: '15-12-2017',
+        birthDay: '',
         gender: '',
         phone: '2312131',
         email: 'test@wd.dd',

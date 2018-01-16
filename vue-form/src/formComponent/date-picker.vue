@@ -15,33 +15,32 @@
       </div>
       <div :class="{'row':!inline}">
         <div :class="[inputCols , 'form-inline']">
-          <select :class="classes" class="d-inline day form-control" @change="updateValue" v-model="day"
-                  :name="name"
-                  v-validate :data-vv-value="value" :data-vv-rules="rules"
-                  :data-vv-validate-on="validateEvent"
-                  :required="required">
+          <select :class="classes" class="d-inline day form-control" @change="updateValue" @blur="updateValue" v-model="day"
+                  :name="name" v-validate :data-vv-value-path="value" data-vv-rules="required"
+                  :data-vv-validate-on="validateEvent" :required="required">
             <option value>{{dayLabel}}</option>
             <option v-for="day in days" :value="day">{{day}}</option>
           </select>
-          <select :class="classes" class="d-inline month form-control" @change="updateValue" v-model="month"
-                  :name="name" v-validate :data-vv-value="value" :data-vv-rules="rules"
+          <select :class="classes" class="d-inline month form-control" @change="updateValue" @blur="updateValue" v-model="month"
+                  :name="name" v-validate :data-vv-value-path="value" data-vv-rules="required"
                   :data-vv-validate-on="validateEvent" :required="required">
             <option value>{{monthLabel}}</option>
-            <option v-for="(month, index) in months" :value="index +1">{{month}}</option>
+            <option v-for="(month, index) in months" :value="index + 1">{{month}}</option>
           </select>
-          <select :class="classes" class="d-inline year form-control" @change="updateValue" v-model="year"
-                  :name="name"
-                  v-validate :data-vv-value="value" :data-vv-rules="rules"
-                  :data-vv-validate-on="validateEvent"
-                  :required="required">
+          <select :class="classes" class="d-inline year form-control" @change="updateValue" @blur="updateValue" v-model="year"
+                  :name="name" v-validate :data-vv-value-path="value" data-vv-rules="required"
+                  :data-vv-validate-on="validateEvent" :required="required">
             <option value>{{yearLabel}}</option>
             <option v-for="year in years" :value="year">{{year}}</option>
           </select>
-          <input type="hidden" :name="name" :value="value" :id="id">
+          <input v-validate :data-vv-value="value" :data-vv-rules="rules" data-vv-validate-on="input"
+                 type="hidden" :name="name" :value="value" :id="id">
           <span class="help-block" v-if="helpText">{{helpText}}</span>
         </div>
-        <div class="col-md-12" v-if="!valid && validated"><span class="small text-danger"><i
-          class="fa fa-warning"></i> {{ errors.first(name) }}</span>
+        <div class="col-md-12" v-if="!valid && validated">
+          <span class="small text-danger">
+            <i class="fa fa-warning"></i> {{ errors.first(name) }}
+          </span>
         </div>
       </div>
     </div>
@@ -102,7 +101,7 @@
         default: 1900
       },
       dateFormat: {
-        default: 'YYYY-MM-DD'
+        default: 'DD-MM-YYYY'
       },
       popoverIcon: {
         type: String,
@@ -128,20 +127,12 @@
       days: function () {
         let count = moment(`${this.month}-${this.year}`, "MM-YYYY").daysInMonth();
 
-        if (this.maxDateIsNow && this.year === moment().year() && this.month === moment().month() + 1) {
-          count = parseInt(moment().format("DD"))
-        }
-
         return Array.apply(0, Array(isNaN(count) ? 31 : count)).map(function (_, i) {
           return ++i;
         });
       },
       months: function () {
         let count = 12
-
-        if (this.maxDateIsNow && this.year === moment().year()) {
-          count = moment().month() + 1
-        }
 
         if (this.days.indexOf(this.day) === -1) {
           this.day = ""
@@ -152,9 +143,6 @@
         });
       },
       years: function () {
-        if (this.months.indexOf(moment().month(this.month - 1).format('MMMM')) === -1) {
-          this.month = ""
-        }
 
         return Array.apply(0, Array(moment().get('years') - this.minYear + 1)).map(function (_, i) {
           return moment().get('years') - i;
@@ -204,6 +192,7 @@
         this.year = date.year()
       },
       updateValue() {
+        this.$validator.validateAll()
         if (this.day !== '' && this.month !== '' && this.year !== '') {
           let date = moment(`${this.day}-${this.month}-${this.year}`, 'DD-MM-YYYY').format(this.dateFormat);
           this.$emit('input', date);
