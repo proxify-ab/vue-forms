@@ -22,23 +22,23 @@
     computed: {
       progress() {
         if (this.elements.length === 0)
-          return 100;
+          return 100
         else
-          return 100 / this.elements.length * this.validElementsLength;
+          return 100 / this.elements.length * this.validElementsLength
       },
       validElementsLength() {
         return this.elements.filter(function (item) {
-          return item.valid;
-        }).length;
+          return item.valid
+        }).length
       }
     },
     mounted() {
-      this.$parent.addStep(this);
+      this.$parent.addStep(this)
     },
     watch: {
       active: function (newValue, oldValue) {
         if (newValue) {
-          this.postActivate();
+          this.postActivate()
         }
       }
     },
@@ -46,45 +46,45 @@
       postActivate() {
         $('html, body').animate({
           scrollTop: 0
-        }, 500);
+        }, 500)
       },
       validate() {
         return !this.elements.some(function (item) {
           if (item) {
-            item.validate();
+            item.validate()
             if (!item.valid) {
               $('html, body').animate({
                 scrollTop: $(item.$el).offset().top - ($(window).height() / 2 - 40)
-              }, 500);
-              $(item.$el).find('[name]')[0].focus();
-              return true;
+              }, 500)
+              $(item.$el).find('[name]')[0].focus()
+              return true
             }
           }
-          return false;
-        });
+          return false
+        })
       },
       beforeChange(index) {
-        this.$emit('on-before', index);
+        this.$emit('on-before', index)
       },
       afterChange(index) {
-        this.$emit('on-after', index);
+        this.$emit('on-after', index)
       },
       addElement(element) {
-        this.elements.push(element);
+        this.elements.push(element)
       },
       removeElement(element) {
-        const elements = this.elements;
-        const index = elements.indexOf(element);
+        const elements = this.elements
+        const index = elements.indexOf(element)
         if (index > -1) {
           elements.splice(index, 1)
         }
       },
       activate() {
-        this.active = true;
+        this.active = true
 
       },
       deactivate() {
-        this.active = false;
+        this.active = false
       }
     },
     beforeDestroyed() {

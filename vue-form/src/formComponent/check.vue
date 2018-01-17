@@ -78,7 +78,8 @@
         return this.$parent.$options.name !== 'v-check-group';
       },
       valid() {
-        return this.fields[this.name].valid;
+        if (this.fields[this.name] !== undefined)
+          return this.fields[this.name].valid
       }
     },
     watch: {},
