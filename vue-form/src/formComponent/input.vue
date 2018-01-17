@@ -145,11 +145,13 @@
           this.fields[this.name].validated = value
         },
         get: function () {
-          return this.fields[this.name].validated
+          if (this.fields[this.name] !== undefined)
+            return this.fields[this.name].validated
         }
       },
       valid() {
-        return this.fields[this.name].valid
+        if (this.fields[this.name] !== undefined)
+          return this.fields[this.name].valid
       }
     },
     mounted() {

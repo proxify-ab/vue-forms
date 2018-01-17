@@ -15,20 +15,20 @@
       </div>
       <div :class="{'row':!inline}">
         <div :class="[inputCols , 'form-inline']">
-          <select :class="classes" class="d-inline day form-control" @change="updateValue" @blur="updateValue" v-model="day"
-                  :name="name" v-validate :data-vv-value-path="value" data-vv-rules="required"
+          <select :class="classes" class="d-inline day form-control" @change="updateValue" @blur="blur"
+                  v-model="day" :name="name" v-validate :data-vv-value-path="value" data-vv-rules="required"
                   :data-vv-validate-on="validateEvent" :required="required">
             <option value>{{dayLabel}}</option>
             <option v-for="day in days" :value="day">{{day}}</option>
           </select>
-          <select :class="classes" class="d-inline month form-control" @change="updateValue" @blur="updateValue" v-model="month"
-                  :name="name" v-validate :data-vv-value-path="value" data-vv-rules="required"
+          <select :class="classes" class="d-inline month form-control" @change="updateValue" @blur="blur"
+                  v-model="month" :name="name" v-validate :data-vv-value-path="value" data-vv-rules="required"
                   :data-vv-validate-on="validateEvent" :required="required">
             <option value>{{monthLabel}}</option>
             <option v-for="(month, index) in months" :value="index + 1">{{month}}</option>
           </select>
-          <select :class="classes" class="d-inline year form-control" @change="updateValue" @blur="updateValue" v-model="year"
-                  :name="name" v-validate :data-vv-value-path="value" data-vv-rules="required"
+          <select :class="classes" class="d-inline year form-control" @change="updateValue" @blur="blur"
+                  v-model="year" :name="name" v-validate :data-vv-value-path="value" data-vv-rules="required"
                   :data-vv-validate-on="validateEvent" :required="required">
             <option value>{{yearLabel}}</option>
             <option v-for="year in years" :value="year">{{year}}</option>
@@ -153,11 +153,13 @@
           this.fields[this.name].validated = value
         },
         get: function () {
-          return this.fields[this.name].validated
+          if (this.fields[this.name] !== undefined)
+            return this.fields[this.name].validated
         }
       },
       valid() {
-        return this.fields[this.name].valid && !this.errors.any()
+        if (this.fields[this.name] !== undefined)
+          return this.fields[this.name].valid && !this.errors.any()
       }
     },
     data() {
@@ -192,8 +194,8 @@
         this.year = date.year()
       },
       updateValue() {
-        this.$validator.validateAll()
         if (this.day !== '' && this.month !== '' && this.year !== '') {
+          // this.$validator.validateAll()
           let date = moment(`${this.day}-${this.month}-${this.year}`, 'DD-MM-YYYY').format(this.dateFormat);
           this.$emit('input', date);
         }
@@ -201,6 +203,11 @@
       validate() {
         this.$validator.validateAll();
       },
+      blur() {
+        if (this.value !== '' && this.value !== null && this.value !== undefined) {
+          this.validate()
+        }
+      }
     },
     destroyed() {
       if (this.$el && this.$el.parentNode) {

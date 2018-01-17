@@ -90,7 +90,7 @@
       }
     },
     mounted() {
-      this.$parent.addElement(this);
+      this.$parent.addElement(this)
       this.selected = {}
       this.$emit('after-mounted', this)
     },
