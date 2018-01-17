@@ -15,9 +15,9 @@
                 class="form-control" :name="name" @input="updateValue"
                 @blur="blur($event.target.value)" :placeholder="placeholder">{{value}}</textarea>
       <span class="help-block" v-if="helpText">{{helpText}}</span>
-      <span v-if="errors.has(name)" class="small text-danger">
-        <i class="fa fa-warning"></i> {{errors.first(name)}}
-      </span>
+      <span v-if="errors.any() && validated" class="small text-danger">
+                <i class="fa fa-warning"></i> {{errors.first(name)}}
+                </span>
     </div>
   </div>
 </template>

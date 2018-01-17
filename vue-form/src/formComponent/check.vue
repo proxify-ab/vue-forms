@@ -1,17 +1,17 @@
 <template>
   <div class="checkbox"
-       :class="{'form-group':single, 'display-inline':inline, 'has-error':errors.first(name), 'has-success':!errors.first(name) && fields[name].touched && fields[name].valid}">
+       :class="{'form-group':single, 'display-inline':inline, 'has-error':errors.first(checkName) && single, 'has-success':valid && fields[checkName].touched && single}">
     <label :for="id" class="control-label">
-      <input v-validate :data-vv-rules="rules" :data-vv-validate-on="validateEvent" type="checkbox" :name="name"
-             :id="id" :value="value" @change="updateValue($event.target.checked)">
+      <input v-validate :data-vv-rules="checkRules" :data-vv-validate-on="validateEvent" type="checkbox"
+             :name="checkName" :checked="checked" :id="id" :value="value"
+             @click="updateValue($event.target.checked)">
       <slot></slot>
       <i :class="'fa fa-' + popoverIcon" data-toggle="popover" :data-trigger="popoverTrigger"
          :title="popoverTitle"
          :data-content="popoverContent" v-if="popoverContent"></i>
     </label>
     <span class="help-block" v-if="helpText">{{helpText}}</span>
-    <span v-if="errors.has(name)" class="small text-danger"><i
-      class="fa fa-warning"></i> {{ errors.first(name) }}</span>
+    <span v-if="errors.has(checkName) && single" class="small text-danger"><i class="fa fa-warning"></i> {{ errors.first(checkName) }}</span>
   </div>
 </template>
 <script>
@@ -21,7 +21,7 @@
         type: String,
         required: true,
         validator: value => {
-          return value !== '';
+          return value !== ''
         }
       },
       id: {
@@ -51,35 +51,43 @@
       },
       popoverTrigger: {
         default: 'hover'
-      }
+      },
+      checked: {}
     },
     model: {
       prop: 'checked',
       event: 'change'
     },
     mounted() {
-      if (typeof this.$parent.addElement === 'function')
-        this.$parent.addElement(this);
+      if (!this.single)
+        this.$parent.addElement(this)
       this.$emit('after-mounted', this)
     },
     methods: {
       updateValue(value) {
         this.$emit('change', value)
+        this.$parent.$emit('update')
       },
       validate() {
-        this.$validator.validateAll();
-      },
+        this.$validator.validateAll()
+      }
     },
     computed: {
-      inline: function () {
-        return this.$parent.$options.name === 'v-check-group' ? this.$parent.$props.inline : false;
+      inline() {
+        return this.$parent.$options.name === 'v-check-group' ? this.$parent.$props.inline : false
       },
-      single: function () {
-        return this.$parent.$options.name !== 'v-check-group';
+      single() {
+        return this.$parent.$options.name !== 'v-check-group'
       },
       valid() {
-        if (this.fields[this.name] !== undefined)
-          return this.fields[this.name].valid
+        if (this.fields[this.checkName] !== undefined)
+          return this.fields[this.checkName].valid
+      },
+      checkRules() {
+        return this.single ? this.rules : this.$parent.vrules
+      },
+      checkName() {
+        return this.single ? this.name : this.$parent.name
       }
     },
     watch: {},
@@ -88,7 +96,7 @@
         if (this.$el && this.$el.parentNode) {
           this.$el.parentNode.removeChild(this.$el)
         }
-        this.$parent.removeElement(this);
+        this.$parent.removeElement(this)
       }
     }
   }
