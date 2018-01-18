@@ -4,17 +4,21 @@
       <v-step @on-before="before" @on-after="after">
         <v-input rules="required|alpha" validate-event="blur" name="firstName" v-model="firstName">First name</v-input>
         <v-input rules="required" validate-event="blur" name="lastName" v-model="lastName">Last name</v-input>
-        <v-date-picker rules="required|maxDateNow:DD-MM-YYYY" name="birthDay" v-model="birthDay" validate-event="blur">Birthday
+        <v-date-picker rules="required|maxDateNow:DD-MM-YYYY" name="birthDay" v-model="birthDay" validate-event="blur">
+          Birthday
         </v-date-picker>
         <v-radio-group name="gender" header="Header" rules="required" popover-content="123">
           <v-radio choice="m" v-model="gender">Male</v-radio>
           <v-radio choice="f" v-model="gender">Female</v-radio>
         </v-radio-group>
-        <transition name="fade" v-if="gender === 'f'">
-          <v-radio-group name="gender" header="Header" rules="required" popover-content="123" @after-mounted="afterMount">
-            <v-radio choice="m" v-model="gender">Male</v-radio>
-            <v-radio choice="f" v-model="gender">Female</v-radio>
-          </v-radio-group>
+        <transition name="slideDown">
+          <div v-if="gender === 'f'">
+            <v-radio-group name="gender1" header="Header" rules="required" popover-content="123"
+                           @after-mounted="afterMount">
+              <v-radio choice="m" v-model="gender1">Male</v-radio>
+              <v-radio choice="f" v-model="gender1">Female</v-radio>
+            </v-radio-group>
+          </div>
         </transition>
       </v-step>
       <v-step @on-before="before" @on-after="after">
@@ -46,8 +50,9 @@
       return {
         firstName: 'Test',
         lastName: 'Test2',
-        birthDay: '',
-        gender: '',
+        birthDay: '12-01-2018',
+        gender: 'm',
+        gender1: 'm',
         phone: '2312131',
         email: 'test@wd.dd',
         workPlace: 'home',
