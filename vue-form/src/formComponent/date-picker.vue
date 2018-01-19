@@ -47,20 +47,14 @@
   </div>
 </template>
 <script>
+  import baseInput from './../mixins/baseInput'
+
   export default {
+    mixins: [baseInput],
     props: {
-      name: {
-        type: String,
-        required: true,
-        validator: value => {
-          return value !== '';
-        }
-      },
-      id: {},
       classes: {
         type: String
       },
-      value: {},
       inline: {
         type: Boolean,
         default: false
@@ -71,21 +65,6 @@
       required: {
         type: Boolean,
         default: false
-      },
-      labelCols: {
-        type: String,
-        default: 'col-md-12'
-      },
-      inputCols: {
-        type: String,
-        default: 'col-md-12'
-      },
-      helpText: {
-        type: String
-      },
-      validateEvent: {
-        type: String,
-        default: 'input'
       },
       dayLabel: {
         default: 'Day',
@@ -102,19 +81,6 @@
       },
       dateFormat: {
         default: 'DD-MM-YYYY'
-      },
-      popoverIcon: {
-        type: String,
-        default: 'question-circle'
-      },
-      popoverTitle: {
-        type: String
-      },
-      popoverContent: {
-        type: String
-      },
-      popoverTrigger: {
-        default: 'hover'
       },
       maxDateIsNow: {
         default: false
@@ -143,7 +109,6 @@
         });
       },
       years: function () {
-
         return Array.apply(0, Array(moment().get('years') - this.minYear + 1)).map(function (_, i) {
           return moment().get('years') - i;
         });
@@ -195,25 +160,15 @@
       },
       updateValue() {
         if (this.day !== '' && this.month !== '' && this.year !== '') {
-          // this.$validator.validateAll()
           let date = moment(`${this.day}-${this.month}-${this.year}`, 'DD-MM-YYYY').format(this.dateFormat);
           this.$emit('input', date);
         }
-      },
-      validate() {
-        this.$validator.validateAll();
       },
       blur() {
         if (this.value !== '' && this.value !== null && this.value !== undefined) {
           this.validate()
         }
       }
-    },
-    destroyed() {
-      if (this.$el && this.$el.parentNode) {
-        this.$el.parentNode.removeChild(this.$el)
-      }
-      this.$parent.removeElement(this);
-    },
+    }
   }
 </script>

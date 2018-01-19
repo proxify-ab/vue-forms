@@ -15,43 +15,13 @@
   </div>
 </template>
 <script>
+  import baseInput from './../mixins/baseInput'
+
   export default {
+    mixins: [baseInput],
     props: {
-      name: {
-        type: String,
-        required: true,
-        validator: value => {
-          return value !== ''
-        }
-      },
-      id: {
-        type: String,
-      },
       classes: String,
-      value: {},
-      rules: {
-        type: String
-      },
-      helpText: {
-        type: String
-      },
-      validateEvent: {
-        type: String,
-        default: 'change'
-      },
-      popoverIcon: {
-        type: String,
-        default: 'question-circle'
-      },
-      popoverTitle: {
-        type: String
-      },
-      popoverContent: {
-        type: String
-      },
-      popoverTrigger: {
-        default: 'hover'
-      },
+      rules: String,
       checked: {}
     },
     model: {
@@ -68,9 +38,6 @@
         this.$emit('change', value)
         this.$parent.$emit('update')
       },
-      validate() {
-        this.$validator.validateAll()
-      }
     },
     computed: {
       inline() {
@@ -91,13 +58,5 @@
       }
     },
     watch: {},
-    destroyed() {
-      if (typeof this.$parent.removeElement === 'function') {
-        if (this.$el && this.$el.parentNode) {
-          this.$el.parentNode.removeChild(this.$el)
-        }
-        this.$parent.removeElement(this)
-      }
-    }
   }
 </script>

@@ -22,20 +22,14 @@
   </div>
 </template>
 <script>
+  import baseInput from './../mixins/baseInput'
+
   export default {
+    mixins: [baseInput],
     props: {
-      name: {
-        type: String,
-        required: true,
-        validator: value => {
-          return value !== '';
-        }
-      },
-      id: {},
       classes: {
         type: String
       },
-      value: {},
       placeholder: {},
       inline: {
         type: Boolean,
@@ -46,26 +40,6 @@
       },
       rows: {
         default: 5
-      },
-      helpText: {
-        type: String
-      },
-      popoverIcon: {
-        type: String,
-        default: 'question-circle'
-      },
-      popoverTitle: {
-        type: String
-      },
-      popoverContent: {
-        type: String
-      },
-      popoverTrigger: {
-        default: 'hover'
-      },
-      validateEvent: {
-        type: String,
-        default: 'input'
       },
     },
     mounted() {
@@ -104,15 +78,6 @@
       blur(value) {
         this.$emit('blur', value);
       },
-      validate() {
-        this.$validator.validateAll();
-      },
     },
-    destroyed() {
-      if (this.$el && this.$el.parentNode) {
-        this.$el.parentNode.removeChild(this.$el)
-      }
-      this.$parent.removeElement(this);
-    }
   }
 </script>

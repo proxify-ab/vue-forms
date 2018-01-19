@@ -36,15 +36,11 @@
 </template>
 
 <script>
+  import baseInput from './../mixins/baseInput'
+
   export default {
+    mixins: [baseInput],
     props: {
-      name: {
-        type: String,
-        required: true,
-        validator: value => {
-          return value !== '';
-        }
-      },
       type: {
         type: String,
         validator: value => {
@@ -52,12 +48,8 @@
         },
         default: 'text'
       },
-      id: {},
       classes: {
         type: String
-      },
-      value: {
-        default: null
       },
       placeholder: {
         type: String
@@ -83,21 +75,6 @@
         type: Boolean,
         default: false
       },
-      labelCols: {
-        type: String,
-        default: 'col-md-12'
-      },
-      inputCols: {
-        type: String,
-        default: 'col-md-12'
-      },
-      helpText: {
-        type: String
-      },
-      validateEvent: {
-        type: String,
-        default: 'input'
-      },
       btnAddon: {
         type: String,
       },
@@ -117,19 +94,6 @@
       },
       length: {
         type: Number
-      },
-      popoverIcon: {
-        type: String,
-        default: 'question-circle'
-      },
-      popoverTitle: {
-        type: String
-      },
-      popoverContent: {
-        type: String
-      },
-      popoverTrigger: {
-        default: 'hover'
       },
       validateOnCreate: {
         type: Boolean,
@@ -183,16 +147,7 @@
       },
       clickAddons: function () {
         this.$emit('on-addons', this.value, this.name)
-      },
-      validate() {
-        this.$validator.validateAll()
       }
-    },
-    destroyed() {
-      if (this.$el && this.$el.parentNode) {
-        this.$el.parentNode.removeChild(this.$el)
-      }
-      this.$parent.removeElement(this)
     }
   }
 </script>

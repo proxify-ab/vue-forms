@@ -1,7 +1,7 @@
 <template>
   <div class="form-group row" :class="{'has-error':!valid && validated, 'has-success':valid && validated}">
     <div :class="[inline ? 'col-md-3' : 'col-md-12']" v-if="header">
-      <label :class="['control-label', labelBold?'text-bold':'']"> {{header}}
+      <label class="control-label"> {{header}}
         <i :class="`fa fa-${popoverIcon}`" data-toggle="popover" :data-trigger="popoverTrigger"
            :title="popoverTitle"
            :data-content="popoverContent" v-if="popoverContent"></i></label>
@@ -29,15 +29,11 @@
   </div>
 </template>
 <script>
+  import baseInput from './../mixins/baseInput'
+
   export default {
+    mixins: [baseInput],
     props: {
-      name: {
-        type: String,
-        required: true,
-        validator: value => {
-          return value !== ''
-        }
-      },
       header: {
         type: String
       },
@@ -52,9 +48,6 @@
       rules: {
         type: String
       },
-      helpText: {
-        type: String
-      },
       classes: {
         default: 'radio-box-group'
       },
@@ -64,23 +57,6 @@
       animateDuration: {
         type: Number,
         default: 500
-      },
-      popoverIcon: {
-        type: String,
-        default: 'question-circle'
-      },
-      popoverTitle: {
-        type: String
-      },
-      popoverContent: {
-        type: String
-      },
-      popoverTrigger: {
-        default: 'hover'
-      },
-      labelBold: {
-        type: Boolean,
-        default: false
       }
     },
     data() {
@@ -124,14 +100,6 @@
       hasIn(radio) {
         return this.selected.idSlots && this.selected.idSlots.indexOf(radio.id) > -1
       }
-    },
-    beforeDestroy() {
-    },
-    destroyed() {
-      if (this.$el && this.$el.parentNode) {
-        this.$el.parentNode.removeChild(this.$el)
-      }
-      this.$parent.removeElement(this)
-    },
+    }
   }
 </script>
